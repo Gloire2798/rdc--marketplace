@@ -27,6 +27,7 @@ model Vendeur {
   nomBoutique     String
   description     String?
   logo            String?
+  adresse           String?
   telephone       String
   numMobileMoney  String
   actif           Boolean   @default(true)
