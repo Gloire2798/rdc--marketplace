@@ -11,10 +11,13 @@ export default function Home() {
     <div className="container" style={{ padding: "40px 16px" }}>
       <div style={{ textAlign: "center", marginBottom: "40px" }}>
         <h1 style={{ fontSize: "36px", fontWeight: "bold", marginBottom: "12px" }}>
-          Bienvenue sur RDC Marketplace
+          Bienvenue sur GK Sensei
         </h1>
-        <p style={{ fontSize: "18px", color: "#6b7280" }}>
-          Achetez auprès de nos 5 boutiques partenaires
+        <p style={{ fontSize: "18px", color: "#6b7280", marginBottom: "8px" }}>
+          Complexe Commercial
+        </p>
+        <p style={{ fontSize: "16px", color: "#9ca3af", fontStyle: "italic" }}>
+          "Toutes vos boutiques préférées, en un seul endroit."
         </p>
       </div>
 
