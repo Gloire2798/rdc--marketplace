@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "RDC Marketplace",
-  description: "Plateforme d'achat en ligne en RDC",
+  title: "GK Sensei — Complexe Commercial en ligne",
+  description: "Toutes vos boutiques préférées, en un seul endroit.",
 };
 
 export default function RootLayout({
@@ -24,10 +24,19 @@ export default function RootLayout({
             justifyContent: "space-between",
             alignItems: "center",
           }}>
-            <a href="/" style={{ fontSize: "20px", fontWeight: "bold", color: "#2563eb" }}>
-              🛒 RDC Marketplace
+            <a href="/" style={{
+              display: "flex",
+              flexDirection: "column",
+              textDecoration: "none",
+            }}>
+              <span style={{ fontSize: "20px", fontWeight: "bold", color: "#2563eb" }}>
+                🛒 GK Sensei
+              </span>
+              <span style={{ fontSize: "11px", color: "#6b7280" }}>
+                Complexe Commercial
+              </span>
             </a>
-            <nav style={{ display: "flex", gap: "20px" }}>
+            <nav style={{ display: "flex", gap: "16px", fontSize: "14px" }}>
               <a href="/">Accueil</a>
               <a href="/vendeur">Vendeur</a>
               <a href="/admin">Admin</a>
@@ -41,9 +50,13 @@ export default function RootLayout({
           padding: "20px 0",
           textAlign: "center",
           marginTop: "40px",
+          fontSize: "14px",
         }}>
           <div className="container">
-            <p>© 2025 RDC Marketplace — Tous droits réservés</p>
+            <p>© 2025 Complexe Commercial GK Sensei</p>
+            <p style={{ color: "#9ca3af", marginTop: "4px" }}>
+              Toutes vos boutiques préférées, en un seul endroit.
+            </p>
           </div>
         </footer>
       </body>
