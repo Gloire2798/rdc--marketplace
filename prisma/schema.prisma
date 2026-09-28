@@ -48,7 +48,9 @@ model Produit {
   prix        Float
 devise      String    @default("FC")
   stock       Int      @default(0)
-  photo       String?
+  photo1      String?
+photo2      String?
+photo3      String?
   actif       Boolean  @default(true)
   createdAt   DateTime @default(now())
   items       CommandeItem[]
