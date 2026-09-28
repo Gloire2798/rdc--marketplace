@@ -6,10 +6,21 @@ import { useRouter } from "next/navigation";
 export default function NouveauProduit() {
   const router = useRouter();
   const [chargement, setChargement] = useState(false);
-  const [uploadPhoto, setUploadPhoto] = useState(false);
   const [erreur, setErreur] = useState("");
-  const [photoUrl, setPhotoUrl] = useState("");
-  const [apercu, setApercu] = useState("");
+
+  const [photo1, setPhoto1] = useState("");
+  const [photo2, setPhoto2] = useState("");
+  const [photo3, setPhoto3] = useState("");
+
+  const [apercu1, setApercu1] = useState("");
+  const [apercu2, setApercu2] = useState("");
+  const [apercu3, setApercu3] = useState("");
+
+  const [uploadEnCours, setUploadEnCours] = useState({
+    p1: false,
+    p2: false,
+    p3: false,
+  });
 
   const [form, setForm] = useState({
     nom: "",
@@ -23,17 +34,10 @@ export default function NouveauProduit() {
     setForm({ ...form, [champ]: valeur });
   };
 
-  const choisirPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fichier = e.target.files?.[0];
-    if (!fichier) return;
-
-    setUploadPhoto(true);
-    setErreur("");
-
-    const reader = new FileReader();
-    reader.onload = (ev) => setApercu(ev.target?.result as string);
-    reader.readAsDataURL(fichier);
-
+  const uploaderPhoto = async (
+    fichier: File,
+    numero: 1 | 2 | 3
+  ): Promise<string | null> => {
     const formData = new FormData();
     formData.append("fichier", fichier);
 
@@ -46,23 +50,75 @@ export default function NouveauProduit() {
 
       if (!res.ok) {
         setErreur(data.erreur || "Erreur lors de l'upload");
-        setApercu("");
-        setUploadPhoto(false);
-        return;
+        return null;
       }
-
-      setPhotoUrl(data.url);
-      setUploadPhoto(false);
+      return data.url;
     } catch {
       setErreur("Impossible d'uploader la photo");
-      setApercu("");
-      setUploadPhoto(false);
+      return null;
+    }
+  };
+
+  const choisirPhoto = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    numero: 1 | 2 | 3
+  ) => {
+    const fichier = e.target.files?.[0];
+    if (!fichier) return;
+
+    // Aperçu local
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      if (numero === 1) setApercu1(dataUrl);
+      if (numero === 2) setApercu2(dataUrl);
+      if (numero === 3) setApercu3(dataUrl);
+    };
+    reader.readAsDataURL(fichier);
+
+    // Upload
+    const key = numero === 1 ? "p1" : numero === 2 ? "p2" : "p3";
+    setUploadEnCours({ ...uploadEnCours, [key]: true });
+
+    const url = await uploaderPhoto(fichier, numero);
+
+    if (url) {
+      if (numero === 1) setPhoto1(url);
+      if (numero === 2) setPhoto2(url);
+      if (numero === 3) setPhoto3(url);
+    } else {
+      if (numero === 1) setApercu1("");
+      if (numero === 2) setApercu2("");
+      if (numero === 3) setApercu3("");
+    }
+
+    setUploadEnCours({ ...uploadEnCours, [key]: false });
+  };
+
+  const supprimerPhoto = (numero: 1 | 2 | 3) => {
+    if (numero === 1) {
+      setPhoto1("");
+      setApercu1("");
+    }
+    if (numero === 2) {
+      setPhoto2("");
+      setApercu2("");
+    }
+    if (numero === 3) {
+      setPhoto3("");
+      setApercu3("");
     }
   };
 
   const soumettre = async (e: React.FormEvent) => {
     e.preventDefault();
     setErreur("");
+
+    if (!photo1) {
+      setErreur("La photo principale est obligatoire");
+      return;
+    }
+
     setChargement(true);
 
     try {
@@ -73,7 +129,9 @@ export default function NouveauProduit() {
           ...form,
           prix: parseFloat(form.prix),
           stock: parseInt(form.stock),
-          photo: photoUrl || null,
+          photo1,
+          photo2: photo2 || null,
+          photo3: photo3 || null,
         }),
       });
 
@@ -109,6 +167,74 @@ export default function NouveauProduit() {
     fontSize: "14px",
   };
 
+  const zoneUpload = (numero: 1 | 2 | 3, apercu: string, enCours: boolean, obligatoire: boolean) => (
+    <div style={{ marginBottom: "12px" }}>
+      {apercu ? (
+        <div style={{ position: "relative", textAlign: "center" }}>
+          <img
+            src={apercu}
+            alt={`Photo ${numero}`}
+            style={{
+              maxWidth: "100%",
+              maxHeight: "200px",
+              borderRadius: "12px",
+              objectFit: "contain",
+              backgroundColor: "#f3f4f6",
+            }}
+          />
+          {enCours && (
+            <p style={{ color: "#6b7280", fontSize: "13px", marginTop: "4px" }}>
+              ⏳ Envoi...
+            </p>
+          )}
+          {!enCours && (
+            <button
+              type="button"
+              onClick={() => supprimerPhoto(numero)}
+              style={{
+                marginTop: "4px",
+                padding: "4px 12px",
+                fontSize: "13px",
+                backgroundColor: "#fee2e2",
+                color: "#991b1b",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+            >
+              Supprimer
+            </button>
+          )}
+        </div>
+      ) : (
+        <label style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          border: "2px dashed #d1d5db",
+          borderRadius: "12px",
+          padding: "20px",
+          cursor: "pointer",
+          backgroundColor: "#f9fafb",
+        }}>
+          <span style={{ fontSize: "28px", marginBottom: "4px" }}>📸</span>
+          <span style={{ fontWeight: "600", fontSize: "13px" }}>
+            Photo {numero} {obligatoire ? "*" : "(optionnelle)"}
+          </span>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => choisirPhoto(e, numero)}
+            style={{ display: "none" }}
+          />
+        </label>
+      )}
+    </div>
+  );
+
+  const tousUploades = uploadEnCours.p1 || uploadEnCours.p2 || uploadEnCours.p3;
+
   return (
     <div className="container" style={{ maxWidth: "600px", padding: "40px 16px" }}>
       <a href="/vendeur/produits" style={{ color: "#2563eb", fontSize: "14px" }}>
@@ -129,50 +255,14 @@ export default function NouveauProduit() {
       )}
 
       <form onSubmit={soumettre}>
-        <label style={labelStyle}>Photo du produit</label>
+        <label style={labelStyle}>Photos du produit (max 3)</label>
+        <p style={{ color: "#6b7280", fontSize: "13px", marginBottom: "12px" }}>
+          La photo 1 est obligatoire. Les photos 2 et 3 sont optionnelles.
+        </p>
 
-        {apercu ? (
-          <div style={{ marginBottom: "16px", textAlign: "center" }}>
-            <img
-              src={apercu}
-              alt="Aperçu"
-              style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "12px", objectFit: "cover" }}
-            />
-            {uploadPhoto && (
-              <p style={{ color: "#6b7280", fontSize: "13px", marginTop: "8px" }}>
-                ⏳ Envoi de la photo en cours...
-              </p>
-            )}
-            {!uploadPhoto && photoUrl && (
-              <p style={{ color: "#16a34a", fontSize: "13px", marginTop: "8px" }}>
-                ✅ Photo envoyée
-              </p>
-            )}
-          </div>
-        ) : (
-          <label style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "2px dashed #d1d5db",
-            borderRadius: "12px",
-            padding: "40px 20px",
-            marginBottom: "16px",
-            cursor: "pointer",
-            backgroundColor: "#f9fafb",
-          }}>
-            <span style={{ fontSize: "40px", marginBottom: "8px" }}>📸</span>
-            <span style={{ fontWeight: "600", marginBottom: "4px" }}>Choisir une photo</span>
-            <span style={{ color: "#6b7280", fontSize: "13px" }}>JPG ou PNG, max 5 MB</span>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={choisirPhoto}
-              style={{ display: "none" }}
-            />
-          </label>
-        )}
+        {zoneUpload(1, apercu1, uploadEnCours.p1, true)}
+        {zoneUpload(2, apercu2, uploadEnCours.p2, false)}
+        {zoneUpload(3, apercu3, uploadEnCours.p3, false)}
 
         <label style={labelStyle}>Nom du produit *</label>
         <input
@@ -227,11 +317,11 @@ export default function NouveauProduit() {
 
         <button
           type="submit"
-          disabled={chargement || uploadPhoto}
+          disabled={chargement || tousUploades}
           className="btn btn-primary"
-          style={{ width: "100%", marginTop: "16px", opacity: (chargement || uploadPhoto) ? 0.6 : 1 }}
+          style={{ width: "100%", marginTop: "16px", opacity: (chargement || tousUploades) ? 0.6 : 1 }}
         >
-          {chargement ? "Publication..." : uploadPhoto ? "Envoi de la photo..." : "Publier le produit"}
+          {chargement ? "Publication..." : tousUploades ? "Envoi des photos..." : "Publier le produit"}
         </button>
       </form>
     </div>
