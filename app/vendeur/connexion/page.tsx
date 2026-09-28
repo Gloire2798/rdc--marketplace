@@ -8,10 +8,7 @@ export default function ConnexionVendeur() {
   const [chargement, setChargement] = useState(false);
   const [erreur, setErreur] = useState("");
 
-  const [form, setForm] = useState({
-    telephone: "",
-    motDePasse: "",
-  });
+  const [form, setForm] = useState({ telephone: "", motDePasse: "" });
 
   const changer = (champ: string, valeur: string) => {
     setForm({ ...form, [champ]: valeur });
@@ -37,8 +34,8 @@ export default function ConnexionVendeur() {
         return;
       }
 
-      // Redirection vers le tableau de bord vendeur
-      router.push("/vendeur/dashboard");
+      // Redirection selon le rôle (VENDEUR ou ADMIN)
+      router.push(data.redirection || "/vendeur/dashboard");
     } catch {
       setErreur("Impossible de contacter le serveur");
       setChargement(false);
@@ -64,20 +61,14 @@ export default function ConnexionVendeur() {
   return (
     <div className="container" style={{ maxWidth: "500px", padding: "60px 16px" }}>
       <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px" }}>
-        Connexion vendeur
+        Connexion
       </h1>
       <p style={{ color: "#6b7280", marginBottom: "32px" }}>
-        Accédez à votre tableau de bord GK Sensei.
+        Accédez à votre espace GK Sensei.
       </p>
 
       {erreur && (
-        <div style={{
-          backgroundColor: "#fee2e2",
-          color: "#991b1b",
-          padding: "12px",
-          borderRadius: "8px",
-          marginBottom: "20px",
-        }}>
+        <div style={{ backgroundColor: "#fee2e2", color: "#991b1b", padding: "12px", borderRadius: "8px", marginBottom: "20px" }}>
           {erreur}
         </div>
       )}
