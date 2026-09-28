@@ -15,6 +15,7 @@ export default function NouveauProduit() {
     nom: "",
     description: "",
     prix: "",
+    devise: "FC",
     stock: "",
   });
 
@@ -29,12 +30,10 @@ export default function NouveauProduit() {
     setUploadPhoto(true);
     setErreur("");
 
-    // Aperçu local immédiat
     const reader = new FileReader();
     reader.onload = (ev) => setApercu(ev.target?.result as string);
     reader.readAsDataURL(fichier);
 
-    // Envoyer à Cloudinary
     const formData = new FormData();
     formData.append("fichier", fichier);
 
@@ -130,7 +129,6 @@ export default function NouveauProduit() {
       )}
 
       <form onSubmit={soumettre}>
-        {/* PHOTO */}
         <label style={labelStyle}>Photo du produit</label>
 
         {apercu ? (
@@ -138,12 +136,7 @@ export default function NouveauProduit() {
             <img
               src={apercu}
               alt="Aperçu"
-              style={{
-                maxWidth: "100%",
-                maxHeight: "300px",
-                borderRadius: "12px",
-                objectFit: "cover",
-              }}
+              style={{ maxWidth: "100%", maxHeight: "300px", borderRadius: "12px", objectFit: "cover" }}
             />
             {uploadPhoto && (
               <p style={{ color: "#6b7280", fontSize: "13px", marginTop: "8px" }}>
@@ -199,16 +192,27 @@ export default function NouveauProduit() {
           onChange={(e) => changer("description", e.target.value)}
         />
 
-        <label style={labelStyle}>Prix (en FC) *</label>
-        <input
-          type="number"
-          placeholder="Ex: 25000"
-          style={champStyle}
-          value={form.prix}
-          onChange={(e) => changer("prix", e.target.value)}
-          required
-          min="0"
-        />
+        <label style={labelStyle}>Prix *</label>
+        <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+          <input
+            type="number"
+            placeholder="Ex: 25000"
+            style={{ ...champStyle, marginBottom: 0, flex: 2 }}
+            value={form.prix}
+            onChange={(e) => changer("prix", e.target.value)}
+            required
+            min="0"
+            step="any"
+          />
+          <select
+            style={{ ...champStyle, marginBottom: 0, flex: 1 }}
+            value={form.devise}
+            onChange={(e) => changer("devise", e.target.value)}
+          >
+            <option value="FC">FC</option>
+            <option value="USD">$</option>
+          </select>
+        </div>
 
         <label style={labelStyle}>Stock disponible *</label>
         <input
