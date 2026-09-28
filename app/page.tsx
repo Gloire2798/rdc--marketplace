@@ -1,12 +1,14 @@
-const boutiques = [
-  { id: 1, nom: "Boutique Mode Kin", description: "Vêtements et accessoires", emoji: "👕" },
-  { id: 2, nom: "Tech Électronique", description: "Téléphones et gadgets", emoji: "📱" },
-  { id: 3, nom: "Alimentation Fresh", description: "Produits alimentaires", emoji: "🥬" },
-  { id: 4, nom: "Beauté & Soins", description: "Cosmétiques et soins", emoji: "💄" },
-  { id: 5, nom: "Maison & Déco", description: "Meubles et décoration", emoji: "🛋️" },
-];
+import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const vendeurs = await prisma.vendeur.findMany({
+    where: { actif: true },
+    orderBy: { createdAt: "desc" },
+  });
+
   return (
     <div className="container" style={{ padding: "40px 16px" }}>
       <div style={{ textAlign: "center", marginBottom: "40px" }}>
@@ -25,30 +27,40 @@ export default function Home() {
         Nos boutiques
       </h2>
 
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-        gap: "20px",
-      }}>
-        {boutiques.map((boutique) => (
-          <a
-            key={boutique.id}
-            href={`/acheteur/boutique/${boutique.id}`}
-            className="card"
-            style={{ display: "block", cursor: "pointer" }}
-          >
-            <div style={{ fontSize: "48px", marginBottom: "12px" }}>
-              {boutique.emoji}
-            </div>
-            <h3 style={{ fontSize: "20px", fontWeight: "600", marginBottom: "8px" }}>
-              {boutique.nom}
-            </h3>
-            <p style={{ color: "#6b7280", fontSize: "14px" }}>
-              {boutique.description}
-            </p>
-          </a>
-        ))}
-      </div>
+      {vendeurs.length === 0 ? (
+        <div className="card" style={{ textAlign: "center", padding: "60px 20px" }}>
+          <p style={{ fontSize: "48px", marginBottom: "16px" }}>🛒</p>
+          <p style={{ fontSize: "18px", fontWeight: "600", marginBottom: "8px" }}>
+            Aucune boutique disponible pour le moment
+          </p>
+          <p style={{ color: "#6b7280" }}>
+            Les boutiques apparaîtront ici dès qu'elles seront validées.
+          </p>
+        </div>
+      ) : (
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+          gap: "20px",
+        }}>
+          {vendeurs.map((boutique) => (
+            <Link
+              key={boutique.id}
+              href={`/acheteur/boutique/${boutique.id}`}
+              className="card"
+              style={{ display: "block", cursor: "pointer" }}
+            >
+              <div style={{ fontSize: "48px", marginBottom: "12px" }}>🏪</div>
+              <h3 style={{ fontSize: "20px", fontWeight: "600", marginBottom: "8px" }}>
+                {boutique.nomBoutique}
+              </h3>
+              <p style={{ color: "#6b7280", fontSize: "14px" }}>
+                {boutique.description || "Boutique en ligne"}
+              </p>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
