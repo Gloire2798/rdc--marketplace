@@ -18,6 +18,18 @@ export default async function DashboardVendeur() {
     where: { userId: session.id },
   });
 
+  if (!vendeur) {
+    redirect("/vendeur/connexion");
+  }
+
+  const nombreProduits = await prisma.produit.count({
+    where: { vendeurId: vendeur.id },
+  });
+
+  const nombreCommandes = await prisma.commande.count({
+    where: { vendeurId: vendeur.id },
+  });
+
   return (
     <div className="container" style={{ padding: "40px 16px" }}>
       <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px" }}>
@@ -27,7 +39,7 @@ export default async function DashboardVendeur() {
         Bienvenue sur votre tableau de bord GK Sensei.
       </p>
 
-      {!vendeur?.actif && (
+      {!vendeur.actif && (
         <div style={{
           backgroundColor: "#fef3c7",
           color: "#92400e",
@@ -49,39 +61,44 @@ export default async function DashboardVendeur() {
         <div className="card">
           <p style={{ color: "#6b7280", fontSize: "14px" }}>Boutique</p>
           <h2 style={{ fontSize: "20px", fontWeight: "600", marginTop: "4px" }}>
-            {vendeur?.nomBoutique || "Non définie"}
+            {vendeur.nomBoutique}
           </h2>
         </div>
 
         <div className="card">
           <p style={{ color: "#6b7280", fontSize: "14px" }}>Statut</p>
           <h2 style={{ fontSize: "20px", fontWeight: "600", marginTop: "4px" }}>
-            {vendeur?.actif ? "✅ Active" : "⏳ En attente"}
+            {vendeur.actif ? "✅ Active" : "⏳ En attente"}
           </h2>
         </div>
 
-        <div className="card">
-          <p style={{ color: "#6b7280", fontSize: "14px" }}>Produits</p>
-          <h2 style={{ fontSize: "20px", fontWeight: "600", marginTop: "4px" }}>
-            0
-          </h2>
-        </div>
+        <Link href="/vendeur/produits" style={{ textDecoration: "none", color: "inherit" }}>
+          <div className="card" style={{ cursor: "pointer" }}>
+            <p style={{ color: "#6b7280", fontSize: "14px" }}>Produits</p>
+            <h2 style={{ fontSize: "20px", fontWeight: "600", marginTop: "4px" }}>
+              {nombreProduits}
+            </h2>
+          </div>
+        </Link>
 
         <div className="card">
           <p style={{ color: "#6b7280", fontSize: "14px" }}>Commandes</p>
           <h2 style={{ fontSize: "20px", fontWeight: "600", marginTop: "4px" }}>
-            0
+            {nombreCommandes}
           </h2>
         </div>
       </div>
 
-      <div style={{ marginTop: "32px" }}>
-        <Link
-          href="/vendeur/produits"
-          className="btn btn-primary"
-          style={{ marginRight: "12px" }}
-        >
+      <div style={{ marginTop: "32px", display: "flex", gap: "12px", flexWrap: "wrap" }}>
+        <Link href="/vendeur/produits/nouveau" className="btn btn-primary">
           Ajouter un produit
+        </Link>
+        <Link href="/vendeur/produits" className="btn" style={{
+          backgroundColor: "white",
+          color: "#2563eb",
+          border: "1px solid #2563eb",
+        }}>
+          Voir mes produits
         </Link>
       </div>
     </div>
