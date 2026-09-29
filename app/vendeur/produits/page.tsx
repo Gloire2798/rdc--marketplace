@@ -124,9 +124,29 @@ export default async function MesProduits() {
                   fontSize: "13px",
                   color: p.stock > 0 ? "#16a34a" : "#dc2626",
                   fontWeight: "600",
+                  marginBottom: "12px",
                 }}>
                   {p.stock > 0 ? `✅ ${p.stock} en stock` : "❌ Rupture de stock"}
                 </p>
+
+                <Link
+                  href={`/vendeur/produits/${p.id}/modifier`}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    backgroundColor: "#2563eb",
+                    color: "white",
+                    padding: "10px",
+                    borderRadius: "8px",
+                    textAlign: "center",
+                    fontWeight: "600",
+                    fontSize: "14px",
+                    textDecoration: "none",
+                    boxSizing: "border-box",
+                  }}
+                >
+                  ✏️ Modifier
+                </Link>
               </div>
             </div>
           ))}
