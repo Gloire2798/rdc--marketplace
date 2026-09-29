@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface Vendeur {
   id: string;
@@ -12,6 +13,7 @@ interface Vendeur {
   numMobileMoney: string;
   nomProprietaire: string | null;
   actif: boolean;
+  nombreProduits: number;
 }
 
 export default function LienVendeur({ vendeur }: { vendeur: Vendeur }) {
@@ -57,10 +59,11 @@ export default function LienVendeur({ vendeur }: { vendeur: Vendeur }) {
             <span>📞 {vendeur.telephone}</span>
             {vendeur.adresse && <span>📍 {vendeur.adresse}</span>}
             <span>💰 Mobile Money : {vendeur.numMobileMoney}</span>
+            <span>📦 {vendeur.nombreProduits} produit{vendeur.nombreProduits > 1 ? "s" : ""} en ligne</span>
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: "8px", flexDirection: "column" }}>
+        <div style={{ display: "flex", gap: "8px", flexDirection: "column", minWidth: "160px" }}>
           {!vendeur.actif ? (
             <button
               onClick={() => changerStatut(true)}
@@ -96,6 +99,23 @@ export default function LienVendeur({ vendeur }: { vendeur: Vendeur }) {
               ❌ Désactiver
             </button>
           )}
+
+          <Link
+            href={`/admin/vendeurs/${vendeur.id}/produits`}
+            style={{
+              backgroundColor: "#2563eb",
+              color: "white",
+              padding: "10px 20px",
+              borderRadius: "8px",
+              border: "none",
+              fontWeight: "600",
+              textAlign: "center",
+              textDecoration: "none",
+              fontSize: "14px",
+            }}
+          >
+            📦 Voir les produits
+          </Link>
         </div>
       </div>
     </div>
