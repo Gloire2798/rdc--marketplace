@@ -54,10 +54,7 @@ export default async function MesProduits() {
           </p>
         </div>
 
-        <Link
-          href="/vendeur/produits/nouveau"
-          className="btn btn-primary"
-        >
+        <Link href="/vendeur/produits/nouveau" className="btn btn-primary">
           + Ajouter un produit
         </Link>
       </div>
@@ -71,10 +68,7 @@ export default async function MesProduits() {
           <p style={{ color: "#6b7280", marginBottom: "24px" }}>
             Ajoutez votre premier produit pour commencer à vendre.
           </p>
-          <Link
-            href="/vendeur/produits/nouveau"
-            className="btn btn-primary"
-          >
+          <Link href="/vendeur/produits/nouveau" className="btn btn-primary">
             Ajouter mon premier produit
           </Link>
         </div>
@@ -86,14 +80,15 @@ export default async function MesProduits() {
         }}>
           {produits.map((p) => (
             <div key={p.id} className="card" style={{ padding: "0", overflow: "hidden" }}>
-              {p.photo ? (
+              {p.photo1 ? (
                 <img
-                  src={p.photo}
+                  src={p.photo1}
                   alt={p.nom}
                   style={{
                     width: "100%",
                     height: "200px",
-                    objectFit: "cover",
+                    objectFit: "contain",
+                    backgroundColor: "#f3f4f6",
                     display: "block",
                   }}
                 />
