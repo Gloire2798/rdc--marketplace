@@ -10,14 +10,28 @@ export default async function DashboardAdmin() {
     redirect("/vendeur/connexion");
   }
 
-  // Récupérer tous les vendeurs
   const vendeurs = await prisma.vendeur.findMany({
-    include: { user: true },
+    include: {
+      user: true,
+      _count: { select: { produits: true } },
+    },
     orderBy: { createdAt: "desc" },
   });
 
   const enAttente = vendeurs.filter((v) => !v.actif);
   const actifs = vendeurs.filter((v) => v.actif);
+
+  const formatVendeur = (v: typeof vendeurs[0]) => ({
+    id: v.id,
+    nomBoutique: v.nomBoutique,
+    description: v.description,
+    adresse: v.adresse,
+    telephone: v.telephone,
+    numMobileMoney: v.numMobileMoney,
+    nomProprietaire: v.user.nom,
+    actif: v.actif,
+    nombreProduits: v._count.produits,
+  });
 
   return (
     <div className="container" style={{ padding: "40px 16px" }}>
@@ -28,7 +42,6 @@ export default async function DashboardAdmin() {
         Gérez les boutiques du complexe GK Sensei.
       </p>
 
-      {/* Stats */}
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
@@ -55,7 +68,6 @@ export default async function DashboardAdmin() {
         </div>
       </div>
 
-      {/* Vendeurs en attente */}
       {enAttente.length > 0 && (
         <>
           <h2 style={{ fontSize: "20px", fontWeight: "600", marginBottom: "16px" }}>
@@ -63,22 +75,12 @@ export default async function DashboardAdmin() {
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "40px" }}>
             {enAttente.map((v) => (
-              <LienVendeur key={v.id} vendeur={{
-                id: v.id,
-                nomBoutique: v.nomBoutique,
-                description: v.description,
-                adresse: v.adresse,
-                telephone: v.telephone,
-                numMobileMoney: v.numMobileMoney,
-                nomProprietaire: v.user.nom,
-                actif: v.actif,
-              }} />
+              <LienVendeur key={v.id} vendeur={formatVendeur(v)} />
             ))}
           </div>
         </>
       )}
 
-      {/* Vendeurs actifs */}
       <h2 style={{ fontSize: "20px", fontWeight: "600", marginBottom: "16px" }}>
         ✅ Boutiques actives
       </h2>
@@ -87,19 +89,10 @@ export default async function DashboardAdmin() {
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {actifs.map((v) => (
-            <LienVendeur key={v.id} vendeur={{
-              id: v.id,
-              nomBoutique: v.nomBoutique,
-              description: v.description,
-              adresse: v.adresse,
-              telephone: v.telephone,
-              numMobileMoney: v.numMobileMoney,
-              nomProprietaire: v.user.nom,
-              actif: v.actif,
-            }} />
+            <LienVendeur key={v.id} vendeur={formatVendeur(v)} />
           ))}
         </div>
       )}
     </div>
   );
-}
+      }
