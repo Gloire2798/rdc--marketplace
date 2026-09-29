@@ -13,7 +13,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Récupérer la boutique du vendeur
     const vendeur = await prisma.vendeur.findUnique({
       where: { userId: session.id },
     });
@@ -33,12 +32,18 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { nom, description, prix, devise, stock, photo } = body;
+    const { nom, description, prix, devise, stock, photo1, photo2, photo3 } = body;
 
-    // Vérifications
     if (!nom || prix === undefined || stock === undefined) {
       return NextResponse.json(
         { erreur: "Nom, prix et stock sont obligatoires" },
+        { status: 400 }
+      );
+    }
+
+    if (!photo1) {
+      return NextResponse.json(
+        { erreur: "La photo principale est obligatoire" },
         { status: 400 }
       );
     }
@@ -50,7 +55,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Créer le produit
     const produit = await prisma.produit.create({
       data: {
         vendeurId: vendeur.id,
@@ -59,7 +63,9 @@ export async function POST(request: Request) {
         prix: parseFloat(prix),
         devise: devise || "FC",
         stock: parseInt(stock),
-        photo: photo || null,
+        photo1,
+        photo2: photo2 || null,
+        photo3: photo3 || null,
         actif: true,
       },
     });
