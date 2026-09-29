@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import BoutonSupprimer from "./BoutonSupprimer";
 
 interface Produit {
   id: string;
@@ -357,6 +358,8 @@ export default function ModifierProduit() {
           {enregistrement ? "Enregistrement..." : tousUploades ? "Envoi des photos..." : "Enregistrer les modifications"}
         </button>
       </form>
+
+      <BoutonSupprimer produitId={produitId} nomProduit={form.nom} />
     </div>
   );
           }
