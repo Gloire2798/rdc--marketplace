@@ -1,7 +1,7 @@
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import LienVendeur from "./LienVendeur";
+import LienVendeur from "./LienVendeur"; 
 
 export default async function DashboardAdmin() {
   const session = await getSession();
