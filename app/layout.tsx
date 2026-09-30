@@ -36,10 +36,22 @@ export default function RootLayout({
                 Complexe Commercial
               </span>
             </a>
-            <nav style={{ display: "flex", gap: "16px", fontSize: "14px" }}>
-              <a href="/">Accueil</a>
-              <a href="/vendeur">Vendeur</a>
-              <a href="/admin">Admin</a>
+            <nav style={{ display: "flex", gap: "16px", fontSize: "14px", alignItems: "center" }}>
+              <a href="/" style={{ color: "#111827", fontWeight: "500" }}>
+                Accueil
+              </a>
+              <a
+                href="/vendeur/connexion"
+                style={{
+                  backgroundColor: "#2563eb",
+                  color: "white",
+                  padding: "8px 16px",
+                  borderRadius: "8px",
+                  fontWeight: "600",
+                }}
+              >
+                Connexion
+              </a>
             </nav>
           </div>
         </header>
