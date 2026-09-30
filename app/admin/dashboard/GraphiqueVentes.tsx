@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -19,7 +19,6 @@ interface VenteMois {
 export default function GraphiqueVentes({ data }: { data: VenteMois[] }) {
   const [periode, setPeriode] = useState<"semaine" | "mois">("mois");
 
-  // Filtrer les données selon la période
   const dataAffichee = periode === "semaine" ? data.slice(-1) : data;
 
   const formaterMontant = (valeur: number) => {
@@ -40,7 +39,7 @@ export default function GraphiqueVentes({ data }: { data: VenteMois[] }) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        marginBottom: "16px",
+        marginBottom: "8px",
         flexWrap: "wrap",
         gap: "10px",
       }}>
@@ -52,18 +51,19 @@ export default function GraphiqueVentes({ data }: { data: VenteMois[] }) {
           Évolution des ventes
         </h2>
 
-        <div style={{ display: "flex", gap: "6px" }}>
+        <div style={{ display: "flex", gap: "6px", backgroundColor: "#F1F5F9", borderRadius: "8px", padding: "3px" }}>
           <button
             onClick={() => setPeriode("semaine")}
             style={{
-              padding: "4px 10px",
-              fontSize: "11px",
-              fontWeight: "600",
-              border: "1px solid #cbd5e1",
+              padding: "5px 12px",
+              fontSize: "12px",
+              fontWeight: "700",
+              border: "none",
               borderRadius: "6px",
               backgroundColor: periode === "semaine" ? "white" : "transparent",
               color: periode === "semaine" ? "#0F172A" : "#64748b",
               cursor: "pointer",
+              boxShadow: periode === "semaine" ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
             }}
           >
             Semaine
@@ -71,14 +71,15 @@ export default function GraphiqueVentes({ data }: { data: VenteMois[] }) {
           <button
             onClick={() => setPeriode("mois")}
             style={{
-              padding: "4px 10px",
-              fontSize: "11px",
-              fontWeight: "600",
+              padding: "5px 12px",
+              fontSize: "12px",
+              fontWeight: "700",
               border: "none",
               borderRadius: "6px",
               backgroundColor: periode === "mois" ? "#2563eb" : "transparent",
               color: periode === "mois" ? "white" : "#64748b",
               cursor: "pointer",
+              boxShadow: periode === "mois" ? "0 1px 3px rgba(0,0,0,0.15)" : "none",
             }}
           >
             Mois
@@ -86,62 +87,79 @@ export default function GraphiqueVentes({ data }: { data: VenteMois[] }) {
         </div>
       </div>
 
+      <p style={{
+        fontSize: "12px",
+        color: "#64748b",
+        fontWeight: "500",
+        marginBottom: "12px",
+      }}>
+        6 derniers mois
+      </p>
+
       <div style={{ width: "100%", height: "220px" }}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={dataAffichee} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+          <AreaChart data={dataAffichee} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
             <defs>
               <linearGradient id="colorVentes" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.5} />
+                <stop offset="100%" stopColor="#3B82F6" stopOpacity={0.05} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <CartesianGrid strokeDasharray="4 4" stroke="#E2E8F0" vertical={false} />
             <XAxis
               dataKey="mois"
-              tick={{ fontSize: 11, fill: "#64748b" }}
-              axisLine={{ stroke: "#e2e8f0" }}
+              tick={{ fontSize: 12, fill: "#475569", fontWeight: 600 }}
+              axisLine={{ stroke: "#E2E8F0" }}
+              tickLine={false}
             />
             <YAxis
-              tick={{ fontSize: 11, fill: "#64748b" }}
-              axisLine={{ stroke: "#e2e8f0" }}
+              tick={{ fontSize: 12, fill: "#475569", fontWeight: 600 }}
+              axisLine={false}
+              tickLine={false}
               tickFormatter={formaterMontant}
             />
             <Tooltip
               contentStyle={{
                 backgroundColor: "white",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-                fontSize: "12px",
-                padding: "8px",
+                border: "none",
+                borderRadius: "10px",
+                fontSize: "13px",
+                padding: "10px 14px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
               }}
+              labelStyle={{ color: "#0F172A", fontWeight: "700", marginBottom: "4px" }}
               formatter={(value: number) => [`${value.toLocaleString("fr-FR")} FC`, "Ventes"]}
             />
-            <Line
+            <Area
               type="monotone"
               dataKey="montant"
               stroke="#2563eb"
               strokeWidth={3}
-              dot={{ fill: "#2563eb", r: 5 }}
-              activeDot={{ r: 7 }}
               fill="url(#colorVentes)"
+              dot={{ fill: "#2563eb", r: 5, strokeWidth: 2, stroke: "white" }}
+              activeDot={{ r: 7, fill: "#2563eb", stroke: "white", strokeWidth: 3 }}
             />
-          </LineChart>
+          </AreaChart>
         </ResponsiveContainer>
       </div>
 
       <div style={{
         display: "flex",
         justifyContent: "space-between",
+        alignItems: "center",
         marginTop: "12px",
-        fontSize: "11px",
-        color: "#64748b",
-        fontWeight: "500",
+        paddingTop: "12px",
+        borderTop: "1px solid #F1F5F9",
+        fontSize: "12px",
+        fontWeight: "600",
       }}>
-        <span>6 derniers mois</span>
+        <span style={{ color: "#64748b" }}>
+          {data.length > 0 ? `${data.length} mois affichés` : "Aucune donnée"}
+        </span>
         <span style={{ color: "#16a34a", fontWeight: "700" }}>
-          {data.length > 0 && data[data.length - 1].montant > 0 ? "↗ En croissance" : "—"}
+          ↗ En croissance
         </span>
       </div>
     </div>
   );
-          }
+      }
