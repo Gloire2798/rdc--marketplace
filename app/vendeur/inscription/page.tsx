@@ -92,17 +92,25 @@ export default function InscriptionVendeur() {
     marginBottom: "0",
   };
 
-  const logoStyle = {
+  const logoBoxStyle = {
     width: "44px",
     height: "44px",
     borderRadius: "8px",
+    backgroundColor: "white",
+    border: "1px solid #e5e7eb",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "20px",
-    fontWeight: "bold",
-    color: "white",
     flexShrink: 0,
+    padding: "4px",
+    boxSizing: "border-box" as const,
+    overflow: "hidden",
+  };
+
+  const logoImgStyle = {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain" as const,
   };
 
   return (
@@ -197,9 +205,11 @@ export default function InscriptionVendeur() {
           Renseignez au moins un numéro pour recevoir les paiements de vos clients.
         </p>
 
-        <label style={labelStyle}>📱 M-Pesa (Vodacom)</label>
+        <label style={labelStyle}>M-Pesa (Vodacom)</label>
         <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-          <div style={{ ...logoStyle, backgroundColor: "#e60000" }}>M</div>
+          <div style={logoBoxStyle}>
+            <img src="https://i.ibb.co/NndcrT1d/m-pesa.jpg" alt="M-Pesa" style={logoImgStyle} />
+          </div>
           <input
             type="tel"
             placeholder="Ex: 0812345678"
@@ -209,9 +219,11 @@ export default function InscriptionVendeur() {
           />
         </div>
 
-        <label style={labelStyle}>📱 Orange Money</label>
+        <label style={labelStyle}>Orange Money</label>
         <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-          <div style={{ ...logoStyle, backgroundColor: "#ff7900" }}>O</div>
+          <div style={logoBoxStyle}>
+            <img src="https://i.ibb.co/pvr5LPxN/orange.jpg" alt="Orange Money" style={logoImgStyle} />
+          </div>
           <input
             type="tel"
             placeholder="Ex: 0891234567"
@@ -221,9 +233,11 @@ export default function InscriptionVendeur() {
           />
         </div>
 
-        <label style={labelStyle}>📱 Airtel Money</label>
+        <label style={labelStyle}>Airtel Money</label>
         <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
-          <div style={{ ...logoStyle, backgroundColor: "#e40000" }}>A</div>
+          <div style={logoBoxStyle}>
+            <img src="https://i.ibb.co/spmBgLvg/airtel.jpg" alt="Airtel Money" style={logoImgStyle} />
+          </div>
           <input
             type="tel"
             placeholder="Ex: 0991234567"
@@ -251,4 +265,4 @@ export default function InscriptionVendeur() {
       </p>
     </div>
   );
-    }
+                 }
