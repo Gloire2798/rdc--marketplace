@@ -15,7 +15,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Chercher l'utilisateur
     const user = await prisma.user.findUnique({
       where: { telephone },
       include: { vendeur: true },
@@ -28,7 +27,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Vérifier le mot de passe
     const motDePasseValide = await bcrypt.compare(motDePasse, user.motDePasse);
     if (!motDePasseValide) {
       return NextResponse.json(
@@ -37,7 +35,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Créer la session
     await createSession(user.id);
 
     return NextResponse.json({
@@ -48,7 +45,7 @@ export async function POST(request: Request) {
           ? "/vendeur/dashboard"
           : user.role === "ADMIN"
           ? "/admin/dashboard"
-          : "/",
+          : "/client/compte",
     });
   } catch (error) {
     console.error("Erreur connexion:", error);
@@ -57,4 +54,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
+        }
