@@ -95,7 +95,6 @@ export default function LogoBoutique({ nom, taille = 50 }: LogoBoutiqueProps) {
     couleur: "#1E3A8A",
   };
 
-  // Nom court pour le logo (max 12 caractères)
   const nomCourt = nom.length > 12 ? nom.slice(0, 10) + "…" : nom;
 
   return (
@@ -115,21 +114,20 @@ export default function LogoBoutique({ nom, taille = 50 }: LogoBoutiqueProps) {
       boxSizing: "border-box",
     }}>
       <span style={{
-        fontSize: `${taille * 0.38}px`,
+        fontSize: `${taille * 0.35}px`,
         lineHeight: 1,
       }}>
         {categorie.icone}
       </span>
       <span style={{
-        fontSize: `${taille * 0.16}px`,
+        fontSize: `${taille * 0.15}px`,
         fontWeight: "800",
         color: categorie.couleur,
         lineHeight: 1,
-        marginTop: "2px",
+        marginTop: "1px",
         textAlign: "center",
-        paddingX: "1px",
-        wordBreak: "break-word",
         overflow: "hidden",
+        maxWidth: "100%",
       }}>
         {nomCourt}
       </span>
