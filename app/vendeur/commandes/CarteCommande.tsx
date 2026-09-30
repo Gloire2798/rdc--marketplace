@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -7,12 +7,14 @@ interface Item {
   nom: string;
   quantite: number;
   prixUnitaire: number;
+  devise: string;
 }
 
 interface Commande {
   id: string;
   statut: string;
   total: number;
+  devise: string;
   mode: string;
   adresse: string | null;
   createdAt: string;
@@ -25,7 +27,11 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
   const router = useRouter();
   const [chargement, setChargement] = useState(false);
 
-  const formaterPrix = (prix: number) => {
+  const formaterPrix = (prix: number, devise?: string) => {
+    const d = devise || commande.devise;
+    if (d === "USD") {
+      return `${prix.toFixed(2)} $`;
+    }
     return `${prix.toLocaleString("fr-FR")} FC`;
   };
 
@@ -101,7 +107,7 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
           }}>
             <span>{item.nom} × {item.quantite}</span>
             <span style={{ color: "#6b7280" }}>
-              {formaterPrix(item.prixUnitaire * item.quantite)}
+              {formaterPrix(item.prixUnitaire * item.quantite, item.devise)}
             </span>
           </div>
         ))}
@@ -219,4 +225,4 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
       </div>
     </div>
   );
-        }
+}
