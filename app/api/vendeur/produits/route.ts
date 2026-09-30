@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { nom, description, prix, devise, stock, photo1, photo2, photo3 } = body;
+    const { nom, description, prix, prixPromo, devise, stock, photo1, photo2, photo3 } = body;
 
     if (!nom || prix === undefined || stock === undefined) {
       return NextResponse.json(
@@ -55,12 +55,25 @@ export async function POST(request: Request) {
       );
     }
 
+    let prixPromoFinal = null;
+    if (prixPromo !== undefined && prixPromo !== null && prixPromo !== "") {
+      const promo = parseFloat(prixPromo);
+      if (promo >= parseFloat(prix)) {
+        return NextResponse.json(
+          { erreur: "Le prix promotionnel doit être inférieur au prix normal" },
+          { status: 400 }
+        );
+      }
+      prixPromoFinal = promo;
+    }
+
     const produit = await prisma.produit.create({
       data: {
         vendeurId: vendeur.id,
         nom,
         description: description || null,
         prix: parseFloat(prix),
+        prixPromo: prixPromoFinal,
         devise: devise || "FC",
         stock: parseInt(stock),
         photo1,
