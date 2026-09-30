@@ -2,6 +2,7 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import LogoBoutique from "@/app/components/LogoBoutique";
 
 export default async function DashboardVendeur() {
   const session = await getSession();
@@ -27,78 +28,171 @@ export default async function DashboardVendeur() {
   });
 
   const nombreCommandes = await prisma.commande.count({
-    where: { vendeurId: vendeur.id },
+    where: { vendeurId: vendeur.id, statut: { not: "ANNULE" } },
   });
 
   return (
-    <div className="container" style={{ padding: "40px 16px" }}>
-      <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px" }}>
-        Bonjour {session.nom}
-      </h1>
-      <p style={{ color: "#6b7280", marginBottom: "32px" }}>
-        Bienvenue sur votre tableau de bord GK Sensei.
-      </p>
+    <div className="container" style={{ padding: "20px 14px" }}>
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        marginBottom: "20px",
+      }}>
+        <LogoBoutique nom={vendeur.nomBoutique} taille={56} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1 style={{
+            fontSize: "18px",
+            fontWeight: "800",
+            color: "#0F172A",
+            marginBottom: "2px",
+          }}>
+            Bonjour {session.nom}
+          </h1>
+          <p style={{ fontSize: "12px", color: "#64748b", fontWeight: "600" }}>
+            {vendeur.nomBoutique}
+          </p>
+        </div>
+      </div>
 
       {!vendeur.actif && (
         <div style={{
-          backgroundColor: "#fef3c7",
-          color: "#92400e",
-          padding: "16px",
-          borderRadius: "8px",
-          marginBottom: "24px",
+          backgroundColor: "#FEF3C7",
+          color: "#78350F",
+          padding: "12px",
+          borderRadius: "10px",
+          marginBottom: "16px",
+          border: "1px solid #FDE68A",
         }}>
-          ⏳ <strong>Votre boutique est en attente de validation.</strong>
-          <br />
-          L'administrateur va vérifier vos informations et activer votre boutique sous peu.
+          <p style={{ fontWeight: "700", fontSize: "13px", marginBottom: "4px" }}>
+            ⏳ Boutique en attente de validation
+          </p>
+          <p style={{ fontSize: "11px" }}>
+            L&apos;administrateur va vérifier vos informations sous peu.
+          </p>
         </div>
       )}
 
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-        gap: "16px",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "10px",
+        marginBottom: "16px",
       }}>
-        <div className="card">
-          <p style={{ color: "#6b7280", fontSize: "14px" }}>Boutique</p>
-          <h2 style={{ fontSize: "20px", fontWeight: "600", marginTop: "4px" }}>
-            {vendeur.nomBoutique}
-          </h2>
-        </div>
-
-        <div className="card">
-          <p style={{ color: "#6b7280", fontSize: "14px" }}>Statut</p>
-          <h2 style={{ fontSize: "20px", fontWeight: "600", marginTop: "4px" }}>
+        <div style={{
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "12px",
+          border: "1px solid #F1F5F9",
+          boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+        }}>
+          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>
+            Statut
+          </p>
+          <p style={{
+            fontSize: "14px",
+            fontWeight: "800",
+            color: vendeur.actif ? "#16a34a" : "#c2410c",
+          }}>
             {vendeur.actif ? "✅ Active" : "⏳ En attente"}
-          </h2>
+          </p>
         </div>
 
-        <Link href="/vendeur/produits" style={{ textDecoration: "none", color: "inherit" }}>
-          <div className="card" style={{ cursor: "pointer" }}>
-            <p style={{ color: "#6b7280", fontSize: "14px" }}>Produits</p>
-            <h2 style={{ fontSize: "20px", fontWeight: "600", marginTop: "4px" }}>
-              {nombreProduits}
-            </h2>
-          </div>
-        </Link>
+        <div style={{
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "12px",
+          border: "1px solid #F1F5F9",
+          boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+        }}>
+          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>
+            Produits
+          </p>
+          <p style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A" }}>
+            {nombreProduits}
+          </p>
+        </div>
 
-        <div className="card">
-          <p style={{ color: "#6b7280", fontSize: "14px" }}>Commandes</p>
-          <h2 style={{ fontSize: "20px", fontWeight: "600", marginTop: "4px" }}>
+        <div style={{
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "12px",
+          border: "1px solid #F1F5F9",
+          boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+        }}>
+          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>
+            Commandes
+          </p>
+          <p style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A" }}>
             {nombreCommandes}
-          </h2>
+          </p>
+        </div>
+
+        <div style={{
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "12px",
+          border: "1px solid #F1F5F9",
+          boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+        }}>
+          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>
+            Téléphone
+          </p>
+          <p style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A" }}>
+            {vendeur.telephone}
+          </p>
         </div>
       </div>
 
-      <div style={{ marginTop: "32px", display: "flex", gap: "12px", flexWrap: "wrap" }}>
-        <Link href="/vendeur/produits/nouveau" className="btn btn-primary">
-          Ajouter un produit
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <Link
+          href="/vendeur/produits/nouveau"
+          style={{
+            backgroundColor: "#1D4ED8",
+            color: "white",
+            padding: "12px",
+            borderRadius: "10px",
+            textAlign: "center",
+            fontWeight: "700",
+            fontSize: "13px",
+            textDecoration: "none",
+          }}
+        >
+          + Ajouter un produit
         </Link>
-        <Link href="/vendeur/produits" className="btn" style={{
-          backgroundColor: "white",
-          color: "#2563eb",
-          border: "1px solid #2563eb",
-        }}>
-          Voir mes produits
+
+        <Link
+          href="/vendeur/produits"
+          style={{
+            backgroundColor: "white",
+            color: "#1D4ED8",
+            border: "1.5px solid #1D4ED8",
+            padding: "12px",
+            borderRadius: "10px",
+            textAlign: "center",
+            fontWeight: "700",
+            fontSize: "13px",
+            textDecoration: "none",
+          }}
+        >
+          📦 Voir mes produits
+        </Link>
+
+        <Link
+          href="/vendeur/commandes"
+          style={{
+            backgroundColor: "white",
+            color: "#1D4ED8",
+            border: "1.5px solid #1D4ED8",
+            padding: "12px",
+            borderRadius: "10px",
+            textAlign: "center",
+            fontWeight: "700",
+            fontSize: "13px",
+            textDecoration: "none",
+          }}
+        >
+          🛒 Voir mes commandes
         </Link>
       </div>
     </div>
