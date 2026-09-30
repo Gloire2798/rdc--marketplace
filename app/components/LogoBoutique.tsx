@@ -5,64 +5,81 @@ interface LogoBoutiqueProps {
 
 const categories = [
   {
-    mots: ["fashion", "mode", "vêtement", "vetement", "habit", "style", "couture"],
+    mots: ["fashion", "mode", "vêtement", "vetement", "habit", "style", "couture", "nzam"],
     icone: "👗",
     bg: "#FCE7F3",
-    couleur: "#9D174D",
+    bordure: "#EC4899",
+    couleur: "#831843",
   },
   {
     mots: ["fruit", "alimentation", "food", "manger", "épicerie", "epicerie", "légume", "legume", "fresh"],
     icone: "🍊",
     bg: "#FEF3C7",
-    couleur: "#92400E",
+    bordure: "#F59E0B",
+    couleur: "#78350F",
   },
   {
-    mots: ["tech", "électro", "electro", "phone", "informatique", "digital", "gadget"],
+    mots: ["tech", "électro", "electro", "phone", "informatique", "digital", "gadget", "sensei"],
     icone: "📱",
-    bg: "#DBEAFE",
-    couleur: "#1E40AF",
+    bg: "#0F172A",
+    bordure: "#1E3A5F",
+    couleur: "#FFFFFF",
   },
   {
     mots: ["beauté", "beaute", "cosmétique", "cosmetique", "soin", "parfum"],
     icone: "💄",
     bg: "#FCE7F3",
-    couleur: "#BE185D",
+    bordure: "#EC4899",
+    couleur: "#831843",
   },
   {
     mots: ["maison", "déco", "deco", "meuble", "ameublement", "intérieur", "interieur"],
     icone: "🛋️",
     bg: "#FEF3C7",
+    bordure: "#D97706",
     couleur: "#78350F",
   },
   {
     mots: ["sport", "fitness", "gym", "football", "basket"],
     icone: "⚽",
     bg: "#DCFCE7",
-    couleur: "#166534",
+    bordure: "#16A34A",
+    couleur: "#14532D",
   },
   {
     mots: ["pharma", "médic", "medic", "santé", "sante", "clinique"],
     icone: "💊",
     bg: "#DBEAFE",
-    couleur: "#0369A1",
+    bordure: "#2563EB",
+    couleur: "#1E3A8A",
   },
   {
     mots: ["livre", "book", "librairie", "papeterie", "école", "ecole"],
     icone: "📚",
     bg: "#EDE9FE",
-    couleur: "#6D28D9",
+    bordure: "#7C3AED",
+    couleur: "#4C1D95",
   },
   {
-    mots: ["montre", "bijou", "accessoire", "sac", "chaussure", "basket"],
-    icone: "👞",
+    mots: ["montre", "bijou", "accessoire", "sac", "chaussure"],
+    icone: "👜",
     bg: "#FED7AA",
-    couleur: "#9A3412",
+    bordure: "#EA580C",
+    couleur: "#7C2D12",
   },
   {
     mots: ["enfant", "bébé", "bebe", "jouet", "kids"],
     icone: "🧸",
     bg: "#FCE7F3",
-    couleur: "#BE185D",
+    bordure: "#DB2777",
+    couleur: "#831843",
+  },
+  {
+    mots: ["gemy"],
+    icone: "🏪",
+    bg: "#DBEAFE",
+    bordure: "#2563EB",
+    couleur: "#1E3A8A",
   },
 ];
 
@@ -74,8 +91,12 @@ export default function LogoBoutique({ nom, taille = 50 }: LogoBoutiqueProps) {
   ) || {
     icone: "🏪",
     bg: "#DBEAFE",
-    couleur: "#1E40AF",
+    bordure: "#2563EB",
+    couleur: "#1E3A8A",
   };
+
+  // Nom court pour le logo (max 12 caractères)
+  const nomCourt = nom.length > 12 ? nom.slice(0, 10) + "…" : nom;
 
   return (
     <div style={{
@@ -83,14 +104,35 @@ export default function LogoBoutique({ nom, taille = 50 }: LogoBoutiqueProps) {
       height: `${taille}px`,
       borderRadius: "50%",
       backgroundColor: categorie.bg,
+      border: `2px solid ${categorie.bordure}`,
       display: "flex",
+      flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
-      fontSize: `${taille * 0.45}px`,
       flexShrink: 0,
-      border: `2px solid ${categorie.couleur}22`,
+      overflow: "hidden",
+      padding: "2px",
+      boxSizing: "border-box",
     }}>
-      {categorie.icone}
+      <span style={{
+        fontSize: `${taille * 0.38}px`,
+        lineHeight: 1,
+      }}>
+        {categorie.icone}
+      </span>
+      <span style={{
+        fontSize: `${taille * 0.16}px`,
+        fontWeight: "800",
+        color: categorie.couleur,
+        lineHeight: 1,
+        marginTop: "2px",
+        textAlign: "center",
+        paddingX: "1px",
+        wordBreak: "break-word",
+        overflow: "hidden",
+      }}>
+        {nomCourt}
+      </span>
     </div>
   );
-  }
+}
