@@ -20,7 +20,10 @@ export default async function MesCommandes() {
   }
 
   const commandes = await prisma.commande.findMany({
-    where: { vendeurId: vendeur.id },
+    where: {
+      vendeurId: vendeur.id,
+      statut: { not: "ANNULE" },
+    },
     include: {
       acheteur: true,
       items: {
@@ -56,7 +59,7 @@ export default async function MesCommandes() {
 
   const enAttente = commandes.filter((c) => c.statut === "EN_ATTENTE");
   const validees = commandes.filter((c) => c.statut === "PAYE" || c.statut === "PRET");
-  const terminees = commandes.filter((c) => c.statut === "RETIRE" || c.statut === "ANNULE");
+  const terminees = commandes.filter((c) => c.statut === "RETIRE");
 
   return (
     <div className="container" style={{ padding: "40px 16px" }}>
@@ -151,4 +154,4 @@ export default async function MesCommandes() {
       )}
     </div>
   );
-}
+                            }
