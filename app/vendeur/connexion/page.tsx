@@ -34,7 +34,6 @@ export default function ConnexionVendeur() {
         return;
       }
 
-      // Redirection selon le rôle (VENDEUR ou ADMIN)
       router.push(data.redirection || "/vendeur/dashboard");
     } catch {
       setErreur("Impossible de contacter le serveur");
@@ -93,22 +92,64 @@ export default function ConnexionVendeur() {
           required
         />
 
+        <div style={{ textAlign: "right", marginBottom: "16px" }}>
+          <a
+            href="/mot-de-passe-oublie"
+            style={{ color: "#6b7280", fontSize: "13px" }}
+          >
+            Mot de passe oublié ?
+          </a>
+        </div>
+
         <button
           type="submit"
           disabled={chargement}
           className="btn btn-primary"
-          style={{ width: "100%", marginTop: "16px", opacity: chargement ? 0.6 : 1 }}
+          style={{ width: "100%", marginTop: "8px", opacity: chargement ? 0.6 : 1 }}
         >
           {chargement ? "Connexion..." : "Se connecter"}
         </button>
       </form>
 
-      <p style={{ textAlign: "center", marginTop: "24px", fontSize: "14px", color: "#6b7280" }}>
-        Pas encore de compte ?{" "}
-        <a href="/vendeur/inscription" style={{ color: "#2563eb", fontWeight: "600" }}>
-          Devenir vendeur
+      <div style={{
+        marginTop: "32px",
+        paddingTop: "24px",
+        borderTop: "1px solid #e5e7eb",
+        textAlign: "center",
+      }}>
+        <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "12px" }}>
+          Pas encore de compte ?
+        </p>
+
+        <a
+          href="/client/inscription"
+          style={{
+            display: "block",
+            backgroundColor: "white",
+            color: "#2563eb",
+            border: "1px solid #2563eb",
+            padding: "10px",
+            borderRadius: "8px",
+            fontWeight: "600",
+            textDecoration: "none",
+            marginBottom: "8px",
+          }}
+        >
+          Créer un compte client
         </a>
-      </p>
+
+        <a
+          href="/vendeur/inscription"
+          style={{
+            display: "block",
+            color: "#6b7280",
+            fontSize: "14px",
+            textDecoration: "underline",
+          }}
+        >
+          Vous voulez vendre ? Devenir vendeur
+        </a>
+      </div>
     </div>
   );
-}
+      }
