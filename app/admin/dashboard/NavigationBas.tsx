@@ -21,12 +21,12 @@ export default function NavigationBas() {
       left: 0,
       right: 0,
       backgroundColor: "white",
-      borderTop: "1px solid #e5e7eb",
+      borderTop: "1px solid #e2e8f0",
       display: "flex",
       justifyContent: "space-around",
-      padding: "8px 0",
+      padding: "10px 0 12px 0",
       zIndex: 100,
-      boxShadow: "0 -2px 10px rgba(0,0,0,0.05)",
+      boxShadow: "0 -4px 12px rgba(15, 23, 42, 0.08)",
     }}>
       {onglets.map((onglet) => {
         const actif = pathname === onglet.href || pathname.startsWith(onglet.href + "/");
@@ -38,16 +38,29 @@ export default function NavigationBas() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: "2px",
+              gap: "4px",
               textDecoration: "none",
-              color: actif ? "#2563eb" : "#6b7280",
-              fontSize: "11px",
-              fontWeight: actif ? "600" : "500",
+              color: actif ? "#1D4ED8" : "#64748b",
+              fontSize: "12px",
+              fontWeight: actif ? "800" : "600",
               padding: "4px 12px",
               borderRadius: "8px",
+              position: "relative",
             }}
           >
-            <span style={{ fontSize: "20px" }}>{onglet.icone}</span>
+            {actif && (
+              <span style={{
+                position: "absolute",
+                top: "-10px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "24px",
+                height: "3px",
+                backgroundColor: "#1D4ED8",
+                borderRadius: "2px",
+              }} />
+            )}
+            <span style={{ fontSize: "24px" }}>{onglet.icone}</span>
             <span>{onglet.label}</span>
           </Link>
         );
