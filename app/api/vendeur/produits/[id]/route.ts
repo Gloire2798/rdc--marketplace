@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
-// Récupérer un produit (pour la page de modification)
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -39,7 +38,6 @@ export async function GET(
   }
 }
 
-// Modifier un produit
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -70,7 +68,7 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { nom, description, prix, devise, stock, photo1, photo2, photo3 } = body;
+    const { nom, description, prix, prixPromo, devise, stock, photo1, photo2, photo3 } = body;
 
     if (!nom || prix === undefined || stock === undefined) {
       return NextResponse.json(
@@ -86,12 +84,25 @@ export async function PATCH(
       );
     }
 
+    let prixPromoFinal = null;
+    if (prixPromo !== undefined && prixPromo !== null && prixPromo !== "") {
+      const promo = parseFloat(prixPromo);
+      if (promo >= parseFloat(prix)) {
+        return NextResponse.json(
+          { erreur: "Le prix promotionnel doit être inférieur au prix normal" },
+          { status: 400 }
+        );
+      }
+      prixPromoFinal = promo;
+    }
+
     const produitModifie = await prisma.produit.update({
       where: { id },
       data: {
         nom,
         description: description || null,
         prix: parseFloat(prix),
+        prixPromo: prixPromoFinal,
         devise: devise || "FC",
         stock: parseInt(stock),
         photo1,
@@ -107,7 +118,6 @@ export async function PATCH(
   }
 }
 
-// Supprimer un produit
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
