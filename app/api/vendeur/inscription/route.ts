@@ -13,9 +13,11 @@ export async function POST(request: Request) {
       description,
       adresse,
       numMobileMoney,
+      numMpesa,
+      numOrange,
+      numAirtel,
     } = body;
 
-    // Vérifications
     if (!telephone || !motDePasse || !nom || !nomBoutique) {
       return NextResponse.json(
         { erreur: "Champs obligatoires manquants" },
@@ -30,7 +32,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // Vérifier si le téléphone existe déjà
+    if (!numMobileMoney && !numMpesa && !numOrange && !numAirtel) {
+      return NextResponse.json(
+        { erreur: "Vous devez renseigner au moins un numéro Mobile Money" },
+        { status: 400 }
+      );
+    }
+
     const existant = await prisma.user.findUnique({
       where: { telephone },
     });
@@ -42,10 +50,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // Chiffrer le mot de passe
     const motDePasseChiffre = await bcrypt.hash(motDePasse, 10);
 
-    // Créer l'utilisateur ET la boutique en une seule transaction
     const user = await prisma.user.create({
       data: {
         telephone,
@@ -58,8 +64,12 @@ export async function POST(request: Request) {
             description: description || null,
             adresse: adresse || null,
             telephone,
-            numMobileMoney: numMobileMoney || telephone,
-            actif: false, // En attente d'approbation admin
+            numMobileMoney:
+              numMobileMoney || numMpesa || numOrange || numAirtel,
+            numMpesa: numMpesa || null,
+            numOrange: numOrange || null,
+            numAirtel: numAirtel || null,
+            actif: false,
           },
         },
       },
@@ -78,4 +88,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
+      }
