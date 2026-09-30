@@ -26,6 +26,7 @@ export default function NouveauProduit() {
     nom: "",
     description: "",
     prix: "",
+    prixPromo: "",
     devise: "FC",
     stock: "",
   });
@@ -34,10 +35,7 @@ export default function NouveauProduit() {
     setForm({ ...form, [champ]: valeur });
   };
 
-  const uploaderPhoto = async (
-    fichier: File,
-    numero: 1 | 2 | 3
-  ): Promise<string | null> => {
+  const uploaderPhoto = async (fichier: File): Promise<string | null> => {
     const formData = new FormData();
     formData.append("fichier", fichier);
 
@@ -47,7 +45,6 @@ export default function NouveauProduit() {
         body: formData,
       });
       const data = await res.json();
-
       if (!res.ok) {
         setErreur(data.erreur || "Erreur lors de l'upload");
         return null;
@@ -66,21 +63,19 @@ export default function NouveauProduit() {
     const fichier = e.target.files?.[0];
     if (!fichier) return;
 
-    // Aperçu local
     const reader = new FileReader();
     reader.onload = (ev) => {
-      const dataUrl = ev.target?.result as string;
-      if (numero === 1) setApercu1(dataUrl);
-      if (numero === 2) setApercu2(dataUrl);
-      if (numero === 3) setApercu3(dataUrl);
+      const url = ev.target?.result as string;
+      if (numero === 1) setApercu1(url);
+      if (numero === 2) setApercu2(url);
+      if (numero === 3) setApercu3(url);
     };
     reader.readAsDataURL(fichier);
 
-    // Upload
     const key = numero === 1 ? "p1" : numero === 2 ? "p2" : "p3";
     setUploadEnCours({ ...uploadEnCours, [key]: true });
 
-    const url = await uploaderPhoto(fichier, numero);
+    const url = await uploaderPhoto(fichier);
 
     if (url) {
       if (numero === 1) setPhoto1(url);
@@ -128,6 +123,7 @@ export default function NouveauProduit() {
         body: JSON.stringify({
           ...form,
           prix: parseFloat(form.prix),
+          prixPromo: form.prixPromo || null,
           stock: parseInt(form.stock),
           photo1,
           photo2: photo2 || null,
@@ -167,7 +163,12 @@ export default function NouveauProduit() {
     fontSize: "14px",
   };
 
-  const zoneUpload = (numero: 1 | 2 | 3, apercu: string, enCours: boolean, obligatoire: boolean) => (
+  const zoneUpload = (
+    numero: 1 | 2 | 3,
+    apercu: string,
+    enCours: boolean,
+    obligatoire: boolean
+  ) => (
     <div style={{ marginBottom: "12px" }}>
       {apercu ? (
         <div style={{ position: "relative", textAlign: "center" }}>
@@ -282,7 +283,7 @@ export default function NouveauProduit() {
           onChange={(e) => changer("description", e.target.value)}
         />
 
-        <label style={labelStyle}>Prix *</label>
+        <label style={labelStyle}>Prix normal *</label>
         <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
           <input
             type="number"
@@ -303,6 +304,20 @@ export default function NouveauProduit() {
             <option value="USD">$</option>
           </select>
         </div>
+
+        <label style={labelStyle}>Prix promotionnel (optionnel)</label>
+        <p style={{ color: "#6b7280", fontSize: "12px", marginBottom: "6px" }}>
+          Laissez vide si pas de promotion. Doit être inférieur au prix normal.
+        </p>
+        <input
+          type="number"
+          placeholder="Ex: 20000"
+          style={champStyle}
+          value={form.prixPromo}
+          onChange={(e) => changer("prixPromo", e.target.value)}
+          min="0"
+          step="any"
+        />
 
         <label style={labelStyle}>Stock disponible *</label>
         <input
