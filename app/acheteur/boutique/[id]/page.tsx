@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import LogoBoutique from "@/app/components/LogoBoutique";
 
 export default async function PageBoutique({
   params,
@@ -30,38 +31,54 @@ export default async function PageBoutique({
   };
 
   return (
-    <div className="container" style={{ padding: "20px 16px" }}>
-      <Link href="/" style={{ color: "#2563eb", fontSize: "14px" }}>
-        ← Retour à l'accueil
+    <div className="container" style={{ padding: "16px 14px" }}>
+      <Link href="/" style={{ color: "#1D4ED8", fontSize: "12px", fontWeight: "700" }}>
+        ← Retour à l&apos;accueil
       </Link>
 
-      <div style={{ marginTop: "16px", marginBottom: "32px" }}>
-        <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px" }}>
-          🏪 {vendeur.nomBoutique}
-        </h1>
-        {vendeur.description && (
-          <p style={{ color: "#6b7280", marginBottom: "4px" }}>{vendeur.description}</p>
-        )}
-        {vendeur.adresse && (
-          <p style={{ color: "#9ca3af", fontSize: "13px" }}>📍 {vendeur.adresse}</p>
-        )}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        marginTop: "16px",
+        marginBottom: "24px",
+      }}>
+        <LogoBoutique nom={vendeur.nomBoutique} taille={56} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1 style={{
+            fontSize: "18px",
+            fontWeight: "800",
+            color: "#0F172A",
+            marginBottom: "3px",
+          }}>
+            {vendeur.nomBoutique}
+          </h1>
+          {vendeur.description && (
+            <p style={{ color: "#475569", fontSize: "12px", fontWeight: "500", marginBottom: "2px" }}>
+              {vendeur.description}
+            </p>
+          )}
+          {vendeur.adresse && (
+            <p style={{ color: "#94a3b8", fontSize: "11px" }}>📍 {vendeur.adresse}</p>
+          )}
+        </div>
       </div>
 
       {produits.length === 0 ? (
-        <div className="card" style={{ textAlign: "center", padding: "60px 20px" }}>
-          <p style={{ fontSize: "48px", marginBottom: "16px" }}>📦</p>
-          <p style={{ fontSize: "18px", fontWeight: "600", marginBottom: "8px" }}>
+        <div className="card" style={{ textAlign: "center", padding: "40px 20px" }}>
+          <p style={{ fontSize: "40px", marginBottom: "10px" }}>📦</p>
+          <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "6px" }}>
             Aucun produit pour le moment
           </p>
-          <p style={{ color: "#6b7280" }}>
-            Cette boutique n'a pas encore publié d'articles.
+          <p style={{ color: "#64748b", fontSize: "12px" }}>
+            Cette boutique n&apos;a pas encore publié d&apos;articles.
           </p>
         </div>
       ) : (
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
-          gap: "12px",
+          gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
+          gap: "10px",
         }}>
           {produits.map((p) => {
             const enPromo = p.prixPromo !== null && p.prixPromo < p.prix;
@@ -73,20 +90,28 @@ export default async function PageBoutique({
               <Link
                 key={p.id}
                 href={`/acheteur/produit/${p.id}`}
-                className="card"
-                style={{ padding: "0", overflow: "hidden", textDecoration: "none", color: "inherit", position: "relative" }}
+                style={{
+                  backgroundColor: "white",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                  textDecoration: "none",
+                  color: "inherit",
+                  position: "relative",
+                  border: "1px solid #F1F5F9",
+                  boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+                }}
               >
                 {enPromo && (
                   <span style={{
                     position: "absolute",
-                    top: "8px",
-                    left: "8px",
+                    top: "6px",
+                    left: "6px",
                     backgroundColor: "#dc2626",
                     color: "white",
-                    fontSize: "11px",
-                    fontWeight: "bold",
-                    padding: "3px 8px",
-                    borderRadius: "6px",
+                    fontSize: "10px",
+                    fontWeight: "800",
+                    padding: "2px 7px",
+                    borderRadius: "5px",
                     zIndex: 2,
                   }}>
                     -{pourcentage}%
@@ -99,52 +124,56 @@ export default async function PageBoutique({
                     alt={p.nom}
                     style={{
                       width: "100%",
-                      height: "160px",
+                      height: "130px",
                       objectFit: "contain",
-                      backgroundColor: "#f3f4f6",
+                      backgroundColor: "#F8FAFC",
                       display: "block",
                     }}
                   />
                 ) : (
                   <div style={{
                     width: "100%",
-                    height: "160px",
-                    backgroundColor: "#f3f4f6",
+                    height: "130px",
+                    backgroundColor: "#F8FAFC",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "40px",
+                    fontSize: "32px",
                   }}>
                     📦
                   </div>
                 )}
 
-                <div style={{ padding: "12px" }}>
-                  <h3 style={{ fontSize: "14px", fontWeight: "600", marginBottom: "6px" }}>
+                <div style={{ padding: "8px 10px 10px 10px" }}>
+                  <h3 style={{
+                    fontSize: "12px",
+                    fontWeight: "700",
+                    marginBottom: "4px",
+                    color: "#0F172A",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}>
                     {p.nom}
                   </h3>
 
                   {enPromo ? (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                      <span style={{ fontSize: "16px", fontWeight: "bold", color: "#16a34a" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
+                      <span style={{ fontSize: "13px", fontWeight: "800", color: "#16a34a" }}>
                         {formaterPrix(p.prixPromo!, p.devise)}
                       </span>
-                      <span style={{
-                        fontSize: "12px",
-                        color: "#9ca3af",
-                        textDecoration: "line-through",
-                      }}>
+                      <span style={{ fontSize: "10px", color: "#94a3b8", textDecoration: "line-through" }}>
                         {formaterPrix(p.prix, p.devise)}
                       </span>
                     </div>
                   ) : (
-                    <p style={{ fontSize: "16px", fontWeight: "bold", color: "#2563eb" }}>
+                    <p style={{ fontSize: "13px", fontWeight: "800", color: "#1D4ED8" }}>
                       {formaterPrix(p.prix, p.devise)}
                     </p>
                   )}
 
                   {p.stock === 0 && (
-                    <p style={{ fontSize: "12px", color: "#dc2626", marginTop: "4px" }}>
+                    <p style={{ fontSize: "10px", color: "#dc2626", marginTop: "3px", fontWeight: "700" }}>
                       Rupture de stock
                     </p>
                   )}
@@ -156,4 +185,4 @@ export default async function PageBoutique({
       )}
     </div>
   );
-                  }
+              }
