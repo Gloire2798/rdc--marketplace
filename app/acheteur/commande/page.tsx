@@ -10,12 +10,24 @@ import {
   ArticlePanier,
 } from "@/lib/panier";
 
+interface InfosVendeur {
+  id: string;
+  nomBoutique: string;
+  telephone: string;
+  numMpesa: string | null;
+  numOrange: string | null;
+  numAirtel: string | null;
+  numMobileMoney: string;
+}
+
 export default function PageCommande() {
   const router = useRouter();
   const [panier, setPanier] = useState<ArticlePanier[]>([]);
+  const [vendeur, setVendeur] = useState<InfosVendeur | null>(null);
   const [chargement, setChargement] = useState(true);
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
+  const [copie, setCopie] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     nom: "",
@@ -28,15 +40,30 @@ export default function PageCommande() {
   useEffect(() => {
     const p = getPanier();
     setPanier(p);
-    setChargement(false);
 
     if (p.length === 0) {
       router.push("/acheteur/panier");
+      return;
     }
+
+    const vendeurId = p[0].vendeurId;
+    fetch(`/api/vendeur/infos/${vendeurId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.succes) setVendeur(data.vendeur);
+        setChargement(false);
+      })
+      .catch(() => setChargement(false));
   }, [router]);
 
   const changer = (champ: string, valeur: string) => {
     setForm({ ...form, [champ]: valeur });
+  };
+
+  const copier = (texte: string, cle: string) => {
+    navigator.clipboard.writeText(texte);
+    setCopie(cle);
+    setTimeout(() => setCopie(null), 2000);
   };
 
   const total = panier.reduce((acc, a) => {
@@ -47,9 +74,6 @@ export default function PageCommande() {
   const devise = panier[0]?.devise || "FC";
   const acompte = Math.round(total * 0.1);
   const reste = total - acompte;
-
-  const vendeurId = panier[0]?.vendeurId || "";
-  const nomBoutique = panier[0]?.nomBoutique || "";
 
   const soumettre = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,7 +101,7 @@ export default function PageCommande() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          vendeurId,
+          vendeurId: panier[0].vendeurId,
           nom: form.nom,
           telephone: form.telephone,
           adresse: form.adresse || null,
@@ -130,6 +154,52 @@ export default function PageCommande() {
     fontWeight: "600" as const,
     fontSize: "14px",
   };
+
+  const logoBoxStyle = {
+    width: "44px",
+    height: "44px",
+    borderRadius: "8px",
+    backgroundColor: "white",
+    border: "1px solid #e5e7eb",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+    padding: "4px",
+    boxSizing: "border-box" as const,
+    overflow: "hidden",
+  };
+
+  const logoImgStyle = {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain" as const,
+  };
+
+  const numeroBoxStyle = {
+    flex: 1,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "white",
+    border: "1px solid #e5e7eb",
+    borderRadius: "8px",
+    padding: "10px 12px",
+    minWidth: 0,
+  };
+
+  const copierBtnStyle = (actif: boolean) => ({
+    padding: "6px 10px",
+    fontSize: "12px",
+    backgroundColor: actif ? "#16a34a" : "#e5e7eb",
+    color: actif ? "white" : "#374151",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontWeight: "600",
+    flexShrink: 0,
+    marginLeft: "8px",
+  });
 
   return (
     <div className="container" style={{ padding: "40px 16px", maxWidth: "600px" }}>
@@ -236,17 +306,95 @@ export default function PageCommande() {
           padding: "16px",
           marginBottom: "16px",
         }}>
-          <p style={{ fontSize: "14px", marginBottom: "8px" }}>
-            <strong>Acompte à payer :</strong> {formaterPrix(acompte, devise)} (10% du total)
+          <p style={{ fontSize: "14px", marginBottom: "4px" }}>
+            <strong>Acompte à payer :</strong> {formaterPrix(acompte, devise)} (10%)
           </p>
-          <p style={{ fontSize: "14px", marginBottom: "8px" }}>
+          <p style={{ fontSize: "14px", marginBottom: "12px" }}>
             <strong>Reste à payer à la remise :</strong> {formaterPrix(reste, devise)}
           </p>
-          <p style={{ fontSize: "13px", color: "#6b7280" }}>
-            Envoyez l'acompte au numéro mobile money de <strong>{nomBoutique}</strong>.
-            <br />
-            Puis entrez la référence de la transaction ci-dessous.
+
+          <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "8px" }}>
+            Envoyez l'acompte à <strong>{vendeur?.nomBoutique}</strong> via l'un des numéros ci-dessous :
           </p>
+
+          {vendeur?.numMpesa && (
+            <div style={{ display: "flex", gap: "8px", marginBottom: "8px", alignItems: "center" }}>
+              <div style={logoBoxStyle}>
+                <img src="https://i.ibb.co/NndcrT1d/m-pesa.jpg" alt="M-Pesa" style={logoImgStyle} />
+              </div>
+              <div style={numeroBoxStyle}>
+                <span style={{ fontSize: "14px", fontWeight: "600", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {vendeur.numMpesa}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => copier(vendeur.numMpesa!, "mpesa")}
+                  style={copierBtnStyle(copie === "mpesa")}
+                >
+                  {copie === "mpesa" ? "✅ Copié" : "📋 Copier"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {vendeur?.numOrange && (
+            <div style={{ display: "flex", gap: "8px", marginBottom: "8px", alignItems: "center" }}>
+              <div style={logoBoxStyle}>
+                <img src="https://i.ibb.co/pvr5LPxN/orange.jpg" alt="Orange" style={logoImgStyle} />
+              </div>
+              <div style={numeroBoxStyle}>
+                <span style={{ fontSize: "14px", fontWeight: "600", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {vendeur.numOrange}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => copier(vendeur.numOrange!, "orange")}
+                  style={copierBtnStyle(copie === "orange")}
+                >
+                  {copie === "orange" ? "✅ Copié" : "📋 Copier"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {vendeur?.numAirtel && (
+            <div style={{ display: "flex", gap: "8px", marginBottom: "8px", alignItems: "center" }}>
+              <div style={logoBoxStyle}>
+                <img src="https://i.ibb.co/spmBgLvg/airtel.jpg" alt="Airtel" style={logoImgStyle} />
+              </div>
+              <div style={numeroBoxStyle}>
+                <span style={{ fontSize: "14px", fontWeight: "600", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {vendeur.numAirtel}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => copier(vendeur.numAirtel!, "airtel")}
+                  style={copierBtnStyle(copie === "airtel")}
+                >
+                  {copie === "airtel" ? "✅ Copié" : "📋 Copier"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {!vendeur?.numMpesa && !vendeur?.numOrange && !vendeur?.numAirtel && (
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+              <div style={numeroBoxStyle}>
+                <span style={{ fontSize: "14px", fontWeight: "600" }}>
+                  {vendeur?.numMobileMoney || "Numéro non renseigné"}
+                </span>
+                {vendeur?.numMobileMoney && (
+                  <button
+                    type="button"
+                    onClick={() => copier(vendeur.numMobileMoney, "general")}
+                    style={copierBtnStyle(copie === "general")}
+                  >
+                    {copie === "general" ? "✅ Copié" : "📋 Copier"}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         <label style={labelStyle}>Référence de la transaction *</label>
@@ -304,4 +452,4 @@ export default function PageCommande() {
       </form>
     </div>
   );
-        }
+          }
