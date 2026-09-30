@@ -1,7 +1,6 @@
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import MenuBurger from "./MenuBurger";
 import NavigationBas from "./NavigationBas";
 import LienVendeur from "./LienVendeur";
 
@@ -67,66 +66,11 @@ export default async function DashboardAdmin() {
 
   return (
     <>
-      {/* Header bleu marine */}
-      <header style={{
-        backgroundColor: "#1E3A5F",
-        color: "white",
-        padding: "14px 18px",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        position: "sticky",
-        top: 0,
-        zIndex: 50,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-      }}>
-        <MenuBurger />
-
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontSize: "26px" }}>🛒</span>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "18px", fontWeight: "bold", lineHeight: 1.1 }}>
-              GK Sensei
-            </span>
-            <span style={{ fontSize: "11px", opacity: 0.85, fontWeight: "500" }}>
-              Complexe Commercial
-            </span>
-          </div>
-        </div>
-
-        <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
-          <span style={{ fontSize: "22px" }}>🔍</span>
-          <div style={{ position: "relative" }}>
-            <span style={{ fontSize: "22px" }}>🔔</span>
-            {enAttente.length > 0 && (
-              <span style={{
-                position: "absolute",
-                top: "-4px",
-                right: "-6px",
-                backgroundColor: "#dc2626",
-                color: "white",
-                fontSize: "11px",
-                fontWeight: "bold",
-                width: "18px",
-                height: "18px",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}>
-                {enAttente.length}
-              </span>
-            )}
-          </div>
-        </div>
-      </header>
-
       <div style={{
         backgroundColor: "#F3F4F6",
         minHeight: "100vh",
         padding: "24px 18px 100px 18px",
       }}>
-        {/* Titre + Date */}
         <div style={{
           display: "flex",
           justifyContent: "space-between",
@@ -156,21 +100,14 @@ export default async function DashboardAdmin() {
           </div>
         </div>
 
-        {/* 4 cartes stats */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "14px",
           marginBottom: "24px",
         }}>
-          {/* Total boutiques */}
           <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}>
-            <div style={{
-              backgroundColor: "#DBEAFE",
-              padding: "14px",
-              display: "flex",
-              justifyContent: "center",
-            }}>
+            <div style={{ backgroundColor: "#DBEAFE", padding: "14px", display: "flex", justifyContent: "center" }}>
               <span style={{ fontSize: "32px" }}>🏪</span>
             </div>
             <div style={{ padding: "12px", textAlign: "center" }}>
@@ -186,14 +123,8 @@ export default async function DashboardAdmin() {
             </div>
           </div>
 
-          {/* En attente */}
           <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}>
-            <div style={{
-              backgroundColor: "#FED7AA",
-              padding: "14px",
-              display: "flex",
-              justifyContent: "center",
-            }}>
+            <div style={{ backgroundColor: "#FED7AA", padding: "14px", display: "flex", justifyContent: "center" }}>
               <span style={{ fontSize: "32px" }}>⏳</span>
             </div>
             <div style={{ padding: "12px", textAlign: "center" }}>
@@ -211,14 +142,8 @@ export default async function DashboardAdmin() {
             </div>
           </div>
 
-          {/* Actives */}
           <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}>
-            <div style={{
-              backgroundColor: "#BBF7D0",
-              padding: "14px",
-              display: "flex",
-              justifyContent: "center",
-            }}>
+            <div style={{ backgroundColor: "#BBF7D0", padding: "14px", display: "flex", justifyContent: "center" }}>
               <span style={{ fontSize: "32px" }}>✅</span>
             </div>
             <div style={{ padding: "12px", textAlign: "center" }}>
@@ -234,14 +159,8 @@ export default async function DashboardAdmin() {
             </div>
           </div>
 
-          {/* Chiffre d'affaires */}
           <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}>
-            <div style={{
-              backgroundColor: "#DBEAFE",
-              padding: "14px",
-              display: "flex",
-              justifyContent: "center",
-            }}>
+            <div style={{ backgroundColor: "#DBEAFE", padding: "14px", display: "flex", justifyContent: "center" }}>
               <span style={{ fontSize: "32px" }}>💰</span>
             </div>
             <div style={{ padding: "12px", textAlign: "center" }}>
@@ -258,7 +177,6 @@ export default async function DashboardAdmin() {
           </div>
         </div>
 
-        {/* Boutiques en attente */}
         {enAttente.length > 0 && (
           <>
             <h2 style={{
@@ -290,7 +208,6 @@ export default async function DashboardAdmin() {
           </>
         )}
 
-        {/* Boutiques actives */}
         <h2 style={{
           fontSize: "20px",
           fontWeight: "800",
@@ -318,4 +235,4 @@ export default async function DashboardAdmin() {
       <NavigationBas />
     </>
   );
-          }
+                         }
