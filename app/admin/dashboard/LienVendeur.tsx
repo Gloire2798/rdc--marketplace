@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 interface Vendeur {
   id: string;
@@ -40,84 +39,124 @@ export default function LienVendeur({ vendeur }: { vendeur: Vendeur }) {
     setChargement(false);
   };
 
+  const initiale = vendeur.nomBoutique.charAt(0).toUpperCase();
+
   return (
-    <div className="card" style={{
-      borderLeft: `4px solid ${vendeur.actif ? "#16a34a" : "#d97706"}`,
+    <div style={{
+      backgroundColor: "white",
+      borderRadius: "12px",
+      padding: "14px",
+      boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
+      display: "flex",
+      alignItems: "center",
+      gap: "12px",
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
-        <div style={{ flex: 1, minWidth: "250px" }}>
-          <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "4px" }}>
-            {vendeur.nomBoutique}
-          </h3>
-          <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "8px" }}>
-            Par : {vendeur.nomProprietaire || "Non renseigné"}
-          </p>
-          {vendeur.description && (
-            <p style={{ fontSize: "14px", marginBottom: "8px" }}>{vendeur.description}</p>
-          )}
-          <div style={{ fontSize: "13px", color: "#4b5563", display: "flex", flexDirection: "column", gap: "2px" }}>
-            <span>📞 {vendeur.telephone}</span>
-            {vendeur.adresse && <span>📍 {vendeur.adresse}</span>}
-            <span>💰 Mobile Money : {vendeur.numMobileMoney}</span>
-            <span>📦 {vendeur.nombreProduits} produit{vendeur.nombreProduits > 1 ? "s" : ""} en ligne</span>
-          </div>
-        </div>
+      {/* Logo rond */}
+      <div style={{
+        width: "46px",
+        height: "46px",
+        borderRadius: "50%",
+        backgroundColor: vendeur.actif ? "#DBEAFE" : "#FED7AA",
+        color: vendeur.actif ? "#1E40AF" : "#92400E",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: "20px",
+        fontWeight: "800",
+        flexShrink: 0,
+      }}>
+        {initiale}
+      </div>
 
-        <div style={{ display: "flex", gap: "8px", flexDirection: "column", minWidth: "160px" }}>
-          {!vendeur.actif ? (
-            <button
-              onClick={() => changerStatut(true)}
-              disabled={chargement}
-              style={{
-                backgroundColor: "#16a34a",
-                color: "white",
-                padding: "10px 20px",
-                borderRadius: "8px",
-                border: "none",
-                fontWeight: "600",
-                cursor: "pointer",
-                opacity: chargement ? 0.6 : 1,
-              }}
-            >
-              ✅ Valider
-            </button>
-          ) : (
-            <button
-              onClick={() => changerStatut(false)}
-              disabled={chargement}
-              style={{
-                backgroundColor: "#dc2626",
-                color: "white",
-                padding: "10px 20px",
-                borderRadius: "8px",
-                border: "none",
-                fontWeight: "600",
-                cursor: "pointer",
-                opacity: chargement ? 0.6 : 1,
-              }}
-            >
-              ❌ Désactiver
-            </button>
-          )}
+      {/* Infos */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <h3 style={{
+          fontSize: "15px",
+          fontWeight: "700",
+          color: "#0F172A",
+          marginBottom: "2px",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}>
+          {vendeur.nomBoutique}
+        </h3>
+        <p style={{
+          fontSize: "12px",
+          color: "#64748b",
+          fontWeight: "500",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}>
+          {vendeur.description || "Boutique en ligne"}
+        </p>
+        <p style={{
+          fontSize: "11px",
+          color: "#94a3b8",
+          marginTop: "2px",
+          fontWeight: "500",
+        }}>
+          📦 {vendeur.nombreProduits} produit{vendeur.nombreProduits > 1 ? "s" : ""}
+        </p>
+      </div>
 
-          <Link
-            href={`/admin/vendeurs/${vendeur.id}/produits`}
+      {/* Boutons */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "6px", flexShrink: 0 }}>
+        {!vendeur.actif ? (
+          <button
+            onClick={() => changerStatut(true)}
+            disabled={chargement}
             style={{
-              backgroundColor: "#2563eb",
+              backgroundColor: "#16a34a",
               color: "white",
-              padding: "10px 20px",
+              padding: "8px 14px",
               borderRadius: "8px",
               border: "none",
-              fontWeight: "600",
-              textAlign: "center",
-              textDecoration: "none",
-              fontSize: "14px",
+              fontWeight: "700",
+              fontSize: "12px",
+              cursor: "pointer",
+              opacity: chargement ? 0.6 : 1,
             }}
           >
-            📦 Voir les produits
-          </Link>
-        </div>
+            ✅ Valider
+          </button>
+        ) : (
+          <button
+            onClick={() => changerStatut(false)}
+            disabled={chargement}
+            style={{
+              backgroundColor: "white",
+              color: "#dc2626",
+              padding: "8px 14px",
+              borderRadius: "8px",
+              border: "1px solid #dc2626",
+              fontWeight: "700",
+              fontSize: "12px",
+              cursor: "pointer",
+              opacity: chargement ? 0.6 : 1,
+            }}
+          >
+            ❌ Désactiver
+          </button>
+        )}
+
+        <a
+          href={`/admin/vendeurs/${vendeur.id}/produits`}
+          style={{
+            backgroundColor: "#F1F5F9",
+            color: "#475569",
+            padding: "6px 10px",
+            borderRadius: "8px",
+            textAlign: "center",
+            textDecoration: "none",
+            fontSize: "11px",
+            fontWeight: "600",
+          }}
+        >
+          Voir
+        </a>
       </div>
     </div>
   );
-}
+              }
