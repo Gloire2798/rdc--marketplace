@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import GaleriePhotos from "./GaleriePhotos";
+import BoutonPanier from "./BoutonPanier";
 
 export default async function FicheProduit({
   params,
@@ -37,6 +38,17 @@ export default async function FicheProduit({
   const pourcentage = enPromo
     ? Math.round(((produit.prix - produit.prixPromo!) / produit.prix) * 100)
     : 0;
+
+  const article = {
+    produitId: produit.id,
+    vendeurId: produit.vendeurId,
+    nom: produit.nom,
+    prix: produit.prix,
+    prixPromo: produit.prixPromo,
+    devise: produit.devise,
+    photo: produit.photo1,
+    nomBoutique: produit.vendeur.nomBoutique,
+  };
 
   return (
     <div className="container" style={{ padding: "20px 16px", maxWidth: "600px" }}>
@@ -142,26 +154,7 @@ export default async function FicheProduit({
         </Link>
       </div>
 
-      <button
-        disabled={produit.stock === 0}
-        style={{
-          width: "100%",
-          backgroundColor: produit.stock > 0 ? "#2563eb" : "#9ca3af",
-          color: "white",
-          padding: "16px",
-          borderRadius: "12px",
-          border: "none",
-          fontWeight: "600",
-          fontSize: "16px",
-          cursor: produit.stock > 0 ? "pointer" : "not-allowed",
-        }}
-      >
-        🛒 Ajouter au panier
-      </button>
-
-      <p style={{ textAlign: "center", color: "#9ca3af", fontSize: "12px", marginTop: "12px" }}>
-        (Le panier sera activé très bientôt)
-      </p>
+      <BoutonPanier article={article} stock={produit.stock} />
     </div>
   );
-                          }
+  }
