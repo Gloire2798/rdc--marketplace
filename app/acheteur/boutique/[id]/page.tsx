@@ -63,55 +63,97 @@ export default async function PageBoutique({
           gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
           gap: "12px",
         }}>
-          {produits.map((p) => (
-            <Link
-              key={p.id}
-              href={`/acheteur/produit/${p.id}`}
-              className="card"
-              style={{ padding: "0", overflow: "hidden", textDecoration: "none", color: "inherit" }}
-            >
-              {p.photo1 ? (
-                <img
-                  src={p.photo1}
-                  alt={p.nom}
-                  style={{
+          {produits.map((p) => {
+            const enPromo = p.prixPromo !== null && p.prixPromo < p.prix;
+            const pourcentage = enPromo
+              ? Math.round(((p.prix - p.prixPromo!) / p.prix) * 100)
+              : 0;
+
+            return (
+              <Link
+                key={p.id}
+                href={`/acheteur/produit/${p.id}`}
+                className="card"
+                style={{ padding: "0", overflow: "hidden", textDecoration: "none", color: "inherit", position: "relative" }}
+              >
+                {enPromo && (
+                  <span style={{
+                    position: "absolute",
+                    top: "8px",
+                    left: "8px",
+                    backgroundColor: "#dc2626",
+                    color: "white",
+                    fontSize: "11px",
+                    fontWeight: "bold",
+                    padding: "3px 8px",
+                    borderRadius: "6px",
+                    zIndex: 2,
+                  }}>
+                    -{pourcentage}%
+                  </span>
+                )}
+
+                {p.photo1 ? (
+                  <img
+                    src={p.photo1}
+                    alt={p.nom}
+                    style={{
+                      width: "100%",
+                      height: "160px",
+                      objectFit: "contain",
+                      backgroundColor: "#f3f4f6",
+                      display: "block",
+                    }}
+                  />
+                ) : (
+                  <div style={{
                     width: "100%",
                     height: "160px",
-                    objectFit: "contain",
                     backgroundColor: "#f3f4f6",
-                    display: "block",
-                  }}
-                />
-              ) : (
-                <div style={{
-                  width: "100%",
-                  height: "160px",
-                  backgroundColor: "#f3f4f6",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "40px",
-                }}>
-                  📦
-                </div>
-              )}
-              <div style={{ padding: "12px" }}>
-                <h3 style={{ fontSize: "14px", fontWeight: "600", marginBottom: "4px" }}>
-                  {p.nom}
-                </h3>
-                <p style={{ fontSize: "16px", fontWeight: "bold", color: "#2563eb" }}>
-                  {formaterPrix(p.prix, p.devise)}
-                </p>
-                {p.stock === 0 && (
-                  <p style={{ fontSize: "12px", color: "#dc2626", marginTop: "4px" }}>
-                    Rupture de stock
-                  </p>
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "40px",
+                  }}>
+                    📦
+                  </div>
                 )}
-              </div>
-            </Link>
-          ))}
+
+                <div style={{ padding: "12px" }}>
+                  <h3 style={{ fontSize: "14px", fontWeight: "600", marginBottom: "6px" }}>
+                    {p.nom}
+                  </h3>
+
+                  {enPromo ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                      <span style={{ fontSize: "16px", fontWeight: "bold", color: "#16a34a" }}>
+                        {formaterPrix(p.prixPromo!, p.devise)}
+                      </span>
+                      <span style={{
+                        fontSize: "12px",
+                        color: "#9ca3af",
+                        textDecoration: "line-through",
+                      }}>
+                        {formaterPrix(p.prix, p.devise)}
+                      </span>
+                    </div>
+                  ) : (
+                    <p style={{ fontSize: "16px", fontWeight: "bold", color: "#2563eb" }}>
+                      {formaterPrix(p.prix, p.devise)}
+                    </p>
+                  )}
+
+                  {p.stock === 0 && (
+                    <p style={{ fontSize: "12px", color: "#dc2626", marginTop: "4px" }}>
+                      Rupture de stock
+                    </p>
+                  )}
+                </div>
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>
   );
-}
+                  }
