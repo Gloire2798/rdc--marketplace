@@ -1,7 +1,6 @@
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
 import MenuBurger from "./MenuBurger";
 import NavigationBas from "./NavigationBas";
 import LienVendeur from "./LienVendeur";
@@ -36,7 +35,7 @@ export default async function DashboardAdmin() {
     .reduce((acc, c) => {
       const devise = c.items[0]?.produit.devise || "FC";
       if (devise === "FC") return acc + c.total;
-      return acc + c.total * 2800; // Conversion approximative USD -> FC
+      return acc + c.total * 2800;
     }, 0);
 
   const formaterCA = (montant: number) => {
@@ -69,7 +68,6 @@ export default async function DashboardAdmin() {
 
   return (
     <>
-      {/* Header bleu marine */}
       <header style={{
         backgroundColor: "#1E3A5F",
         color: "white",
@@ -127,7 +125,6 @@ export default async function DashboardAdmin() {
         minHeight: "100vh",
         padding: "20px 16px 100px 16px",
       }}>
-        {/* Titre + Date */}
         <div style={{
           display: "flex",
           justifyContent: "space-between",
@@ -141,7 +138,7 @@ export default async function DashboardAdmin() {
               Tableau de bord
             </h1>
             <p style={{ fontSize: "13px", color: "#6b7280" }}>
-              Bienvenue, voici l'activité en temps réel
+              Bienvenue, voici l&apos;activité en temps réel
             </p>
           </div>
           <div style={{
@@ -157,14 +154,12 @@ export default async function DashboardAdmin() {
           </div>
         </div>
 
-        {/* 4 cartes stats en 2x2 */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "12px",
           marginBottom: "20px",
         }}>
-          {/* Total boutiques */}
           <div style={{ backgroundColor: "white", borderRadius: "12px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
             <div style={{
               backgroundColor: "#DBEAFE",
@@ -187,7 +182,6 @@ export default async function DashboardAdmin() {
             </div>
           </div>
 
-          {/* En attente */}
           <div style={{ backgroundColor: "white", borderRadius: "12px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
             <div style={{
               backgroundColor: "#FED7AA",
@@ -212,7 +206,6 @@ export default async function DashboardAdmin() {
             </div>
           </div>
 
-          {/* Actives */}
           <div style={{ backgroundColor: "white", borderRadius: "12px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
             <div style={{
               backgroundColor: "#BBF7D0",
@@ -235,7 +228,6 @@ export default async function DashboardAdmin() {
             </div>
           </div>
 
-          {/* Chiffre d'affaires */}
           <div style={{ backgroundColor: "white", borderRadius: "12px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
             <div style={{
               backgroundColor: "#DBEAFE",
@@ -247,9 +239,9 @@ export default async function DashboardAdmin() {
             </div>
             <div style={{ padding: "10px", textAlign: "center" }}>
               <p style={{ fontSize: "11px", color: "#6b7280", marginBottom: "2px" }}>
-                Chiffre d'affaires
+                Chiffre d&apos;affaires
               </p>
-              <p style={{ fontSize: "20px", fontWeight: "bold", color: "#111827" }}>
+              <p style={{ fontSize: "18px", fontWeight: "bold", color: "#111827" }}>
                 {formaterCA(chiffreAffaires)}
               </p>
               <p style={{ fontSize: "10px", color: "#6b7280", marginTop: "2px" }}>
@@ -259,7 +251,6 @@ export default async function DashboardAdmin() {
           </div>
         </div>
 
-        {/* Boutiques en attente */}
         {enAttente.length > 0 && (
           <>
             <h2 style={{
@@ -291,7 +282,6 @@ export default async function DashboardAdmin() {
           </>
         )}
 
-        {/* Boutiques actives */}
         <h2 style={{
           fontSize: "18px",
           fontWeight: "bold",
@@ -319,4 +309,4 @@ export default async function DashboardAdmin() {
       <NavigationBas />
     </>
   );
-      }
+            }
