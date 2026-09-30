@@ -32,6 +32,12 @@ export default async function FicheProduit({
     return `${prix.toLocaleString("fr-FR")} FC`;
   };
 
+  const enPromo =
+    produit.prixPromo !== null && produit.prixPromo < produit.prix;
+  const pourcentage = enPromo
+    ? Math.round(((produit.prix - produit.prixPromo!) / produit.prix) * 100)
+    : 0;
+
   return (
     <div className="container" style={{ padding: "20px 16px", maxWidth: "600px" }}>
       <Link
@@ -41,7 +47,23 @@ export default async function FicheProduit({
         ← Retour à {produit.vendeur.nomBoutique}
       </Link>
 
-      <div style={{ marginTop: "16px", marginBottom: "24px" }}>
+      <div style={{ marginTop: "16px", marginBottom: "24px", position: "relative" }}>
+        {enPromo && (
+          <span style={{
+            position: "absolute",
+            top: "12px",
+            left: "12px",
+            backgroundColor: "#dc2626",
+            color: "white",
+            fontSize: "14px",
+            fontWeight: "bold",
+            padding: "6px 12px",
+            borderRadius: "8px",
+            zIndex: 2,
+          }}>
+            -{pourcentage}%
+          </span>
+        )}
         <GaleriePhotos photos={photos} nomProduit={produit.nom} />
       </div>
 
@@ -55,9 +77,39 @@ export default async function FicheProduit({
         </p>
       )}
 
-      <p style={{ fontSize: "28px", fontWeight: "bold", color: "#2563eb", marginBottom: "8px" }}>
-        {formaterPrix(produit.prix, produit.devise)}
-      </p>
+      {enPromo ? (
+        <div style={{ marginBottom: "16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+            <span style={{ fontSize: "28px", fontWeight: "bold", color: "#16a34a" }}>
+              {formaterPrix(produit.prixPromo!, produit.devise)}
+            </span>
+            <span style={{
+              fontSize: "18px",
+              color: "#9ca3af",
+              textDecoration: "line-through",
+            }}>
+              {formaterPrix(produit.prix, produit.devise)}
+            </span>
+            <span style={{
+              backgroundColor: "#dc2626",
+              color: "white",
+              fontSize: "13px",
+              fontWeight: "bold",
+              padding: "4px 10px",
+              borderRadius: "6px",
+            }}>
+              -{pourcentage}%
+            </span>
+          </div>
+          <p style={{ fontSize: "13px", color: "#16a34a", marginTop: "4px" }}>
+            💰 Vous économisez {formaterPrix(produit.prix - produit.prixPromo!, produit.devise)}
+          </p>
+        </div>
+      ) : (
+        <p style={{ fontSize: "28px", fontWeight: "bold", color: "#2563eb", marginBottom: "8px" }}>
+          {formaterPrix(produit.prix, produit.devise)}
+        </p>
+      )}
 
       <p style={{
         fontSize: "14px",
@@ -112,4 +164,4 @@ export default async function FicheProduit({
       </p>
     </div>
   );
-      }
+                          }
