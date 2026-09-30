@@ -9,6 +9,7 @@ interface Produit {
   nom: string;
   description: string | null;
   prix: number;
+  prixPromo: number | null;
   devise: string;
   stock: number;
   photo1: string | null;
@@ -29,6 +30,7 @@ export default function ModifierProduit() {
     nom: "",
     description: "",
     prix: "",
+    prixPromo: "",
     devise: "FC",
     stock: "",
   });
@@ -63,6 +65,7 @@ export default function ModifierProduit() {
           nom: p.nom,
           description: p.description || "",
           prix: p.prix.toString(),
+          prixPromo: p.prixPromo ? p.prixPromo.toString() : "",
           devise: p.devise,
           stock: p.stock.toString(),
         });
@@ -150,6 +153,7 @@ export default function ModifierProduit() {
         body: JSON.stringify({
           ...form,
           prix: parseFloat(form.prix),
+          prixPromo: form.prixPromo || null,
           stock: parseInt(form.stock),
           photo1,
           photo2: photo2 || null,
@@ -318,7 +322,7 @@ export default function ModifierProduit() {
           onChange={(e) => changer("description", e.target.value)}
         />
 
-        <label style={labelStyle}>Prix *</label>
+        <label style={labelStyle}>Prix normal *</label>
         <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
           <input
             type="number"
@@ -338,6 +342,20 @@ export default function ModifierProduit() {
             <option value="USD">$</option>
           </select>
         </div>
+
+        <label style={labelStyle}>Prix promotionnel (optionnel)</label>
+        <p style={{ color: "#6b7280", fontSize: "12px", marginBottom: "6px" }}>
+          Laissez vide si pas de promotion. Doit être inférieur au prix normal.
+        </p>
+        <input
+          type="number"
+          placeholder="Ex: 20000"
+          style={champStyle}
+          value={form.prixPromo}
+          onChange={(e) => changer("prixPromo", e.target.value)}
+          min="0"
+          step="any"
+        />
 
         <label style={labelStyle}>Stock disponible *</label>
         <input
@@ -362,4 +380,4 @@ export default function ModifierProduit() {
       <BoutonSupprimer produitId={produitId} nomProduit={form.nom} />
     </div>
   );
-}
+          }
