@@ -16,7 +16,6 @@ export default function Header() {
   const pathname = usePathname();
   const [user, setUser] = useState<InfosUser | null>(null);
   const [nbPanier, setNbPanier] = useState(0);
-  const [chargement, setChargement] = useState(true);
 
   useEffect(() => {
     const mettreAJourPanier = () => setNbPanier(compterArticles());
@@ -30,12 +29,10 @@ export default function Header() {
       .then((res) => res.json())
       .then((data) => {
         if (data.succes) setUser(data.user);
-        setChargement(false);
       })
-      .catch(() => setChargement(false));
+      .catch(() => {});
   }, []);
 
-  // Page de connexion ou inscription → header public
   const estPageConnexion =
     pathname === "/vendeur/connexion" ||
     pathname === "/vendeur/inscription" ||
@@ -46,16 +43,16 @@ export default function Header() {
   if (pathname.startsWith("/admin") && !estPageConnexion) {
     return (
       <header style={{
-        backgroundColor: "#1E3A5F",
+        backgroundColor: "#0F172A",
         color: "white",
-        padding: "14px 18px",
+        padding: "16px 20px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         position: "sticky",
         top: 0,
         zIndex: 50,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+        boxShadow: "0 4px 12px rgba(15, 23, 42, 0.25)",
       }}>
         <MenuBurger />
 
@@ -68,11 +65,11 @@ export default function Header() {
         }}>
           <span style={{ fontSize: "26px" }}>🛒</span>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "18px", fontWeight: "bold", lineHeight: 1.1 }}>
+            <span style={{ fontSize: "18px", fontWeight: "800", lineHeight: 1.1 }}>
               GK Sensei
             </span>
-            <span style={{ fontSize: "11px", opacity: 0.85, fontWeight: "500" }}>
-              Admin
+            <span style={{ fontSize: "11px", color: "#94a3b8", fontWeight: "600" }}>
+              Espace Admin
             </span>
           </div>
         </Link>
@@ -90,14 +87,15 @@ export default function Header() {
     return (
       <header style={{
         backgroundColor: "white",
-        borderBottom: "1px solid #e5e7eb",
-        padding: "14px 18px",
+        borderBottom: "2px solid #e2e8f0",
+        padding: "14px 20px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         position: "sticky",
         top: 0,
         zIndex: 50,
+        boxShadow: "0 2px 8px rgba(15, 23, 42, 0.06)",
       }}>
         <Link href="/vendeur/dashboard" style={{
           display: "flex",
@@ -108,20 +106,20 @@ export default function Header() {
         }}>
           <span style={{ fontSize: "24px" }}>🛒</span>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "16px", fontWeight: "bold", color: "#2563eb", lineHeight: 1.1 }}>
+            <span style={{ fontSize: "16px", fontWeight: "800", color: "#1D4ED8", lineHeight: 1.1 }}>
               GK Sensei
             </span>
-            <span style={{ fontSize: "11px", color: "#6b7280" }}>
+            <span style={{ fontSize: "11px", color: "#475569", fontWeight: "700" }}>
               Espace vendeur
             </span>
           </div>
         </Link>
 
-        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <Link href="/vendeur/commandes" style={{ fontSize: "22px", textDecoration: "none" }}>
+        <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
+          <Link href="/vendeur/commandes" style={{ fontSize: "24px", textDecoration: "none" }}>
             📦
           </Link>
-          <Link href="/vendeur/produits" style={{ fontSize: "22px", textDecoration: "none" }}>
+          <Link href="/vendeur/produits" style={{ fontSize: "24px", textDecoration: "none" }}>
             🏪
           </Link>
         </div>
@@ -134,14 +132,15 @@ export default function Header() {
     return (
       <header style={{
         backgroundColor: "white",
-        borderBottom: "1px solid #e5e7eb",
-        padding: "14px 18px",
+        borderBottom: "2px solid #e2e8f0",
+        padding: "14px 20px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         position: "sticky",
         top: 0,
         zIndex: 50,
+        boxShadow: "0 2px 8px rgba(15, 23, 42, 0.06)",
       }}>
         <Link href="/" style={{
           display: "flex",
@@ -152,18 +151,18 @@ export default function Header() {
         }}>
           <span style={{ fontSize: "24px" }}>🛒</span>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "16px", fontWeight: "bold", color: "#2563eb", lineHeight: 1.1 }}>
+            <span style={{ fontSize: "16px", fontWeight: "800", color: "#1D4ED8", lineHeight: 1.1 }}>
               GK Sensei
             </span>
-            <span style={{ fontSize: "11px", color: "#6b7280" }}>
+            <span style={{ fontSize: "11px", color: "#475569", fontWeight: "700" }}>
               Mon compte
             </span>
           </div>
         </Link>
 
-        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+        <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
           <Link href="/acheteur/panier" style={{ position: "relative", textDecoration: "none" }}>
-            <span style={{ fontSize: "22px" }}>🛒</span>
+            <span style={{ fontSize: "24px" }}>🛒</span>
             {nbPanier > 0 && (
               <span style={{
                 position: "absolute",
@@ -172,9 +171,9 @@ export default function Header() {
                 backgroundColor: "#dc2626",
                 color: "white",
                 fontSize: "10px",
-                fontWeight: "bold",
-                width: "16px",
-                height: "16px",
+                fontWeight: "800",
+                width: "18px",
+                height: "18px",
                 borderRadius: "50%",
                 display: "flex",
                 alignItems: "center",
@@ -193,11 +192,12 @@ export default function Header() {
   return (
     <header style={{
       backgroundColor: "white",
-      borderBottom: "1px solid #e5e7eb",
-      padding: "14px 18px",
+      borderBottom: "1px solid #e2e8f0",
+      padding: "14px 20px",
       position: "sticky",
       top: 0,
       zIndex: 50,
+      boxShadow: "0 1px 4px rgba(15, 23, 42, 0.04)",
     }}>
       <div style={{
         display: "flex",
@@ -213,17 +213,17 @@ export default function Header() {
         }}>
           <span style={{ fontSize: "24px" }}>🛒</span>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "16px", fontWeight: "bold", color: "#2563eb", lineHeight: 1.1 }}>
+            <span style={{ fontSize: "16px", fontWeight: "800", color: "#1D4ED8", lineHeight: 1.1 }}>
               GK Sensei
             </span>
-            <span style={{ fontSize: "11px", color: "#6b7280" }}>
+            <span style={{ fontSize: "11px", color: "#475569", fontWeight: "700" }}>
               Complexe Commercial
             </span>
           </div>
         </Link>
 
         <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
-          <Link href="/" style={{ fontSize: "14px", color: "#111827", fontWeight: "500", textDecoration: "none" }}>
+          <Link href="/" style={{ fontSize: "14px", color: "#0F172A", fontWeight: "700", textDecoration: "none" }}>
             Accueil
           </Link>
           <Link href="/acheteur/panier" style={{ position: "relative", textDecoration: "none" }}>
@@ -236,9 +236,9 @@ export default function Header() {
                 backgroundColor: "#dc2626",
                 color: "white",
                 fontSize: "10px",
-                fontWeight: "bold",
-                width: "16px",
-                height: "16px",
+                fontWeight: "800",
+                width: "18px",
+                height: "18px",
                 borderRadius: "50%",
                 display: "flex",
                 alignItems: "center",
@@ -250,10 +250,10 @@ export default function Header() {
           </Link>
           <Link href="/vendeur/connexion" style={{
             fontSize: "14px",
-            color: "#2563eb",
-            fontWeight: "600",
-            border: "1px solid #2563eb",
-            padding: "6px 14px",
+            color: "white",
+            fontWeight: "700",
+            backgroundColor: "#1D4ED8",
+            padding: "8px 14px",
             borderRadius: "8px",
             textDecoration: "none",
           }}>
@@ -263,4 +263,4 @@ export default function Header() {
       </div>
     </header>
   );
-        }
+          }
