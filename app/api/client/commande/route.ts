@@ -28,12 +28,28 @@ export async function POST(request: Request) {
       );
     }
 
+    // Récupérer les infos du vendeur (pour les numéros Mobile Money)
+    const vendeur = await prisma.vendeur.findUnique({
+      where: { id: vendeurId },
+      select: {
+        numMpesa: true,
+        numOrange: true,
+        numAirtel: true,
+        numMobileMoney: true,
+      },
+    });
+
+    if (!vendeur) {
+      return NextResponse.json(
+        { erreur: "Boutique introuvable" },
+        { status: 404 }
+      );
+    }
+
     // Si le client est connecté, on utilise son ID
-    // Sinon, on crée ou récupère un compte invité avec son téléphone
     let acheteurId = session?.id;
 
     if (!acheteurId) {
-      // Chercher un utilisateur avec ce téléphone
       const existant = await prisma.user.findUnique({
         where: { telephone },
       });
@@ -41,7 +57,6 @@ export async function POST(request: Request) {
       if (existant) {
         acheteurId = existant.id;
       } else {
-        // Créer un compte invité (sans mot de passe)
         const nouveau = await prisma.user.create({
           data: {
             telephone,
@@ -53,7 +68,6 @@ export async function POST(request: Request) {
       }
     }
 
-    // Créer la commande
     const commande = await prisma.commande.create({
       data: {
         acheteurId,
@@ -103,4 +117,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
+            }
