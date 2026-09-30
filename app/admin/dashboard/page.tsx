@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import NavigationBas from "./NavigationBas";
 import LienVendeur from "./LienVendeur";
+import GraphiqueVentes from "./GraphiqueVentes";
 
 export default async function DashboardAdmin() {
   const session = await getSession();
@@ -45,6 +46,30 @@ export default async function DashboardAdmin() {
     }
     return `${montant.toLocaleString("fr-FR")} FC`;
   };
+
+  // Calcul des ventes par mois (6 derniers mois)
+  const maintenant = new Date();
+  const venteParMois: { mois: string; montant: number }[] = [];
+  const nomsMois = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
+
+  for (let i = 5; i >= 0; i--) {
+    const date = new Date(maintenant.getFullYear(), maintenant.getMonth() - i, 1);
+    const moisLabel = nomsMois[date.getMonth()];
+
+    const montantMois = commandes
+      .filter((c) => {
+        if (c.statut === "ANNULE") return false;
+        const dc = new Date(c.createdAt);
+        return dc.getMonth() === date.getMonth() && dc.getFullYear() === date.getFullYear();
+      })
+      .reduce((acc, c) => {
+        const devise = c.items[0]?.produit.devise || "FC";
+        if (devise === "FC") return acc + c.total;
+        return acc + c.total * 2800;
+      }, 0);
+
+    venteParMois.push({ mois: moisLabel, montant: montantMois });
+  }
 
   const formaterVendeur = (v: typeof vendeurs[0]) => ({
     id: v.id,
@@ -176,6 +201,9 @@ export default async function DashboardAdmin() {
             </div>
           </div>
         </div>
+
+        {/* Graphique des ventes */}
+        <GraphiqueVentes data={venteParMois} />
 
         {enAttente.length > 0 && (
           <>
