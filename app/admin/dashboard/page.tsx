@@ -29,7 +29,6 @@ export default async function DashboardAdmin() {
   const enAttente = vendeurs.filter((v) => !v.actif);
   const actifs = vendeurs.filter((v) => v.actif);
 
-  // Calcul du chiffre d'affaires total
   const chiffreAffaires = commandes
     .filter((c) => c.statut !== "ANNULE")
     .reduce((acc, c) => {
@@ -68,35 +67,37 @@ export default async function DashboardAdmin() {
 
   return (
     <>
+      {/* Header bleu marine */}
       <header style={{
         backgroundColor: "#1E3A5F",
         color: "white",
-        padding: "12px 16px",
+        padding: "14px 18px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         position: "sticky",
         top: 0,
         zIndex: 50,
+        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
       }}>
         <MenuBurger />
 
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ fontSize: "24px" }}>🛒</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <span style={{ fontSize: "26px" }}>🛒</span>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "16px", fontWeight: "bold", lineHeight: 1 }}>
+            <span style={{ fontSize: "18px", fontWeight: "bold", lineHeight: 1.1 }}>
               GK Sensei
             </span>
-            <span style={{ fontSize: "10px", opacity: 0.8 }}>
+            <span style={{ fontSize: "11px", opacity: 0.85, fontWeight: "500" }}>
               Complexe Commercial
             </span>
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <span style={{ fontSize: "20px" }}>🔍</span>
+        <div style={{ display: "flex", gap: "14px", alignItems: "center" }}>
+          <span style={{ fontSize: "22px" }}>🔍</span>
           <div style={{ position: "relative" }}>
-            <span style={{ fontSize: "20px" }}>🔔</span>
+            <span style={{ fontSize: "22px" }}>🔔</span>
             {enAttente.length > 0 && (
               <span style={{
                 position: "absolute",
@@ -104,10 +105,10 @@ export default async function DashboardAdmin() {
                 right: "-6px",
                 backgroundColor: "#dc2626",
                 color: "white",
-                fontSize: "10px",
+                fontSize: "11px",
                 fontWeight: "bold",
-                width: "16px",
-                height: "16px",
+                width: "18px",
+                height: "18px",
                 borderRadius: "50%",
                 display: "flex",
                 alignItems: "center",
@@ -121,160 +122,167 @@ export default async function DashboardAdmin() {
       </header>
 
       <div style={{
-        backgroundColor: "#F9FAFB",
+        backgroundColor: "#F3F4F6",
         minHeight: "100vh",
-        padding: "20px 16px 100px 16px",
+        padding: "24px 18px 100px 18px",
       }}>
+        {/* Titre + Date */}
         <div style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-start",
-          marginBottom: "20px",
+          marginBottom: "24px",
           flexWrap: "wrap",
-          gap: "8px",
+          gap: "10px",
         }}>
           <div>
-            <h1 style={{ fontSize: "26px", fontWeight: "bold", color: "#111827", marginBottom: "4px" }}>
+            <h1 style={{ fontSize: "30px", fontWeight: "800", color: "#0F172A", marginBottom: "4px", letterSpacing: "-0.5px" }}>
               Tableau de bord
             </h1>
-            <p style={{ fontSize: "13px", color: "#6b7280" }}>
+            <p style={{ fontSize: "14px", color: "#475569", fontWeight: "500" }}>
               Bienvenue, voici l&apos;activité en temps réel
             </p>
           </div>
           <div style={{
             backgroundColor: "white",
-            border: "1px solid #e5e7eb",
+            border: "1px solid #cbd5e1",
             borderRadius: "8px",
-            padding: "6px 10px",
-            fontSize: "12px",
-            color: "#374151",
-            fontWeight: "500",
+            padding: "8px 12px",
+            fontSize: "13px",
+            color: "#0F172A",
+            fontWeight: "600",
           }}>
             📅 {dateAujourdhui}
           </div>
         </div>
 
+        {/* 4 cartes stats */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "12px",
-          marginBottom: "20px",
+          gap: "14px",
+          marginBottom: "24px",
         }}>
-          <div style={{ backgroundColor: "white", borderRadius: "12px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+          {/* Total boutiques */}
+          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}>
             <div style={{
               backgroundColor: "#DBEAFE",
-              padding: "12px",
+              padding: "14px",
               display: "flex",
               justifyContent: "center",
             }}>
-              <span style={{ fontSize: "28px" }}>🏪</span>
+              <span style={{ fontSize: "32px" }}>🏪</span>
             </div>
-            <div style={{ padding: "10px", textAlign: "center" }}>
-              <p style={{ fontSize: "11px", color: "#6b7280", marginBottom: "2px" }}>
+            <div style={{ padding: "12px", textAlign: "center" }}>
+              <p style={{ fontSize: "12px", color: "#475569", marginBottom: "4px", fontWeight: "600" }}>
                 Total boutiques
               </p>
-              <p style={{ fontSize: "26px", fontWeight: "bold", color: "#111827" }}>
+              <p style={{ fontSize: "30px", fontWeight: "800", color: "#0F172A", lineHeight: 1 }}>
                 {vendeurs.length}
               </p>
-              <p style={{ fontSize: "10px", color: "#16a34a", fontWeight: "600", marginTop: "2px" }}>
+              <p style={{ fontSize: "11px", color: "#16a34a", fontWeight: "700", marginTop: "4px" }}>
                 +{actifs.length} actives
               </p>
             </div>
           </div>
 
-          <div style={{ backgroundColor: "white", borderRadius: "12px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+          {/* En attente */}
+          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}>
             <div style={{
               backgroundColor: "#FED7AA",
-              padding: "12px",
+              padding: "14px",
               display: "flex",
               justifyContent: "center",
             }}>
-              <span style={{ fontSize: "28px" }}>⏳</span>
+              <span style={{ fontSize: "32px" }}>⏳</span>
             </div>
-            <div style={{ padding: "10px", textAlign: "center" }}>
-              <p style={{ fontSize: "11px", color: "#6b7280", marginBottom: "2px" }}>
+            <div style={{ padding: "12px", textAlign: "center" }}>
+              <p style={{ fontSize: "12px", color: "#475569", marginBottom: "4px", fontWeight: "600" }}>
                 En attente
               </p>
-              <p style={{ fontSize: "26px", fontWeight: "bold", color: "#111827" }}>
+              <p style={{ fontSize: "30px", fontWeight: "800", color: "#0F172A", lineHeight: 1 }}>
                 {enAttente.length}
               </p>
               {enAttente.length > 0 && (
-                <p style={{ fontSize: "10px", color: "#d97706", fontWeight: "600", marginTop: "2px" }}>
+                <p style={{ fontSize: "11px", color: "#d97706", fontWeight: "700", marginTop: "4px" }}>
                   À traiter
                 </p>
               )}
             </div>
           </div>
 
-          <div style={{ backgroundColor: "white", borderRadius: "12px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+          {/* Actives */}
+          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}>
             <div style={{
               backgroundColor: "#BBF7D0",
-              padding: "12px",
+              padding: "14px",
               display: "flex",
               justifyContent: "center",
             }}>
-              <span style={{ fontSize: "28px" }}>✅</span>
+              <span style={{ fontSize: "32px" }}>✅</span>
             </div>
-            <div style={{ padding: "10px", textAlign: "center" }}>
-              <p style={{ fontSize: "11px", color: "#6b7280", marginBottom: "2px" }}>
+            <div style={{ padding: "12px", textAlign: "center" }}>
+              <p style={{ fontSize: "12px", color: "#475569", marginBottom: "4px", fontWeight: "600" }}>
                 Boutiques actives
               </p>
-              <p style={{ fontSize: "26px", fontWeight: "bold", color: "#111827" }}>
+              <p style={{ fontSize: "30px", fontWeight: "800", color: "#0F172A", lineHeight: 1 }}>
                 {actifs.length}
               </p>
-              <p style={{ fontSize: "10px", color: "#16a34a", fontWeight: "600", marginTop: "2px" }}>
+              <p style={{ fontSize: "11px", color: "#16a34a", fontWeight: "700", marginTop: "4px" }}>
                 {vendeurs.length > 0 ? Math.round((actifs.length / vendeurs.length) * 100) : 0}% du total
               </p>
             </div>
           </div>
 
-          <div style={{ backgroundColor: "white", borderRadius: "12px", overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+          {/* Chiffre d'affaires */}
+          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}>
             <div style={{
               backgroundColor: "#DBEAFE",
-              padding: "12px",
+              padding: "14px",
               display: "flex",
               justifyContent: "center",
             }}>
-              <span style={{ fontSize: "28px" }}>💰</span>
+              <span style={{ fontSize: "32px" }}>💰</span>
             </div>
-            <div style={{ padding: "10px", textAlign: "center" }}>
-              <p style={{ fontSize: "11px", color: "#6b7280", marginBottom: "2px" }}>
+            <div style={{ padding: "12px", textAlign: "center" }}>
+              <p style={{ fontSize: "12px", color: "#475569", marginBottom: "4px", fontWeight: "600" }}>
                 Chiffre d&apos;affaires
               </p>
-              <p style={{ fontSize: "18px", fontWeight: "bold", color: "#111827" }}>
+              <p style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", lineHeight: 1.1 }}>
                 {formaterCA(chiffreAffaires)}
               </p>
-              <p style={{ fontSize: "10px", color: "#6b7280", marginTop: "2px" }}>
+              <p style={{ fontSize: "11px", color: "#475569", marginTop: "4px", fontWeight: "600" }}>
                 {commandes.filter((c) => c.statut !== "ANNULE").length} commandes
               </p>
             </div>
           </div>
         </div>
 
+        {/* Boutiques en attente */}
         {enAttente.length > 0 && (
           <>
             <h2 style={{
-              fontSize: "18px",
-              fontWeight: "bold",
-              color: "#111827",
-              marginBottom: "12px",
+              fontSize: "20px",
+              fontWeight: "800",
+              color: "#0F172A",
+              marginBottom: "14px",
               display: "flex",
               alignItems: "center",
-              gap: "8px",
+              gap: "10px",
             }}>
               Boutiques en attente
               <span style={{
                 backgroundColor: "#FED7AA",
                 color: "#92400e",
-                fontSize: "11px",
-                fontWeight: "600",
-                padding: "2px 8px",
-                borderRadius: "10px",
+                fontSize: "12px",
+                fontWeight: "700",
+                padding: "3px 10px",
+                borderRadius: "12px",
               }}>
                 {enAttente.length}
               </span>
             </h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "24px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "28px" }}>
               {enAttente.map((v) => (
                 <LienVendeur key={v.id} vendeur={formaterVendeur(v)} />
               ))}
@@ -282,11 +290,12 @@ export default async function DashboardAdmin() {
           </>
         )}
 
+        {/* Boutiques actives */}
         <h2 style={{
-          fontSize: "18px",
-          fontWeight: "bold",
-          color: "#111827",
-          marginBottom: "12px",
+          fontSize: "20px",
+          fontWeight: "800",
+          color: "#0F172A",
+          marginBottom: "14px",
         }}>
           Boutiques actives
         </h2>
@@ -298,7 +307,7 @@ export default async function DashboardAdmin() {
             </p>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             {actifs.map((v) => (
               <LienVendeur key={v.id} vendeur={formaterVendeur(v)} />
             ))}
@@ -309,4 +318,4 @@ export default async function DashboardAdmin() {
       <NavigationBas />
     </>
   );
-            }
+          }
