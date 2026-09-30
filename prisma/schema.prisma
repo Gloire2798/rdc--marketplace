@@ -46,6 +46,7 @@ model Produit {
   nom         String
   description String?
   prix        Float
+prixPromo   Float?
 devise      String    @default("FC")
   stock       Int      @default(0)
   photo1      String?
