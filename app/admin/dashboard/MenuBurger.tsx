@@ -3,17 +3,31 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  Menu,
+  X,
+  LayoutDashboard,
+  Store,
+  Package,
+  Users,
+  Wallet,
+  TrendingUp,
+  Megaphone,
+  Settings,
+  MessageCircle,
+  LogOut,
+} from "lucide-react";
 
 const liensMenu = [
-  { href: "/admin/dashboard", label: "Tableau de bord", icone: "🏠" },
-  { href: "/admin/boutiques", label: "Boutiques", icone: "🏪" },
-  { href: "/admin/commandes", label: "Commandes", icone: "📦" },
-  { href: "/admin/utilisateurs", label: "Utilisateurs", icone: "👥" },
-  { href: "/admin/finance", label: "Finance", icone: "💰" },
-  { href: "/admin/analyses", label: "Analyses", icone: "📈" },
-  { href: "/admin/marketing", label: "Marketing", icone: "📢" },
-  { href: "/admin/parametres", label: "Paramètres", icone: "⚙️" },
-  { href: "/admin/support", label: "Support", icone: "💬" },
+  { href: "/admin/dashboard", label: "Tableau de bord", Icon: LayoutDashboard },
+  { href: "/admin/boutiques", label: "Boutiques", Icon: Store },
+  { href: "/admin/commandes", label: "Commandes", Icon: Package },
+  { href: "/admin/utilisateurs", label: "Utilisateurs", Icon: Users },
+  { href: "/admin/finance", label: "Finance", Icon: Wallet },
+  { href: "/admin/analyses", label: "Analyses", Icon: TrendingUp },
+  { href: "/admin/marketing", label: "Marketing", Icon: Megaphone },
+  { href: "/admin/parametres", label: "Paramètres", Icon: Settings },
+  { href: "/admin/support", label: "Support", Icon: MessageCircle },
 ];
 
 export default function MenuBurger() {
@@ -27,17 +41,15 @@ export default function MenuBurger() {
         style={{
           background: "none",
           border: "none",
-          color: "white",
-          fontSize: "26px",
+          color: "#334155",
           cursor: "pointer",
-          padding: "6px",
+          padding: "4px",
           display: "flex",
           alignItems: "center",
-          fontWeight: "bold",
         }}
         aria-label="Ouvrir le menu"
       >
-        ☰
+        <Menu size={24} strokeWidth={2.5} />
       </button>
 
       {ouvert && (
@@ -61,7 +73,7 @@ export default function MenuBurger() {
           top: 0,
           left: 0,
           bottom: 0,
-          width: "280px",
+          width: "270px",
           maxWidth: "80%",
           backgroundColor: "#0F172A",
           color: "white",
@@ -74,15 +86,15 @@ export default function MenuBurger() {
         }}
       >
         <div style={{
-          padding: "22px 20px",
-          borderBottom: "1px solid rgba(255,255,255,0.15)",
+          padding: "18px 16px",
+          borderBottom: "1px solid rgba(255,255,255,0.1)",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
         }}>
           <div>
-            <p style={{ fontSize: "20px", fontWeight: "800", letterSpacing: "-0.3px" }}>🛒 GK Sensei</p>
-            <p style={{ fontSize: "12px", color: "#94a3b8", marginTop: "2px", fontWeight: "600" }}>
+            <p style={{ fontSize: "16px", fontWeight: "800", letterSpacing: "-0.3px" }}>GK Sensei</p>
+            <p style={{ fontSize: "11px", color: "#94a3b8", marginTop: "2px", fontWeight: "600" }}>
               Espace Admin
             </p>
           </div>
@@ -92,18 +104,20 @@ export default function MenuBurger() {
               background: "none",
               border: "none",
               color: "white",
-              fontSize: "26px",
               cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
             }}
             aria-label="Fermer le menu"
           >
-            ✕
+            <X size={22} strokeWidth={2.5} />
           </button>
         </div>
 
-        <nav style={{ flex: 1, padding: "12px 0" }}>
+        <nav style={{ flex: 1, padding: "10px 0" }}>
           {liensMenu.map((lien) => {
             const actif = pathname === lien.href || pathname.startsWith(lien.href + "/");
+            const Icon = lien.Icon;
             return (
               <Link
                 key={lien.href}
@@ -112,43 +126,43 @@ export default function MenuBurger() {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "14px",
-                  padding: "15px 20px",
+                  gap: "12px",
+                  padding: "13px 18px",
                   color: actif ? "white" : "#cbd5e1",
                   textDecoration: "none",
-                  fontSize: "16px",
+                  fontSize: "14px",
                   fontWeight: "700",
-                  borderLeft: actif ? "4px solid #3B82F6" : "4px solid transparent",
+                  borderLeft: actif ? "3px solid #3B82F6" : "3px solid transparent",
                   backgroundColor: actif ? "rgba(59, 130, 246, 0.15)" : "transparent",
                 }}
               >
-                <span style={{ fontSize: "20px" }}>{lien.icone}</span>
+                <Icon size={18} strokeWidth={2.5} />
                 <span>{lien.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div style={{ padding: "12px 0", borderTop: "1px solid rgba(255,255,255,0.15)" }}>
+        <div style={{ padding: "10px 0", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
           <Link
             href="/api/auth/deconnexion"
             onClick={() => setOuvert(false)}
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "14px",
-              padding: "15px 20px",
+              gap: "12px",
+              padding: "13px 18px",
               color: "#f87171",
               textDecoration: "none",
-              fontSize: "16px",
+              fontSize: "14px",
               fontWeight: "700",
             }}
           >
-            <span style={{ fontSize: "20px" }}>🚪</span>
+            <LogOut size={18} strokeWidth={2.5} />
             <span>Déconnexion</span>
           </Link>
         </div>
       </div>
     </>
   );
-}
+          }
