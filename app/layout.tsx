@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import CompteurPanier from "./CompteurPanier";
 
 export const metadata: Metadata = {
   title: "GK Sensei — Complexe Commercial en ligne",
@@ -40,14 +41,15 @@ export default function RootLayout({
               <a href="/" style={{ color: "#111827", fontWeight: "500" }}>
                 Accueil
               </a>
+              <CompteurPanier />
               <a
                 href="/vendeur/connexion"
                 style={{
-                  backgroundColor: "#2563eb",
-                  color: "white",
-                  padding: "8px 16px",
-                  borderRadius: "8px",
+                  color: "#2563eb",
                   fontWeight: "600",
+                  border: "1px solid #2563eb",
+                  padding: "6px 14px",
+                  borderRadius: "8px",
                 }}
               >
                 Connexion
