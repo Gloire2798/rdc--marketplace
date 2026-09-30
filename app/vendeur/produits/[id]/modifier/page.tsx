@@ -362,4 +362,4 @@ export default function ModifierProduit() {
       <BoutonSupprimer produitId={produitId} nomProduit={form.nom} />
     </div>
   );
-          }
+}
