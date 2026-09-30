@@ -62,24 +62,26 @@ model Produit {
 
 // COMMANDES
 model Commande {
-  id              String    @id @default(cuid())
-  acheteurId      String
-  acheteur        User      @relation(fields: [acheteurId], references: [id])
-  vendeurId       String
-  vendeur         Vendeur   @relation(fields: [vendeurId], references: [id])
-  total           Float
-  fraisLivraison  Float     @default(0)
-  mode            String
-  adresse         String?
-  statut          String    @default("EN_ATTENTE")
-  methodePaiement String
-  qrToken         String    @unique @default(cuid())
-  qrExpireAt      DateTime?
-  retireAt        DateTime?
-  createdAt       DateTime  @default(now())
-  items           CommandeItem[]
-  paiement        Paiement?
-  scans           QrScan[]
+  id                String    @id @default(cuid())
+  acheteurId        String?
+  acheteur          User?     @relation(fields: [acheteurId], references: [id])
+  nomClient         String?
+  telephoneClient   String?
+  vendeurId         String
+  vendeur           Vendeur   @relation(fields: [vendeurId], references: [id])
+  total             Float
+  fraisLivraison    Float     @default(0)
+  mode              String
+  adresse           String?
+  statut            String    @default("EN_ATTENTE")
+  methodePaiement   String
+  qrToken           String    @unique @default(cuid())
+  qrExpireAt        DateTime?
+  retireAt          DateTime?
+  createdAt         DateTime  @default(now())
+  items             CommandeItem[]
+  paiement          Paiement?
+  scans             QrScan[]
 }
 
 // LIGNES DE COMMANDE
