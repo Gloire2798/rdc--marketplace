@@ -107,7 +107,7 @@ export default async function DashboardAdmin() {
             <h1 style={{ fontSize: "30px", fontWeight: "800", color: "#0F172A", marginBottom: "4px", letterSpacing: "-0.5px" }}>
               Tableau de bord
             </h1>
-            <p style={{ fontSize: "14px", color: "#475569", fontWeight: "500" }}>
+            <p style={{ fontSize: "14px", color: "#334155", fontWeight: "600" }}>
               Bienvenue, voici l&apos;activité en temps réel
             </p>
           </div>
@@ -118,7 +118,7 @@ export default async function DashboardAdmin() {
             padding: "8px 12px",
             fontSize: "13px",
             color: "#0F172A",
-            fontWeight: "600",
+            fontWeight: "700",
           }}>
             📅 {dateAujourdhui}
           </div>
@@ -130,71 +130,71 @@ export default async function DashboardAdmin() {
           gap: "14px",
           marginBottom: "24px",
         }}>
-          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}>
-            <div style={{ backgroundColor: "#DBEAFE", padding: "12px", display: "flex", justifyContent: "center" }}>
-              <span style={{ fontSize: "26px" }}>🏪</span>
+          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.08)" }}>
+            <div style={{ backgroundColor: "#DBEAFE", padding: "10px", display: "flex", justifyContent: "center" }}>
+              <span style={{ fontSize: "20px" }}>🏪</span>
             </div>
             <div style={{ padding: "12px", textAlign: "center" }}>
-              <p style={{ fontSize: "12px", color: "#475569", marginBottom: "4px", fontWeight: "600" }}>
+              <p style={{ fontSize: "12px", color: "#334155", marginBottom: "4px", fontWeight: "700" }}>
                 Total boutiques
               </p>
               <p style={{ fontSize: "30px", fontWeight: "800", color: "#0F172A", lineHeight: 1 }}>
                 {vendeurs.length}
               </p>
-              <p style={{ fontSize: "11px", color: "#16a34a", fontWeight: "700", marginTop: "4px" }}>
+              <p style={{ fontSize: "11px", color: "#16a34a", fontWeight: "800", marginTop: "4px" }}>
                 +{actifs.length} actives
               </p>
             </div>
           </div>
 
-          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}>
-            <div style={{ backgroundColor: "#FED7AA", padding: "12px", display: "flex", justifyContent: "center" }}>
-              <span style={{ fontSize: "26px" }}>⏳</span>
+          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.08)" }}>
+            <div style={{ backgroundColor: "#FED7AA", padding: "10px", display: "flex", justifyContent: "center" }}>
+              <span style={{ fontSize: "20px" }}>⏳</span>
             </div>
             <div style={{ padding: "12px", textAlign: "center" }}>
-              <p style={{ fontSize: "12px", color: "#475569", marginBottom: "4px", fontWeight: "600" }}>
+              <p style={{ fontSize: "12px", color: "#334155", marginBottom: "4px", fontWeight: "700" }}>
                 En attente
               </p>
               <p style={{ fontSize: "30px", fontWeight: "800", color: "#0F172A", lineHeight: 1 }}>
                 {enAttente.length}
               </p>
               {enAttente.length > 0 && (
-                <p style={{ fontSize: "11px", color: "#d97706", fontWeight: "700", marginTop: "4px" }}>
+                <p style={{ fontSize: "11px", color: "#c2410c", fontWeight: "800", marginTop: "4px" }}>
                   À traiter
                 </p>
               )}
             </div>
           </div>
 
-          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}>
-            <div style={{ backgroundColor: "#BBF7D0", padding: "12px", display: "flex", justifyContent: "center" }}>
-              <span style={{ fontSize: "26px" }}>✅</span>
+          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.08)" }}>
+            <div style={{ backgroundColor: "#BBF7D0", padding: "10px", display: "flex", justifyContent: "center" }}>
+              <span style={{ fontSize: "20px" }}>✅</span>
             </div>
             <div style={{ padding: "12px", textAlign: "center" }}>
-              <p style={{ fontSize: "12px", color: "#475569", marginBottom: "4px", fontWeight: "600" }}>
+              <p style={{ fontSize: "12px", color: "#334155", marginBottom: "4px", fontWeight: "700" }}>
                 Boutiques actives
               </p>
               <p style={{ fontSize: "30px", fontWeight: "800", color: "#0F172A", lineHeight: 1 }}>
                 {actifs.length}
               </p>
-              <p style={{ fontSize: "11px", color: "#16a34a", fontWeight: "700", marginTop: "4px" }}>
+              <p style={{ fontSize: "11px", color: "#16a34a", fontWeight: "800", marginTop: "4px" }}>
                 {vendeurs.length > 0 ? Math.round((actifs.length / vendeurs.length) * 100) : 0}% du total
               </p>
             </div>
           </div>
 
-          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}>
-            <div style={{ backgroundColor: "#DBEAFE", padding: "12px", display: "flex", justifyContent: "center" }}>
-              <span style={{ fontSize: "26px" }}>💰</span>
+          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.08)" }}>
+            <div style={{ backgroundColor: "#DBEAFE", padding: "10px", display: "flex", justifyContent: "center" }}>
+              <span style={{ fontSize: "20px" }}>💰</span>
             </div>
             <div style={{ padding: "12px", textAlign: "center" }}>
-              <p style={{ fontSize: "12px", color: "#475569", marginBottom: "4px", fontWeight: "600" }}>
+              <p style={{ fontSize: "12px", color: "#334155", marginBottom: "4px", fontWeight: "700" }}>
                 Chiffre d&apos;affaires
               </p>
               <p style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", lineHeight: 1.1 }}>
                 {formaterCA(chiffreAffaires)}
               </p>
-              <p style={{ fontSize: "11px", color: "#475569", marginTop: "4px", fontWeight: "600" }}>
+              <p style={{ fontSize: "11px", color: "#334155", marginTop: "4px", fontWeight: "700" }}>
                 {commandes.filter((c) => c.statut !== "ANNULE").length} commandes
               </p>
             </div>
@@ -217,9 +217,9 @@ export default async function DashboardAdmin() {
               Boutiques en attente
               <span style={{
                 backgroundColor: "#FED7AA",
-                color: "#92400e",
+                color: "#7c2d12",
                 fontSize: "12px",
-                fontWeight: "700",
+                fontWeight: "800",
                 padding: "3px 10px",
                 borderRadius: "12px",
               }}>
@@ -245,7 +245,7 @@ export default async function DashboardAdmin() {
         {actifs.length === 0 ? (
           <div className="card" style={{ textAlign: "center", padding: "40px 20px" }}>
             <p style={{ fontSize: "36px", marginBottom: "8px" }}>🏪</p>
-            <p style={{ fontSize: "14px", color: "#6b7280" }}>
+            <p style={{ fontSize: "14px", color: "#64748b", fontWeight: "600" }}>
               Aucune boutique active.
             </p>
           </div>
@@ -261,4 +261,4 @@ export default async function DashboardAdmin() {
       <NavigationBas />
     </>
   );
-}
+        }
