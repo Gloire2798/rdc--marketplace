@@ -16,7 +16,9 @@ export default function InscriptionVendeur() {
     nomBoutique: "",
     description: "",
     adresse: "",
-    numMobileMoney: "",
+    numMpesa: "",
+    numOrange: "",
+    numAirtel: "",
   });
 
   const changer = (champ: string, valeur: string) => {
@@ -27,13 +29,22 @@ export default function InscriptionVendeur() {
     e.preventDefault();
     setErreur("");
     setSucces("");
+
+    if (!form.numMpesa && !form.numOrange && !form.numAirtel) {
+      setErreur("Vous devez renseigner au moins un numéro Mobile Money");
+      return;
+    }
+
     setChargement(true);
 
     try {
       const res = await fetch("/api/vendeur/inscription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          numMobileMoney: form.numMpesa || form.numOrange || form.numAirtel,
+        }),
       });
 
       const data = await res.json();
@@ -72,6 +83,28 @@ export default function InscriptionVendeur() {
     fontSize: "14px",
   };
 
+  const champMobileStyle = {
+    flex: 1,
+    padding: "12px",
+    borderRadius: "8px",
+    border: "1px solid #d1d5db",
+    fontSize: "15px",
+    marginBottom: "0",
+  };
+
+  const logoStyle = {
+    width: "44px",
+    height: "44px",
+    borderRadius: "8px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "20px",
+    fontWeight: "bold",
+    color: "white",
+    flexShrink: 0,
+  };
+
   return (
     <div className="container" style={{ maxWidth: "600px", padding: "40px 16px" }}>
       <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px" }}>
@@ -82,31 +115,19 @@ export default function InscriptionVendeur() {
       </p>
 
       {erreur && (
-        <div style={{
-          backgroundColor: "#fee2e2",
-          color: "#991b1b",
-          padding: "12px",
-          borderRadius: "8px",
-          marginBottom: "20px",
-        }}>
+        <div style={{ backgroundColor: "#fee2e2", color: "#991b1b", padding: "12px", borderRadius: "8px", marginBottom: "20px" }}>
           {erreur}
         </div>
       )}
 
       {succes && (
-        <div style={{
-          backgroundColor: "#dcfce7",
-          color: "#166534",
-          padding: "12px",
-          borderRadius: "8px",
-          marginBottom: "20px",
-        }}>
+        <div style={{ backgroundColor: "#dcfce7", color: "#166534", padding: "12px", borderRadius: "8px", marginBottom: "20px" }}>
           {succes}
         </div>
       )}
 
       <form onSubmit={soumettre}>
-        <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px", marginTop: "8px" }}>
+        <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px" }}>
           Vos informations
         </h2>
 
@@ -169,14 +190,48 @@ export default function InscriptionVendeur() {
           onChange={(e) => changer("adresse", e.target.value)}
         />
 
-        <label style={labelStyle}>Numéro Mobile Money (optionnel)</label>
-        <input
-          type="tel"
-          placeholder="Pour recevoir les acomptes"
-          style={champStyle}
-          value={form.numMobileMoney}
-          onChange={(e) => changer("numMobileMoney", e.target.value)}
-        />
+        <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "8px", marginTop: "24px" }}>
+          Numéros Mobile Money
+        </h2>
+        <p style={{ color: "#6b7280", fontSize: "13px", marginBottom: "16px" }}>
+          Renseignez au moins un numéro pour recevoir les paiements de vos clients.
+        </p>
+
+        <label style={labelStyle}>📱 M-Pesa (Vodacom)</label>
+        <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+          <div style={{ ...logoStyle, backgroundColor: "#e60000" }}>M</div>
+          <input
+            type="tel"
+            placeholder="Ex: 0812345678"
+            style={champMobileStyle}
+            value={form.numMpesa}
+            onChange={(e) => changer("numMpesa", e.target.value)}
+          />
+        </div>
+
+        <label style={labelStyle}>📱 Orange Money</label>
+        <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+          <div style={{ ...logoStyle, backgroundColor: "#ff7900" }}>O</div>
+          <input
+            type="tel"
+            placeholder="Ex: 0891234567"
+            style={champMobileStyle}
+            value={form.numOrange}
+            onChange={(e) => changer("numOrange", e.target.value)}
+          />
+        </div>
+
+        <label style={labelStyle}>📱 Airtel Money</label>
+        <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
+          <div style={{ ...logoStyle, backgroundColor: "#e40000" }}>A</div>
+          <input
+            type="tel"
+            placeholder="Ex: 0991234567"
+            style={champMobileStyle}
+            value={form.numAirtel}
+            onChange={(e) => changer("numAirtel", e.target.value)}
+          />
+        </div>
 
         <button
           type="submit"
@@ -196,4 +251,4 @@ export default function InscriptionVendeur() {
       </p>
     </div>
   );
-}
+    }
