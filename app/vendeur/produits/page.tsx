@@ -78,80 +78,116 @@ export default async function MesProduits() {
           gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
           gap: "20px",
         }}>
-          {produits.map((p) => (
-            <div key={p.id} className="card" style={{ padding: "0", overflow: "hidden" }}>
-              {p.photo1 ? (
-                <img
-                  src={p.photo1}
-                  alt={p.nom}
-                  style={{
+          {produits.map((p) => {
+            const enPromo = p.prixPromo !== null && p.prixPromo < p.prix;
+            const pourcentage = enPromo
+              ? Math.round(((p.prix - p.prixPromo!) / p.prix) * 100)
+              : 0;
+
+            return (
+              <div key={p.id} className="card" style={{ padding: "0", overflow: "hidden" }}>
+                {p.photo1 ? (
+                  <img
+                    src={p.photo1}
+                    alt={p.nom}
+                    style={{
+                      width: "100%",
+                      height: "200px",
+                      objectFit: "contain",
+                      backgroundColor: "#f3f4f6",
+                      display: "block",
+                    }}
+                  />
+                ) : (
+                  <div style={{
                     width: "100%",
                     height: "200px",
-                    objectFit: "contain",
                     backgroundColor: "#f3f4f6",
-                    display: "block",
-                  }}
-                />
-              ) : (
-                <div style={{
-                  width: "100%",
-                  height: "200px",
-                  backgroundColor: "#f3f4f6",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "48px",
-                }}>
-                  📦
-                </div>
-              )}
-
-              <div style={{ padding: "16px" }}>
-                <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "4px" }}>
-                  {p.nom}
-                </h3>
-                {p.description && (
-                  <p style={{ color: "#6b7280", fontSize: "13px", marginBottom: "8px" }}>
-                    {p.description.length > 60
-                      ? p.description.slice(0, 60) + "..."
-                      : p.description}
-                  </p>
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "48px",
+                  }}>
+                    📦
+                  </div>
                 )}
-                <p style={{ fontSize: "18px", fontWeight: "bold", color: "#2563eb", marginBottom: "8px" }}>
-                  {formaterPrix(p.prix, p.devise)}
-                </p>
-                <p style={{
-                  fontSize: "13px",
-                  color: p.stock > 0 ? "#16a34a" : "#dc2626",
-                  fontWeight: "600",
-                  marginBottom: "12px",
-                }}>
-                  {p.stock > 0 ? `✅ ${p.stock} en stock` : "❌ Rupture de stock"}
-                </p>
 
-                <Link
-                  href={`/vendeur/produits/${p.id}/modifier`}
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    backgroundColor: "#2563eb",
-                    color: "white",
-                    padding: "10px",
-                    borderRadius: "8px",
-                    textAlign: "center",
+                <div style={{ padding: "16px" }}>
+                  <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "4px" }}>
+                    {p.nom}
+                  </h3>
+                  {p.description && (
+                    <p style={{ color: "#6b7280", fontSize: "13px", marginBottom: "8px" }}>
+                      {p.description.length > 60
+                        ? p.description.slice(0, 60) + "..."
+                        : p.description}
+                    </p>
+                  )}
+
+                  {enPromo ? (
+                    <div style={{ marginBottom: "8px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                        <span style={{ fontSize: "18px", fontWeight: "bold", color: "#16a34a" }}>
+                          {formaterPrix(p.prixPromo!, p.devise)}
+                        </span>
+                        <span style={{
+                          fontSize: "13px",
+                          color: "#9ca3af",
+                          textDecoration: "line-through",
+                        }}>
+                          {formaterPrix(p.prix, p.devise)}
+                        </span>
+                        <span style={{
+                          backgroundColor: "#dc2626",
+                          color: "white",
+                          fontSize: "11px",
+                          fontWeight: "bold",
+                          padding: "2px 6px",
+                          borderRadius: "4px",
+                        }}>
+                          -{pourcentage}%
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <p style={{ fontSize: "18px", fontWeight: "bold", color: "#2563eb", marginBottom: "8px" }}>
+                      {formaterPrix(p.prix, p.devise)}
+                    </p>
+                  )}
+
+                  <p style={{
+                    fontSize: "13px",
+                    color: p.stock > 0 ? "#16a34a" : "#dc2626",
                     fontWeight: "600",
-                    fontSize: "14px",
-                    textDecoration: "none",
-                    boxSizing: "border-box",
-                  }}
-                >
-                  ✏️ Modifier
-                </Link>
+                    marginBottom: "12px",
+                  }}>
+                    {p.stock > 0 ? `✅ ${p.stock} en stock` : "❌ Rupture de stock"}
+                  </p>
+
+                  <Link
+                    href={`/vendeur/produits/${p.id}/modifier`}
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      backgroundColor: "#2563eb",
+                      color: "white",
+                      padding: "10px",
+                      borderRadius: "8px",
+                      textAlign: "center",
+                      fontWeight: "600",
+                      fontSize: "14px",
+                      textDecoration: "none",
+                      boxSizing: "border-box",
+                    }}
+                  >
+                    ✏️ Modifier
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
   );
-}
+                        }
