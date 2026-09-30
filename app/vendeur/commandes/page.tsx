@@ -32,13 +32,26 @@ export default async function MesCommandes() {
     orderBy: { createdAt: "desc" },
   });
 
+  const formaterCommande = (c: typeof commandes[0]) => ({
+    id: c.id,
+    statut: c.statut,
+    total: c.total,
+    devise: c.items[0]?.produit.devise || "FC",
+    mode: c.mode,
+    adresse: c.adresse,
+    createdAt: c.createdAt.toISOString(),
+    nomClient: c.nomClient || c.acheteur?.nom || "Client",
+    telephoneClient: c.telephoneClient || c.acheteur?.telephone || "—",
+    items: c.items.map((i) => ({
+      nom: i.produit.nom,
+      quantite: i.quantite,
+      prixUnitaire: i.prixUnitaire,
+    })),
+  });
+
   const enAttente = commandes.filter((c) => c.statut === "EN_ATTENTE");
   const validees = commandes.filter((c) => c.statut === "PAYE" || c.statut === "PRET");
-  const terminees = commandes.filter((c) => c.statut === "RETIRE");
-
-  const formaterPrix = (prix: number) => {
-    return `${prix.toLocaleString("fr-FR")} FC`;
-  };
+  const terminees = commandes.filter((c) => c.statut === "RETIRE" || c.statut === "ANNULE");
 
   return (
     <div className="container" style={{ padding: "40px 16px" }}>
@@ -98,21 +111,7 @@ export default async function MesCommandes() {
               </h2>
               <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "32px" }}>
                 {enAttente.map((c) => (
-                  <CarteCommande key={c.id} commande={{
-                    id: c.id,
-                    statut: c.statut,
-                    total: c.total,
-                    mode: c.mode,
-                    adresse: c.adresse,
-                    createdAt: c.createdAt.toISOString(),
-                    nomClient: c.acheteur.nom,
-                    telephoneClient: c.acheteur.telephone,
-                    items: c.items.map((i) => ({
-                      nom: i.produit.nom,
-                      quantite: i.quantite,
-                      prixUnitaire: i.prixUnitaire,
-                    })),
-                  }} />
+                  <CarteCommande key={c.id} commande={formaterCommande(c)} />
                 ))}
               </div>
             </>
@@ -125,21 +124,7 @@ export default async function MesCommandes() {
               </h2>
               <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "32px" }}>
                 {validees.map((c) => (
-                  <CarteCommande key={c.id} commande={{
-                    id: c.id,
-                    statut: c.statut,
-                    total: c.total,
-                    mode: c.mode,
-                    adresse: c.adresse,
-                    createdAt: c.createdAt.toISOString(),
-                    nomClient: c.acheteur.nom,
-                    telephoneClient: c.acheteur.telephone,
-                    items: c.items.map((i) => ({
-                      nom: i.produit.nom,
-                      quantite: i.quantite,
-                      prixUnitaire: i.prixUnitaire,
-                    })),
-                  }} />
+                  <CarteCommande key={c.id} commande={formaterCommande(c)} />
                 ))}
               </div>
             </>
@@ -152,21 +137,7 @@ export default async function MesCommandes() {
               </h2>
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 {terminees.map((c) => (
-                  <CarteCommande key={c.id} commande={{
-                    id: c.id,
-                    statut: c.statut,
-                    total: c.total,
-                    mode: c.mode,
-                    adresse: c.adresse,
-                    createdAt: c.createdAt.toISOString(),
-                    nomClient: c.acheteur.nom,
-                    telephoneClient: c.acheteur.telephone,
-                    items: c.items.map((i) => ({
-                      nom: i.produit.nom,
-                      quantite: i.quantite,
-                      prixUnitaire: i.prixUnitaire,
-                    })),
-                  }} />
+                  <CarteCommande key={c.id} commande={formaterCommande(c)} />
                 ))}
               </div>
             </>
@@ -175,4 +146,4 @@ export default async function MesCommandes() {
       )}
     </div>
   );
-                     }
+            }
