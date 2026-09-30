@@ -28,15 +28,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // Récupérer les infos du vendeur (pour les numéros Mobile Money)
+    // Vérifier que le vendeur existe
     const vendeur = await prisma.vendeur.findUnique({
       where: { id: vendeurId },
-      select: {
-        numMpesa: true,
-        numOrange: true,
-        numAirtel: true,
-        numMobileMoney: true,
-      },
     });
 
     if (!vendeur) {
@@ -46,10 +40,15 @@ export async function POST(request: Request) {
       );
     }
 
-    // Si le client est connecté, on utilise son ID
-    let acheteurId = session?.id;
+    // Déterminer l'acheteur :
+    // - Si connecté en tant qu'ACHETEUR → utiliser son compte
+    // - Sinon → créer ou récupérer un compte invité avec le téléphone saisi
+    // - Si connecté en tant que VENDEUR ou ADMIN → ne pas lier au compte
+    let acheteurId: string | null = null;
 
-    if (!acheteurId) {
+    if (session && session.role === "ACHETEUR") {
+      acheteurId = session.id;
+    } else {
       const existant = await prisma.user.findUnique({
         where: { telephone },
       });
@@ -68,9 +67,14 @@ export async function POST(request: Request) {
       }
     }
 
+    // Récupérer la devise depuis le premier article
+    const deviseCommande = articles[0]?.devise || "FC";
+
     const commande = await prisma.commande.create({
       data: {
         acheteurId,
+        nomClient: nom,
+        telephoneClient: telephone,
         vendeurId,
         total,
         fraisLivraison: 0,
@@ -94,6 +98,8 @@ export async function POST(request: Request) {
           create: {
             montant: total,
             methode: "MOBILE_MONEY",
+            operateur: deviseCommande,
+            refTransaction: reference,
             statut: "EN_ATTENTE",
             montantCommission: 0,
             montantVendeur: total,
@@ -106,9 +112,6 @@ export async function POST(request: Request) {
       succes: true,
       commandeId: commande.id,
       message: "Commande enregistrée !",
-      acompte,
-      reste,
-      devise,
     });
   } catch (error) {
     console.error("Erreur création commande:", error);
@@ -117,4 +120,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-            }
+}
