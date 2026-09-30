@@ -93,7 +93,7 @@ export default function InscriptionClient() {
         <label style={labelStyle}>Nom complet *</label>
         <input
           type="text"
-          placeholder="Ex: Jean Mukendi"
+          placeholder=""
           style={champStyle}
           value={form.nom}
           onChange={(e) => changer("nom", e.target.value)}
