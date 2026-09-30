@@ -217,7 +217,6 @@ export default function PagePanier() {
         })}
       </div>
 
-      {/* Récapitulatif */}
       <div className="card" style={{ marginBottom: "16px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
           <span style={{ color: "#6b7280" }}>Sous-total</span>
@@ -247,13 +246,18 @@ export default function PagePanier() {
         </div>
       </div>
 
-      <button
-        onClick={() => alert("La commande sera activée très bientôt !")}
+      <Link
+        href="/acheteur/commande"
         className="btn btn-primary"
-        style={{ width: "100%" }}
+        style={{
+          width: "100%",
+          display: "block",
+          textAlign: "center",
+          boxSizing: "border-box",
+        }}
       >
         ✅ Passer la commande
-      </button>
+      </Link>
 
       <button
         onClick={toutVider}
@@ -287,4 +291,4 @@ export default function PagePanier() {
       </Link>
     </div>
   );
-        }
+            }
