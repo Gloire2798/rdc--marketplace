@@ -13,8 +13,8 @@ model User {
   telephone    String    @unique
   nom          String?
   email        String?   @unique
-  motDePasse     String?
-  role         String    @default("ACHETEUR") // ACHETEUR | VENDEUR | ADMIN
+  motDePasse   String?
+  role         String    @default("ACHETEUR")
   createdAt    DateTime  @default(now())
   vendeur      Vendeur?
   commandes    Commande[]
@@ -28,9 +28,12 @@ model Vendeur {
   nomBoutique     String
   description     String?
   logo            String?
-  adresse           String?
+  adresse         String?
   telephone       String
   numMobileMoney  String
+  numMpesa        String?
+  numOrange       String?
+  numAirtel       String?
   actif           Boolean   @default(true)
   commission      Float     @default(5.0)
   createdAt       DateTime  @default(now())
@@ -46,12 +49,12 @@ model Produit {
   nom         String
   description String?
   prix        Float
-prixPromo   Float?
-devise      String    @default("FC")
+  prixPromo   Float?
+  devise      String   @default("FC")
   stock       Int      @default(0)
   photo1      String?
-photo2      String?
-photo3      String?
+  photo2      String?
+  photo3      String?
   actif       Boolean  @default(true)
   createdAt   DateTime @default(now())
   items       CommandeItem[]
@@ -66,11 +69,10 @@ model Commande {
   vendeur         Vendeur   @relation(fields: [vendeurId], references: [id])
   total           Float
   fraisLivraison  Float     @default(0)
-  mode            String    // LIVRAISON | RETRAIT
+  mode            String
   adresse         String?
-  statut          String    @default("EN_ATTENTE") 
-  // EN_ATTENTE | PAYE | PRET | RETIRE | ANNULE
-  methodePaiement String    // MOBILE_MONEY | CASH_LIVRAISON
+  statut          String    @default("EN_ATTENTE")
+  methodePaiement String
   qrToken         String    @unique @default(cuid())
   qrExpireAt      DateTime?
   retireAt        DateTime?
@@ -97,11 +99,10 @@ model Paiement {
   commandeId         String   @unique
   commande           Commande @relation(fields: [commandeId], references: [id])
   montant            Float
-  methode            String   // MOBILE_MONEY | CASH
-  operateur          String?  // ORANGE | AIRTEL | VODACOM
+  methode            String
+  operateur          String?
   refTransaction     String?
-  statut             String   @default("EN_ATTENTE") 
-  // EN_ATTENTE | CONFIRME | ECHOUE
+  statut             String   @default("EN_ATTENTE")
   montantCommission  Float    @default(0)
   montantVendeur     Float    @default(0)
   createdAt          DateTime @default(now())
@@ -113,6 +114,6 @@ model QrScan {
   commandeId  String
   commande    Commande @relation(fields: [commandeId], references: [id])
   vendeurId   String
-  resultat    String   // OK | REFUSE | DEJA_UTILISE
+  resultat    String
   scanAt      DateTime @default(now())
 }
