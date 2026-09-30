@@ -95,8 +95,6 @@ export default function LogoBoutique({ nom, taille = 50 }: LogoBoutiqueProps) {
     couleur: "#1E3A8A",
   };
 
-  const nomCourt = nom.length > 12 ? nom.slice(0, 10) + "…" : nom;
-
   return (
     <div style={{
       width: `${taille}px`,
@@ -105,32 +103,18 @@ export default function LogoBoutique({ nom, taille = 50 }: LogoBoutiqueProps) {
       backgroundColor: categorie.bg,
       border: `2px solid ${categorie.bordure}`,
       display: "flex",
-      flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
       flexShrink: 0,
-      overflow: "hidden",
-      padding: "2px",
       boxSizing: "border-box",
+      boxShadow: `0 2px 8px ${categorie.bordure}25`,
     }}>
       <span style={{
-        fontSize: `${taille * 0.35}px`,
+        fontSize: `${taille * 0.5}px`,
         lineHeight: 1,
       }}>
         {categorie.icone}
       </span>
-      <span style={{
-        fontSize: `${taille * 0.15}px`,
-        fontWeight: "800",
-        color: categorie.couleur,
-        lineHeight: 1,
-        marginTop: "1px",
-        textAlign: "center",
-        overflow: "hidden",
-        maxWidth: "100%",
-      }}>
-        {nomCourt}
-      </span>
     </div>
   );
-}
+           }
