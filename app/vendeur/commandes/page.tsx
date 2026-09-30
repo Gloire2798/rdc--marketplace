@@ -32,22 +32,27 @@ export default async function MesCommandes() {
     orderBy: { createdAt: "desc" },
   });
 
-  const formaterCommande = (c: typeof commandes[0]) => ({
-    id: c.id,
-    statut: c.statut,
-    total: c.total,
-    devise: c.items[0]?.produit.devise || "FC",
-    mode: c.mode,
-    adresse: c.adresse,
-    createdAt: c.createdAt.toISOString(),
-    nomClient: c.nomClient || c.acheteur?.nom || "Client",
-    telephoneClient: c.telephoneClient || c.acheteur?.telephone || "—",
-    items: c.items.map((i) => ({
-      nom: i.produit.nom,
-      quantite: i.quantite,
-      prixUnitaire: i.prixUnitaire,
-    })),
-  });
+  const formaterCommande = (c: typeof commandes[0]) => {
+    const devise = c.items[0]?.produit?.devise || "FC";
+
+    return {
+      id: c.id,
+      statut: c.statut,
+      total: c.total,
+      devise,
+      mode: c.mode,
+      adresse: c.adresse,
+      createdAt: c.createdAt.toISOString(),
+      nomClient: c.nomClient || c.acheteur?.nom || "Client",
+      telephoneClient: c.telephoneClient || c.acheteur?.telephone || "—",
+      items: c.items.map((i) => ({
+        nom: i.produit.nom,
+        quantite: i.quantite,
+        prixUnitaire: i.prixUnitaire,
+        devise: i.produit.devise,
+      })),
+    };
+  };
 
   const enAttente = commandes.filter((c) => c.statut === "EN_ATTENTE");
   const validees = commandes.filter((c) => c.statut === "PAYE" || c.statut === "PRET");
@@ -146,4 +151,4 @@ export default async function MesCommandes() {
       )}
     </div>
   );
-            }
+}
