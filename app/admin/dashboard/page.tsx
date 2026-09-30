@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import NavigationBas from "./NavigationBas";
 import LienVendeur from "./LienVendeur";
 import GraphiqueVentes from "./GraphiqueVentes";
+import { Store, Clock, CheckCircle, Wallet } from "lucide-react";
 
 export default async function DashboardAdmin() {
   const session = await getSession();
@@ -88,35 +89,74 @@ export default async function DashboardAdmin() {
     year: "numeric",
   });
 
+  const stats = [
+    {
+      label: "Total boutiques",
+      valeur: vendeurs.length,
+      Icon: Store,
+      bg: "#DBEAFE",
+      iconColor: "#1D4ED8",
+      badge: `+${actifs.length} actives`,
+      badgeColor: "#16a34a",
+    },
+    {
+      label: "En attente",
+      valeur: enAttente.length,
+      Icon: Clock,
+      bg: "#FED7AA",
+      iconColor: "#c2410c",
+      badge: enAttente.length > 0 ? "À traiter" : null,
+      badgeColor: "#c2410c",
+    },
+    {
+      label: "Boutiques actives",
+      valeur: actifs.length,
+      Icon: CheckCircle,
+      bg: "#BBF7D0",
+      iconColor: "#15803d",
+      badge: vendeurs.length > 0 ? `${Math.round((actifs.length / vendeurs.length) * 100)}% du total` : null,
+      badgeColor: "#16a34a",
+    },
+    {
+      label: "Chiffre d'affaires",
+      valeur: formaterCA(chiffreAffaires),
+      Icon: Wallet,
+      bg: "#DBEAFE",
+      iconColor: "#1D4ED8",
+      badge: `${commandes.filter((c) => c.statut !== "ANNULE").length} commandes`,
+      badgeColor: "#334155",
+    },
+  ];
+
   return (
     <>
       <div style={{
-        backgroundColor: "#F3F4F6",
+        backgroundColor: "#F1F5F9",
         minHeight: "100vh",
-        padding: "24px 18px 100px 18px",
+        padding: "16px 12px 90px 12px",
       }}>
         <div style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-start",
-          marginBottom: "24px",
+          marginBottom: "16px",
           flexWrap: "wrap",
-          gap: "10px",
+          gap: "8px",
         }}>
           <div>
-            <h1 style={{ fontSize: "30px", fontWeight: "800", color: "#0F172A", marginBottom: "4px", letterSpacing: "-0.5px" }}>
+            <h1 style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", marginBottom: "2px", letterSpacing: "-0.3px" }}>
               Tableau de bord
             </h1>
-            <p style={{ fontSize: "14px", color: "#334155", fontWeight: "600" }}>
-              Bienvenue, voici l&apos;activité en temps réel
+            <p style={{ fontSize: "11px", color: "#475569", fontWeight: "600" }}>
+              Voici l&apos;activité en temps réel
             </p>
           </div>
           <div style={{
             backgroundColor: "white",
-            border: "1px solid #cbd5e1",
-            borderRadius: "8px",
-            padding: "8px 12px",
-            fontSize: "13px",
+            border: "1px solid #E2E8F0",
+            borderRadius: "6px",
+            padding: "5px 9px",
+            fontSize: "10px",
             color: "#0F172A",
             fontWeight: "700",
           }}>
@@ -127,78 +167,48 @@ export default async function DashboardAdmin() {
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
-          gap: "14px",
-          marginBottom: "24px",
+          gap: "8px",
+          marginBottom: "16px",
         }}>
-          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.08)" }}>
-            <div style={{ backgroundColor: "#DBEAFE", padding: "10px", display: "flex", justifyContent: "center" }}>
-              <span style={{ fontSize: "20px" }}>🏪</span>
-            </div>
-            <div style={{ padding: "12px", textAlign: "center" }}>
-              <p style={{ fontSize: "12px", color: "#334155", marginBottom: "4px", fontWeight: "700" }}>
-                Total boutiques
-              </p>
-              <p style={{ fontSize: "30px", fontWeight: "800", color: "#0F172A", lineHeight: 1 }}>
-                {vendeurs.length}
-              </p>
-              <p style={{ fontSize: "11px", color: "#16a34a", fontWeight: "800", marginTop: "4px" }}>
-                +{actifs.length} actives
-              </p>
-            </div>
-          </div>
-
-          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.08)" }}>
-            <div style={{ backgroundColor: "#FED7AA", padding: "10px", display: "flex", justifyContent: "center" }}>
-              <span style={{ fontSize: "20px" }}>⏳</span>
-            </div>
-            <div style={{ padding: "12px", textAlign: "center" }}>
-              <p style={{ fontSize: "12px", color: "#334155", marginBottom: "4px", fontWeight: "700" }}>
-                En attente
-              </p>
-              <p style={{ fontSize: "30px", fontWeight: "800", color: "#0F172A", lineHeight: 1 }}>
-                {enAttente.length}
-              </p>
-              {enAttente.length > 0 && (
-                <p style={{ fontSize: "11px", color: "#c2410c", fontWeight: "800", marginTop: "4px" }}>
-                  À traiter
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.08)" }}>
-            <div style={{ backgroundColor: "#BBF7D0", padding: "10px", display: "flex", justifyContent: "center" }}>
-              <span style={{ fontSize: "20px" }}>✅</span>
-            </div>
-            <div style={{ padding: "12px", textAlign: "center" }}>
-              <p style={{ fontSize: "12px", color: "#334155", marginBottom: "4px", fontWeight: "700" }}>
-                Boutiques actives
-              </p>
-              <p style={{ fontSize: "30px", fontWeight: "800", color: "#0F172A", lineHeight: 1 }}>
-                {actifs.length}
-              </p>
-              <p style={{ fontSize: "11px", color: "#16a34a", fontWeight: "800", marginTop: "4px" }}>
-                {vendeurs.length > 0 ? Math.round((actifs.length / vendeurs.length) * 100) : 0}% du total
-              </p>
-            </div>
-          </div>
-
-          <div style={{ backgroundColor: "white", borderRadius: "14px", overflow: "hidden", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.08)" }}>
-            <div style={{ backgroundColor: "#DBEAFE", padding: "10px", display: "flex", justifyContent: "center" }}>
-              <span style={{ fontSize: "20px" }}>💰</span>
-            </div>
-            <div style={{ padding: "12px", textAlign: "center" }}>
-              <p style={{ fontSize: "12px", color: "#334155", marginBottom: "4px", fontWeight: "700" }}>
-                Chiffre d&apos;affaires
-              </p>
-              <p style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", lineHeight: 1.1 }}>
-                {formaterCA(chiffreAffaires)}
-              </p>
-              <p style={{ fontSize: "11px", color: "#334155", marginTop: "4px", fontWeight: "700" }}>
-                {commandes.filter((c) => c.statut !== "ANNULE").length} commandes
-              </p>
-            </div>
-          </div>
+          {stats.map((stat) => {
+            const Icon = stat.Icon;
+            return (
+              <div key={stat.label} style={{
+                backgroundColor: "white",
+                borderRadius: "10px",
+                overflow: "hidden",
+                boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+                border: "1px solid #F1F5F9",
+              }}>
+                <div style={{
+                  backgroundColor: stat.bg,
+                  padding: "6px",
+                  display: "flex",
+                  justifyContent: "center",
+                }}>
+                  <Icon size={14} color={stat.iconColor} strokeWidth={2.5} />
+                </div>
+                <div style={{ padding: "6px 4px 8px 4px", textAlign: "center" }}>
+                  <p style={{ fontSize: "9.5px", color: "#475569", marginBottom: "2px", fontWeight: "700" }}>
+                    {stat.label}
+                  </p>
+                  <p style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A", lineHeight: 1 }}>
+                    {stat.valeur}
+                  </p>
+                  {stat.badge && (
+                    <p style={{
+                      fontSize: "9px",
+                      color: stat.badgeColor,
+                      fontWeight: "800",
+                      marginTop: "3px",
+                    }}>
+                      {stat.badge}
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         <GraphiqueVentes data={venteParMois} />
@@ -206,27 +216,27 @@ export default async function DashboardAdmin() {
         {enAttente.length > 0 && (
           <>
             <h2 style={{
-              fontSize: "20px",
+              fontSize: "14px",
               fontWeight: "800",
               color: "#0F172A",
-              marginBottom: "14px",
+              marginBottom: "8px",
               display: "flex",
               alignItems: "center",
-              gap: "10px",
+              gap: "8px",
             }}>
               Boutiques en attente
               <span style={{
                 backgroundColor: "#FED7AA",
                 color: "#7c2d12",
-                fontSize: "12px",
+                fontSize: "10px",
                 fontWeight: "800",
-                padding: "3px 10px",
-                borderRadius: "12px",
+                padding: "2px 7px",
+                borderRadius: "10px",
               }}>
                 {enAttente.length}
               </span>
             </h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "28px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "18px" }}>
               {enAttente.map((v) => (
                 <LienVendeur key={v.id} vendeur={formaterVendeur(v)} />
               ))}
@@ -235,22 +245,22 @@ export default async function DashboardAdmin() {
         )}
 
         <h2 style={{
-          fontSize: "20px",
+          fontSize: "14px",
           fontWeight: "800",
           color: "#0F172A",
-          marginBottom: "14px",
+          marginBottom: "8px",
         }}>
           Boutiques actives
         </h2>
         {actifs.length === 0 ? (
-          <div className="card" style={{ textAlign: "center", padding: "40px 20px" }}>
-            <p style={{ fontSize: "36px", marginBottom: "8px" }}>🏪</p>
-            <p style={{ fontSize: "14px", color: "#64748b", fontWeight: "600" }}>
+          <div className="card" style={{ textAlign: "center", padding: "26px 20px" }}>
+            <Store size={28} color="#94a3b8" strokeWidth={1.5} style={{ marginBottom: "6px" }} />
+            <p style={{ fontSize: "11px", color: "#64748b", fontWeight: "600" }}>
               Aucune boutique active.
             </p>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {actifs.map((v) => (
               <LienVendeur key={v.id} vendeur={formaterVendeur(v)} />
             ))}
@@ -261,4 +271,4 @@ export default async function DashboardAdmin() {
       <NavigationBas />
     </>
   );
-        }
+              }
