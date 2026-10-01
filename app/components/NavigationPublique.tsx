@@ -3,20 +3,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Store, Camera, User, LogOut } from "lucide-react";
+import { Home, Store, Camera, User, LogOut, LayoutDashboard, Shield } from "lucide-react";
 
 interface InfosUser {
   id: string;
   nom: string | null;
   role: string;
 }
-
-const ongletsBase = [
-  { href: "/", label: "Accueil", Icon: Home },
-  { href: "/boutiques", label: "Boutiques", Icon: Store },
-  { href: "/stories", label: "Stories", Icon: Camera },
-  { href: "/compte", label: "Compte", Icon: User },
-];
 
 export default function NavigationPublique() {
   const pathname = usePathname();
@@ -40,15 +33,35 @@ export default function NavigationPublique() {
     return null;
   }
 
-  // Si connecté, on remplace "Compte" par "Déconnexion"
-  const onglets = user
-    ? [
-        { href: "/", label: "Accueil", Icon: Home },
-        { href: "/boutiques", label: "Boutiques", Icon: Store },
-        { href: "/stories", label: "Stories", Icon: Camera },
-        { href: "/deconnexion", label: "Déconnexion", Icon: LogOut },
-      ]
-    : ongletsBase;
+  // Construire les onglets selon le rôle
+  const onglets = [];
+
+  // 1. Accueil
+  onglets.push({ href: "/", label: "Accueil", Icon: Home });
+
+  // 2. Boutiques
+  onglets.push({ href: "/boutiques", label: "Boutiques", Icon: Store });
+
+  // 3. Stories
+  onglets.push({ href: "/stories", label: "Stories", Icon: Camera });
+
+  // 4. Espace personnel selon le rôle
+  if (user) {
+    if (user.role === "VENDEUR") {
+      onglets.push({ href: "/vendeur/dashboard", label: "Mon espace", Icon: LayoutDashboard });
+    } else if (user.role === "ADMIN") {
+      onglets.push({ href: "/admin/dashboard", label: "Admin", Icon: Shield });
+    } else {
+      onglets.push({ href: "/client/compte", label: "Mon compte", Icon: User });
+    }
+  } else {
+    onglets.push({ href: "/compte", label: "Compte", Icon: User });
+  }
+
+  // 5. Déconnexion si connecté, sinon rien
+  if (user) {
+    onglets.push({ href: "/deconnexion", label: "Quitter", Icon: LogOut });
+  }
 
   return (
     <nav style={{
@@ -60,7 +73,7 @@ export default function NavigationPublique() {
       borderTop: "1px solid #E8DFC8",
       display: "flex",
       justifyContent: "space-around",
-      padding: "8px 0 10px 0",
+      padding: "6px 0 8px 0",
       zIndex: 100,
       boxShadow: "0 -2px 8px rgba(120, 100, 60, 0.08)",
     }}>
@@ -77,32 +90,33 @@ export default function NavigationPublique() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: "3px",
+              gap: "2px",
               textDecoration: "none",
               color: estDeconnexion
                 ? "#dc2626"
                 : actif
                 ? "#F97316"
                 : "#94a3b8",
-              fontSize: "10px",
+              fontSize: "9px",
               fontWeight: actif || estDeconnexion ? "800" : "600",
-              padding: "4px 10px",
+              padding: "3px 6px",
               position: "relative",
+              flex: 1,
             }}
           >
             {actif && !estDeconnexion && (
               <span style={{
                 position: "absolute",
-                top: "-8px",
+                top: "-6px",
                 left: "50%",
                 transform: "translateX(-50%)",
-                width: "20px",
-                height: "3px",
+                width: "16px",
+                height: "2.5px",
                 backgroundColor: "#F97316",
                 borderRadius: "2px",
               }} />
             )}
-            <Icon size={20} strokeWidth={actif || estDeconnexion ? 2.8 : 2.2} />
+            <Icon size={18} strokeWidth={actif || estDeconnexion ? 2.6 : 2.1} />
             <span>{onglet.label}</span>
           </Link>
         );
