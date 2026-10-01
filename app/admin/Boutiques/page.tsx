@@ -1,7 +1,7 @@
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import LienVendeur from "../Dashboard/LienVendeur";
+import LienVendeur from "../dashboard/LienVendeur";
 
 export default async function BoutiquesAdmin() {
   const session = await getSession();
