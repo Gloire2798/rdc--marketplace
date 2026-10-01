@@ -15,9 +15,8 @@ export async function POST(request: Request) {
       mode,
       reference,
       articles,
-      total,
-      acompte,
-      reste,
+      totalFC,
+      totalUSD,
       devise,
     } = body;
 
@@ -40,10 +39,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Déterminer l'acheteur :
-    // - Si connecté en tant qu'ACHETEUR → utiliser son compte
-    // - Sinon → créer ou récupérer un compte invité avec le téléphone saisi
-    // - Si connecté en tant que VENDEUR ou ADMIN → ne pas lier au compte
+    // Déterminer l'acheteur
     let acheteurId: string | null = null;
 
     if (session && session.role === "ACHETEUR") {
@@ -67,16 +63,17 @@ export async function POST(request: Request) {
       }
     }
 
-    // Récupérer la devise depuis le premier article
-    const deviseCommande = articles[0]?.devise || "FC";
+    // Total utilisé pour la table (on additionne, on garde le détail en base)
+    const totalCombine = (totalFC || 0) + (totalUSD || 0);
 
+    // Créer la commande
     const commande = await prisma.commande.create({
       data: {
         acheteurId,
         nomClient: nom,
         telephoneClient: telephone,
         vendeurId,
-        total,
+        total: totalCombine,
         fraisLivraison: 0,
         mode,
         adresse: adresse || null,
@@ -96,13 +93,13 @@ export async function POST(request: Request) {
         },
         paiement: {
           create: {
-            montant: total,
+            montant: totalCombine,
             methode: "MOBILE_MONEY",
-            operateur: deviseCommande,
+            operateur: devise,
             refTransaction: reference,
             statut: "EN_ATTENTE",
             montantCommission: 0,
-            montantVendeur: total,
+            montantVendeur: totalCombine,
           },
         },
       },
