@@ -60,17 +60,16 @@ export default async function Home() {
         <div style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: "url('https://i.ibb.co/6c6z6hB/pagne-motif.jpg')",
+          backgroundImage: "url('https://i.ibb.co/NdyLSGVs/fond-Gk.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          opacity: 0.35,
         }} />
 
-        {/* Overlay bleu pour la lisibilité */}
+        {/* Overlay sombre pour la lisibilité */}
         <div style={{
           position: "absolute",
           inset: 0,
-          background: "linear-gradient(135deg, rgba(30, 58, 95, 0.75) 0%, rgba(15, 23, 42, 0.65) 100%)",
+          background: "linear-gradient(135deg, rgba(30, 58, 95, 0.82) 0%, rgba(15, 23, 42, 0.75) 100%)",
         }} />
 
         {/* Contenu */}
@@ -97,20 +96,23 @@ export default async function Home() {
 
           {/* Titre sur 1 ligne */}
           <h1 style={{
-            fontSize: "26px",
+            fontSize: "24px",
             fontWeight: "900",
             color: "white",
-            lineHeight: 1.05,
-            letterSpacing: "-0.6px",
+            lineHeight: 1.1,
+            letterSpacing: "-0.5px",
             marginBottom: "8px",
             textTransform: "uppercase",
           }}>
-            Le Guide du <span style={{
+            Le Guide du{" "}
+            <span style={{
               background: "linear-gradient(90deg, #F97316 0%, #FBBF24 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
-            }}>Complexe</span>
+            }}>
+              Complexe
+            </span>
           </h1>
 
           {/* Sous-titre */}
@@ -158,4 +160,4 @@ export default async function Home() {
       </div>
     </div>
   );
-    }
+}
