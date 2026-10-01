@@ -48,19 +48,18 @@ export default async function Home() {
 
   return (
     <div style={{ backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-      {/* BANDEAU BEIGE CHAUD */}
+      {/* BANDEAU BEIGE UNI */}
       <div style={{
         position: "relative",
-        padding: "22px 18px 24px 18px",
+        padding: "20px 18px 22px 18px",
         borderBottom: "1px solid #E8DFC8",
       }}>
-        {/* Petit bandeau décoratif en haut */}
         <div style={{
           position: "absolute",
           top: 0,
           left: 0,
           right: 0,
-          height: "5px",
+          height: "4px",
           background: "repeating-linear-gradient(90deg, #F97316 0px, #F97316 20px, #FBBF24 20px, #FBBF24 40px, #16A34A 40px, #16A34A 60px, #1E3A5F 60px, #1E3A5F 80px)",
         }} />
 
@@ -69,28 +68,28 @@ export default async function Home() {
           alignItems: "center",
           gap: "6px",
           backgroundColor: "white",
-          padding: "5px 11px",
+          padding: "4px 10px",
           borderRadius: "20px",
-          fontSize: "10px",
+          fontSize: "9.5px",
           fontWeight: "800",
           color: "#57534E",
-          marginBottom: "14px",
+          marginBottom: "12px",
           border: "1px solid #E8DFC8",
         }}>
-          <MapPin size={11} strokeWidth={2.5} />
+          <MapPin size={10} strokeWidth={2.5} />
           Kinshasa
           <span style={{ color: "#CBD5E1" }}>•</span>
-          <Clock size={11} strokeWidth={2.5} />
+          <Clock size={10} strokeWidth={2.5} />
           Ouvert 24h/24
         </div>
 
         <h1 style={{
-          fontSize: "24px",
+          fontSize: "22px",
           fontWeight: "900",
           color: "#0F172A",
           lineHeight: 1.1,
-          letterSpacing: "-0.5px",
-          marginBottom: "8px",
+          letterSpacing: "-0.4px",
+          marginBottom: "6px",
           textTransform: "uppercase",
         }}>
           Le Guide du{" "}
@@ -105,23 +104,22 @@ export default async function Home() {
         </h1>
 
         <p style={{
-          fontSize: "12px",
+          fontSize: "11px",
           fontWeight: "600",
           color: "#57534E",
-          lineHeight: 1.4,
         }}>
           Découvre. Explore. Shop en ligne.
         </p>
       </div>
 
-      <div style={{ padding: "16px 14px 20px 14px" }}>
+      <div style={{ padding: "14px 14px 20px 14px" }}>
         <Stories stories={stories} />
 
         <h2 style={{
-          fontSize: "12px",
+          fontSize: "11px",
           fontWeight: "900",
           color: "#0F172A",
-          marginBottom: "10px",
+          marginBottom: "8px",
           letterSpacing: "0.8px",
           textTransform: "uppercase",
         }}>
@@ -133,13 +131,13 @@ export default async function Home() {
             backgroundColor: "white",
             textAlign: "center",
             padding: "40px 20px",
-            borderRadius: "14px",
+            borderRadius: "12px",
             border: "1px solid #E8DFC8",
           }}>
-            <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "6px" }}>
+            <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "6px" }}>
               Aucune boutique pour le moment
             </p>
-            <p style={{ color: "#78716C", fontSize: "12px" }}>
+            <p style={{ color: "#78716C", fontSize: "11px" }}>
               Les boutiques apparaîtront ici dès qu&apos;elles seront validées.
             </p>
           </div>
