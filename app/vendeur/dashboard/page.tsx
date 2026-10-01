@@ -39,7 +39,6 @@ export default async function DashboardVendeur() {
     where: { vendeurId: vendeur.id, expireAt: { gt: new Date() } },
   });
 
-  // Récupérer toutes les commandes validées pour stats
   const commandesValidees = await prisma.commande.findMany({
     where: {
       vendeurId: vendeur.id,
@@ -50,7 +49,6 @@ export default async function DashboardVendeur() {
     },
   });
 
-  // Graphique : ventes par mois (6 derniers mois)
   const maintenant = new Date();
   const nomsMois = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
   const venteParMois: { mois: string; montant: number }[] = [];
@@ -68,7 +66,6 @@ export default async function DashboardVendeur() {
         return acc + c.items.reduce((sum, item) => {
           const devise = item.produit.devise;
           const montant = item.prixUnitaire * item.quantite;
-          // On convertit tout en FC pour le graphique (approximation)
           if (devise === "USD") return sum + montant * 2800;
           return sum + montant;
         }, 0);
@@ -77,7 +74,6 @@ export default async function DashboardVendeur() {
     venteParMois.push({ mois: moisLabel, montant: montantMois });
   }
 
-  // Top produits : compter les ventes par produit
   const ventesParProduit = new Map<string, {
     id: string;
     nom: string;
@@ -124,12 +120,12 @@ export default async function DashboardVendeur() {
           display: "flex",
           alignItems: "center",
           gap: "12px",
-          marginBottom: "16px",
+          marginBottom: "14px",
         }}>
-          <LogoBoutique nom={vendeur.nomBoutique} taille={52} />
+          <LogoBoutique nom={vendeur.nomBoutique} taille={48} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <h1 style={{
-              fontSize: "17px",
+              fontSize: "16px",
               fontWeight: "900",
               color: "#0F172A",
               marginBottom: "2px",
@@ -137,7 +133,7 @@ export default async function DashboardVendeur() {
             }}>
               Bonjour {session.nom}
             </h1>
-            <p style={{ fontSize: "11.5px", color: "#64748b", fontWeight: "700" }}>
+            <p style={{ fontSize: "11px", color: "#64748b", fontWeight: "700" }}>
               {vendeur.nomBoutique}
             </p>
           </div>
@@ -147,66 +143,68 @@ export default async function DashboardVendeur() {
           <div style={{
             backgroundColor: "#FEF3C7",
             color: "#78350F",
-            padding: "10px 12px",
+            padding: "9px 11px",
             borderRadius: "10px",
-            marginBottom: "14px",
+            marginBottom: "12px",
             border: "1px solid #FDE68A",
           }}>
-            <p style={{ fontWeight: "800", fontSize: "12px", marginBottom: "2px" }}>
+            <p style={{ fontWeight: "800", fontSize: "11px", marginBottom: "2px" }}>
               ⏳ Boutique en attente de validation
             </p>
-            <p style={{ fontSize: "10.5px", fontWeight: "500" }}>
+            <p style={{ fontSize: "10px", fontWeight: "500" }}>
               L&apos;administrateur va vérifier vos informations sous peu.
             </p>
           </div>
         )}
 
-        {/* 4 cartes stats cliquables */}
+        {/* 4 cartes stats COMPACTES */}
         <div style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "10px",
-          marginBottom: "14px",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          gap: "6px",
+          marginBottom: "12px",
         }}>
+          {/* Statut */}
           <div style={{
             backgroundColor: "white",
-            borderRadius: "12px",
+            borderRadius: "10px",
             overflow: "hidden",
-            boxShadow: "0 1px 4px rgba(15, 23, 42, 0.06)",
+            boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
             border: "1px solid #F1F5F9",
           }}>
             <div style={{
               backgroundColor: vendeur.actif ? "#BBF7D0" : "#FED7AA",
-              padding: "8px",
+              padding: "6px",
               display: "flex",
               justifyContent: "center",
             }}>
               {vendeur.actif ? (
-                <CheckCircle size={18} color="#15803d" strokeWidth={2.5} />
+                <CheckCircle size={14} color="#15803d" strokeWidth={2.5} />
               ) : (
-                <Clock size={18} color="#c2410c" strokeWidth={2.5} />
+                <Clock size={14} color="#c2410c" strokeWidth={2.5} />
               )}
             </div>
-            <div style={{ padding: "8px 6px 10px 6px", textAlign: "center" }}>
-              <p style={{ fontSize: "10px", color: "#475569", marginBottom: "3px", fontWeight: "700" }}>
+            <div style={{ padding: "6px 3px 7px 3px", textAlign: "center" }}>
+              <p style={{ fontSize: "8.5px", color: "#475569", marginBottom: "2px", fontWeight: "700" }}>
                 Statut
               </p>
               <p style={{
-                fontSize: "13px",
+                fontSize: "10px",
                 fontWeight: "900",
                 color: vendeur.actif ? "#15803d" : "#c2410c",
                 lineHeight: 1.1,
               }}>
-                {vendeur.actif ? "Active" : "En attente"}
+                {vendeur.actif ? "Active" : "Attente"}
               </p>
             </div>
           </div>
 
+          {/* Produits */}
           <Link href="/vendeur/produits" style={{
             backgroundColor: "white",
-            borderRadius: "12px",
+            borderRadius: "10px",
             overflow: "hidden",
-            boxShadow: "0 1px 4px rgba(15, 23, 42, 0.06)",
+            boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
             border: "1px solid #F1F5F9",
             textDecoration: "none",
             color: "inherit",
@@ -214,27 +212,28 @@ export default async function DashboardVendeur() {
           }}>
             <div style={{
               backgroundColor: "#DBEAFE",
-              padding: "8px",
+              padding: "6px",
               display: "flex",
               justifyContent: "center",
             }}>
-              <Package size={18} color="#1D4ED8" strokeWidth={2.5} />
+              <Package size={14} color="#1D4ED8" strokeWidth={2.5} />
             </div>
-            <div style={{ padding: "8px 6px 10px 6px", textAlign: "center" }}>
-              <p style={{ fontSize: "10px", color: "#475569", marginBottom: "3px", fontWeight: "700" }}>
+            <div style={{ padding: "6px 3px 7px 3px", textAlign: "center" }}>
+              <p style={{ fontSize: "8.5px", color: "#475569", marginBottom: "2px", fontWeight: "700" }}>
                 Produits
               </p>
-              <p style={{ fontSize: "22px", fontWeight: "900", color: "#0F172A", lineHeight: 1 }}>
+              <p style={{ fontSize: "15px", fontWeight: "900", color: "#0F172A", lineHeight: 1 }}>
                 {nombreProduits}
               </p>
             </div>
           </Link>
 
+          {/* Commandes */}
           <Link href="/vendeur/commandes" style={{
             backgroundColor: "white",
-            borderRadius: "12px",
+            borderRadius: "10px",
             overflow: "hidden",
-            boxShadow: "0 1px 4px rgba(15, 23, 42, 0.06)",
+            boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
             border: "1px solid #F1F5F9",
             textDecoration: "none",
             color: "inherit",
@@ -242,27 +241,28 @@ export default async function DashboardVendeur() {
           }}>
             <div style={{
               backgroundColor: "#FEF3C7",
-              padding: "8px",
+              padding: "6px",
               display: "flex",
               justifyContent: "center",
             }}>
-              <ShoppingCart size={18} color="#c2410c" strokeWidth={2.5} />
+              <ShoppingCart size={14} color="#c2410c" strokeWidth={2.5} />
             </div>
-            <div style={{ padding: "8px 6px 10px 6px", textAlign: "center" }}>
-              <p style={{ fontSize: "10px", color: "#475569", marginBottom: "3px", fontWeight: "700" }}>
-                Commandes
+            <div style={{ padding: "6px 3px 7px 3px", textAlign: "center" }}>
+              <p style={{ fontSize: "8.5px", color: "#475569", marginBottom: "2px", fontWeight: "700" }}>
+                Cmds
               </p>
-              <p style={{ fontSize: "22px", fontWeight: "900", color: "#0F172A", lineHeight: 1 }}>
+              <p style={{ fontSize: "15px", fontWeight: "900", color: "#0F172A", lineHeight: 1 }}>
                 {nombreCommandes}
               </p>
             </div>
           </Link>
 
+          {/* Stories */}
           <Link href="/vendeur/stories" style={{
             backgroundColor: "white",
-            borderRadius: "12px",
+            borderRadius: "10px",
             overflow: "hidden",
-            boxShadow: "0 1px 4px rgba(15, 23, 42, 0.06)",
+            boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
             border: "1px solid #F1F5F9",
             textDecoration: "none",
             color: "inherit",
@@ -270,30 +270,27 @@ export default async function DashboardVendeur() {
           }}>
             <div style={{
               backgroundColor: "#FCE7F3",
-              padding: "8px",
+              padding: "6px",
               display: "flex",
               justifyContent: "center",
             }}>
-              <Camera size={18} color="#BE185D" strokeWidth={2.5} />
+              <Camera size={14} color="#BE185D" strokeWidth={2.5} />
             </div>
-            <div style={{ padding: "8px 6px 10px 6px", textAlign: "center" }}>
-              <p style={{ fontSize: "10px", color: "#475569", marginBottom: "3px", fontWeight: "700" }}>
+            <div style={{ padding: "6px 3px 7px 3px", textAlign: "center" }}>
+              <p style={{ fontSize: "8.5px", color: "#475569", marginBottom: "2px", fontWeight: "700" }}>
                 Stories
               </p>
-              <p style={{ fontSize: "22px", fontWeight: "900", color: "#0F172A", lineHeight: 1 }}>
-                {nombreStories}<span style={{ fontSize: "12px", color: "#94a3b8" }}>/10</span>
+              <p style={{ fontSize: "15px", fontWeight: "900", color: "#0F172A", lineHeight: 1 }}>
+                {nombreStories}<span style={{ fontSize: "9px", color: "#94a3b8" }}>/10</span>
               </p>
             </div>
           </Link>
         </div>
 
-        {/* Graphique des ventes */}
         <GraphiqueVendeur data={venteParMois} />
 
-        {/* Top produits */}
         <TopProduits produits={topProduits} />
 
-        {/* Bouton principal */}
         <Link href="/vendeur/produits/nouveau" style={{
           display: "flex",
           alignItems: "center",
@@ -301,19 +298,18 @@ export default async function DashboardVendeur() {
           gap: "8px",
           backgroundColor: "#1D4ED8",
           color: "white",
-          padding: "13px",
+          padding: "12px",
           borderRadius: "12px",
           fontWeight: "800",
-          fontSize: "13px",
+          fontSize: "12.5px",
           textDecoration: "none",
           marginBottom: "10px",
           boxShadow: "0 2px 8px rgba(29, 78, 216, 0.2)",
         }}>
-          <Plus size={16} strokeWidth={2.8} />
+          <Plus size={15} strokeWidth={2.8} />
           Ajouter un produit
         </Link>
 
-        {/* 2 raccourcis */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
@@ -323,18 +319,18 @@ export default async function DashboardVendeur() {
             backgroundColor: "white",
             color: "#1D4ED8",
             border: "1.5px solid #E8DFC8",
-            padding: "12px",
+            padding: "11px",
             borderRadius: "10px",
             textAlign: "center",
             fontWeight: "700",
-            fontSize: "12px",
+            fontSize: "11.5px",
             textDecoration: "none",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             gap: "6px",
           }}>
-            <Store size={15} strokeWidth={2.5} />
+            <Store size={14} strokeWidth={2.5} />
             Ma boutique
           </Link>
 
@@ -342,11 +338,11 @@ export default async function DashboardVendeur() {
             backgroundColor: "white",
             color: "#1D4ED8",
             border: "1.5px solid #E8DFC8",
-            padding: "12px",
+            padding: "11px",
             borderRadius: "10px",
             textAlign: "center",
             fontWeight: "700",
-            fontSize: "12px",
+            fontSize: "11.5px",
             textDecoration: "none",
             display: "flex",
             alignItems: "center",
@@ -361,4 +357,4 @@ export default async function DashboardVendeur() {
       <NavigationBas />
     </>
   );
-        }
+      }
