@@ -12,7 +12,6 @@ export default async function PageStories() {
     orderBy: { createdAt: "desc" },
   });
 
-  // Une story par vendeur (la plus récente)
   const storiesUniques = new Map();
   stories.forEach((s) => {
     if (!storiesUniques.has(s.vendeurId)) {
