@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { User, Phone, Lock, Eye, EyeOff, ArrowRight, Store, MapPin } from "lucide-react";
@@ -23,13 +23,6 @@ export default function InscriptionVendeur() {
     numOrange: "",
     numAirtel: "",
   });
-
-  useEffect(() => {
-    document.body.style.overflow = "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
 
   const changer = (champ: string, valeur: string) => {
     setForm({ ...form, [champ]: valeur });
@@ -131,13 +124,54 @@ export default function InscriptionVendeur() {
       minHeight: "100vh",
       background: "linear-gradient(180deg, #FAF5E8 0%, #F5EAD2 100%)",
       padding: "16px 14px 30px 14px",
+      position: "relative",
+      overflow: "hidden",
     }}>
+      {/* SKYLINE EN HAUT */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        height: "160px",
+        pointerEvents: "none",
+        zIndex: 0,
+      }}>
+        <div style={{
+          position: "absolute",
+          top: "30px",
+          right: "40px",
+          width: "90px",
+          height: "90px",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, rgba(249, 115, 22, 0.08) 50%, transparent 75%)",
+        }} />
+        <svg
+          viewBox="0 0 400 100"
+          preserveAspectRatio="none"
+          style={{ width: "100%", height: "100%", display: "block" }}
+        >
+          <defs>
+            <linearGradient id="ville3" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#1E3A5F" stopOpacity="0.13" />
+              <stop offset="100%" stopColor="#1E3A5F" stopOpacity="0.02" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M0 100 L0 65 L15 65 L15 45 L28 45 L28 60 L42 60 L42 30 L55 30 L55 50 L70 50 L70 20 L85 20 L85 45 L100 45 L100 35 L115 35 L115 55 L130 55 L130 25 L148 25 L148 50 L165 50 L165 15 L180 15 L180 40 L198 40 L198 30 L215 30 L215 55 L232 55 L232 35 L250 35 L250 60 L268 60 L268 40 L285 40 L285 65 L302 65 L302 45 L320 45 L320 25 L338 25 L338 50 L355 50 L355 35 L372 35 L372 60 L388 60 L388 45 L400 45 L400 100 Z"
+            fill="url(#ville3)"
+          />
+        </svg>
+      </div>
+
       {/* Header : logo + slogan */}
       <div style={{
         display: "flex",
         justifyContent: "space-between",
         alignItems: "flex-start",
         marginBottom: "16px",
+        position: "relative",
+        zIndex: 1,
       }}>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <img
@@ -182,6 +216,8 @@ export default function InscriptionVendeur() {
         border: "1px solid #F1ECE0",
         maxWidth: "420px",
         margin: "0 auto",
+        position: "relative",
+        zIndex: 1,
       }}>
         <h1 style={{
           fontSize: "17px",
@@ -231,12 +267,10 @@ export default function InscriptionVendeur() {
         )}
 
         <form onSubmit={soumettre}>
-          {/* SECTION : Vos infos */}
           <p style={{ fontSize: "10.5px", fontWeight: "800", color: "#1E3A5F", marginBottom: "8px" }}>
             Vos informations
           </p>
 
-          {/* Nom */}
           <div style={champBox}>
             <User size={13} color="#78716C" strokeWidth={2.2} />
             <div style={{ flex: 1 }}>
@@ -251,7 +285,6 @@ export default function InscriptionVendeur() {
             </div>
           </div>
 
-          {/* Téléphone */}
           <div style={champBox}>
             <Phone size={13} color="#78716C" strokeWidth={2.2} />
             <div style={{ flex: 1 }}>
@@ -267,7 +300,6 @@ export default function InscriptionVendeur() {
             </div>
           </div>
 
-          {/* Mot de passe */}
           <div style={champBox}>
             <Lock size={13} color="#78716C" strokeWidth={2.2} />
             <div style={{ flex: 1 }}>
@@ -290,12 +322,10 @@ export default function InscriptionVendeur() {
             </button>
           </div>
 
-          {/* SECTION : Votre boutique */}
           <p style={{ fontSize: "10.5px", fontWeight: "800", color: "#1E3A5F", marginTop: "14px", marginBottom: "8px" }}>
             Votre boutique
           </p>
 
-          {/* Nom boutique */}
           <div style={champBox}>
             <Store size={13} color="#78716C" strokeWidth={2.2} />
             <div style={{ flex: 1 }}>
@@ -311,7 +341,6 @@ export default function InscriptionVendeur() {
             </div>
           </div>
 
-          {/* Description */}
           <div style={{ ...champBox, alignItems: "flex-start", padding: "10px" }}>
             <div style={{ flex: 1 }}>
               <p style={labelMini}>Description (optionnel)</p>
@@ -329,7 +358,6 @@ export default function InscriptionVendeur() {
             </div>
           </div>
 
-          {/* Adresse */}
           <div style={champBox}>
             <MapPin size={13} color="#78716C" strokeWidth={2.2} />
             <div style={{ flex: 1 }}>
@@ -344,7 +372,6 @@ export default function InscriptionVendeur() {
             </div>
           </div>
 
-          {/* SECTION : Mobile Money */}
           <p style={{ fontSize: "10.5px", fontWeight: "800", color: "#1E3A5F", marginTop: "14px", marginBottom: "4px" }}>
             Numéros Mobile Money
           </p>
@@ -352,7 +379,6 @@ export default function InscriptionVendeur() {
             Renseignez au moins un numéro.
           </p>
 
-          {/* M-Pesa */}
           <div style={{ ...champBox, padding: "6px 10px" }}>
             <div style={logoBox}>
               <img src="https://i.ibb.co/NndcrT1d/m-pesa.jpg" alt="M-Pesa" style={logoImg} />
@@ -369,7 +395,6 @@ export default function InscriptionVendeur() {
             </div>
           </div>
 
-          {/* Orange */}
           <div style={{ ...champBox, padding: "6px 10px" }}>
             <div style={logoBox}>
               <img src="https://i.ibb.co/pvr5LPxN/orange.jpg" alt="Orange" style={logoImg} />
@@ -386,7 +411,6 @@ export default function InscriptionVendeur() {
             </div>
           </div>
 
-          {/* Airtel */}
           <div style={{ ...champBox, padding: "6px 10px", marginBottom: "14px" }}>
             <div style={logoBox}>
               <img src="https://i.ibb.co/spmBgLvg/airtel.jpg" alt="Airtel" style={logoImg} />
