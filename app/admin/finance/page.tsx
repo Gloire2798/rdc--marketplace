@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   Wallet,
   TrendingUp,
@@ -194,7 +193,7 @@ export default function FinancePage() {
   };
 
   // ----------------------------------------------------------
-  // Marquer TOUT payé pour un vendeur (inscription + loyer actuel)
+  // Marquer TOUT payé pour un vendeur
   // ----------------------------------------------------------
   const toutMarquerPaye = async (vendeur: VendeurFinance) => {
     const inscription = vendeur.paiementsFinance.find(
@@ -499,7 +498,6 @@ function CarteVendeur({
 
   const toutPaye = inscriptionPayee && loyerPaye;
 
-  // Couleur du bord gauche selon l'état
   const bordCouleur = toutPaye
     ? "border-l-emerald-500"
     : "border-l-red-500";
@@ -542,7 +540,6 @@ function CarteVendeur({
 
       {/* ---------- LIGNES PAIEMENTS ---------- */}
       <div className="px-3.5 py-3 space-y-2">
-        {/* Inscription */}
         <LignePaiement
           label="Inscription"
           montant={FRAIS_INSCRIPTION}
@@ -551,7 +548,6 @@ function CarteVendeur({
           onMarquer={() => onMarquerPaye(vendeur.id, "INSCRIPTION", "INSCRIPTION")}
         />
 
-        {/* Loyer actuel */}
         <LignePaiement
           label={getMoisLisible(moisActuel)}
           montant={LOYER_MENSUEL}
@@ -631,4 +627,7 @@ function LignePaiement({
           )}
           {enCours ? "..." : "Marquer payé"}
         </button>
-    
+      )}
+    </div>
+  );
+        }
