@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Phone, Lock, Eye, EyeOff, ArrowRight, UserPlus } from "lucide-react";
@@ -11,6 +11,14 @@ export default function Connexion() {
   const [erreur, setErreur] = useState("");
   const [voirMdp, setVoirMdp] = useState(false);
   const [form, setForm] = useState({ telephone: "", motDePasse: "" });
+
+  // Bloquer le scroll
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   const changer = (champ: string, valeur: string) => {
     setForm({ ...form, [champ]: valeur });
@@ -41,64 +49,63 @@ export default function Connexion() {
 
   return (
     <div style={{
-      minHeight: "100vh",
-      maxHeight: "100vh",
+      position: "fixed",
+      inset: 0,
       background: "linear-gradient(180deg, #FAF5E8 0%, #F5EAD2 100%)",
       padding: "16px 14px 20px 14px",
-      position: "relative",
-      overflow: "hidden",
       display: "flex",
       flexDirection: "column",
+      overflow: "hidden",
     }}>
-      {/* Skyline décoratif en bas */}
+      {/* SKYLINE EN HAUT (derrière le slogan) */}
       <div style={{
         position: "absolute",
-        bottom: 0,
+        top: 0,
         left: 0,
         right: 0,
-        height: "180px",
+        height: "160px",
         pointerEvents: "none",
         zIndex: 0,
       }}>
-        {/* Bâtiments */}
+        {/* Soleil couchant */}
+        <div style={{
+          position: "absolute",
+          top: "30px",
+          right: "40px",
+          width: "90px",
+          height: "90px",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, rgba(249, 115, 22, 0.08) 50%, transparent 75%)",
+        }} />
+
+        {/* Bâtiments (skyline) */}
         <svg
-          viewBox="0 0 400 120"
+          viewBox="0 0 400 100"
           preserveAspectRatio="none"
           style={{ width: "100%", height: "100%", display: "block" }}
         >
           <defs>
             <linearGradient id="ville" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#1E3A5F" stopOpacity="0.10" />
-              <stop offset="100%" stopColor="#1E3A5F" stopOpacity="0.04" />
+              <stop offset="0%" stopColor="#1E3A5F" stopOpacity="0.13" />
+              <stop offset="100%" stopColor="#1E3A5F" stopOpacity="0.02" />
             </linearGradient>
           </defs>
           <path
-            d="M0 120 L0 90 L20 90 L20 70 L35 70 L35 85 L50 85 L50 55 L65 55 L65 75 L80 75 L80 40 L95 40 L95 65 L110 65 L110 80 L130 80 L130 50 L145 50 L145 70 L165 70 L165 30 L180 30 L180 60 L200 60 L200 45 L220 45 L220 75 L240 75 L240 55 L260 55 L260 80 L280 80 L280 60 L295 60 L295 90 L320 90 L320 65 L340 65 L340 85 L360 85 L360 70 L380 70 L380 90 L400 90 L400 120 Z"
+            d="M0 100 L0 65 L15 65 L15 45 L28 45 L28 60 L42 60 L42 30 L55 30 L55 50 L70 50 L70 20 L85 20 L85 45 L100 45 L100 35 L115 35 L115 55 L130 55 L130 25 L148 25 L148 50 L165 50 L165 15 L180 15 L180 40 L198 40 L198 30 L215 30 L215 55 L232 55 L232 35 L250 35 L250 60 L268 60 L268 40 L285 40 L285 65 L302 65 L302 45 L320 45 L320 25 L338 25 L338 50 L355 50 L355 35 L372 35 L372 60 L388 60 L388 45 L400 45 L400 100 Z"
             fill="url(#ville)"
           />
         </svg>
-
-        {/* Coucher de soleil */}
-        <div style={{
-          position: "absolute",
-          bottom: "60px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "100px",
-          height: "100px",
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%)",
-        }} />
       </div>
 
-      {/* Header haut : logo + slogan */}
+      {/* Header : logo + slogan */}
       <div style={{
         display: "flex",
         justifyContent: "space-between",
         alignItems: "flex-start",
-        marginBottom: "16px",
+        marginBottom: "20px",
         position: "relative",
         zIndex: 1,
+        flexShrink: 0,
       }}>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <img
@@ -141,11 +148,14 @@ export default function Connexion() {
         </div>
       </div>
 
-      {/* Carte connexion */}
+      {/* Carte connexion — coins courbés (haut arrondi, bas droit) */}
       <div style={{
         backgroundColor: "white",
-        borderRadius: "18px",
-        padding: "18px 14px 18px 14px",
+        borderTopLeftRadius: "40px",
+        borderTopRightRadius: "12px",
+        borderBottomLeftRadius: "12px",
+        borderBottomRightRadius: "40px",
+        padding: "18px 16px 16px 16px",
         boxShadow: "0 6px 24px rgba(120, 100, 60, 0.10)",
         border: "1px solid #F1ECE0",
         maxWidth: "400px",
@@ -153,6 +163,7 @@ export default function Connexion() {
         margin: "0 auto",
         position: "relative",
         zIndex: 1,
+        flexShrink: 0,
       }}>
         <h1 style={{
           fontSize: "17px",
@@ -277,7 +288,7 @@ export default function Connexion() {
             </button>
           </div>
 
-          <div style={{ textAlign: "right", marginBottom: "12px" }}>
+          <div style={{ textAlign: "right", marginBottom: "10px" }}>
             <Link
               href="/mot-de-passe-oublie"
               style={{
@@ -326,7 +337,7 @@ export default function Connexion() {
           display: "flex",
           alignItems: "center",
           gap: "8px",
-          margin: "12px 0",
+          margin: "10px 0",
         }}>
           <div style={{ flex: 1, height: "1px", backgroundColor: "#E5E0D5" }} />
           <span style={{ fontSize: "9.5px", color: "#94a3b8", fontWeight: "700" }}>
@@ -377,4 +388,4 @@ export default function Connexion() {
       </div>
     </div>
   );
-      }
+  }
