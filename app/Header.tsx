@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { compterArticles } from "@/lib/panier";
-import MenuBurger from "./admin/dashboard/MenuBurger";
-import { Search, Bell, ShoppingCart, Package, Store } from "lucide-react";
+import MenuBurgerAdmin from "./admin/dashboard/MenuBurger";
+import MenuBurgerVendeur from "./vendeur/dashboard/MenuBurger";
+import { Search, Bell, ShoppingCart } from "lucide-react";
 
 interface InfosUser {
   id: string;
@@ -34,7 +35,7 @@ export default function Header() {
       .catch(() => {});
   }, []);
 
-  // Cacher le header sur les pages de connexion/inscription
+  // Pages sans header (auth)
   const pageSansHeader =
     pathname === "/vendeur/connexion" ||
     pathname === "/vendeur/inscription" ||
@@ -42,9 +43,7 @@ export default function Header() {
     pathname === "/compte" ||
     pathname === "/mot-de-passe-oublie";
 
-  if (pageSansHeader) {
-    return null;
-  }
+  if (pageSansHeader) return null;
 
   // HEADER ADMIN
   if (pathname.startsWith("/admin")) {
@@ -60,7 +59,7 @@ export default function Header() {
         top: 0,
         zIndex: 50,
       }}>
-        <MenuBurger />
+        <MenuBurgerAdmin />
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
           <img
             src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
@@ -94,6 +93,7 @@ export default function Header() {
         top: 0,
         zIndex: 50,
       }}>
+        <MenuBurgerVendeur />
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
           <img
             src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
@@ -105,13 +105,8 @@ export default function Header() {
             <span style={{ fontSize: "10.5px", color: "#64748b", fontWeight: "700" }}>Espace vendeur</span>
           </div>
         </Link>
-        <div style={{ display: "flex", gap: "18px", alignItems: "center", color: "#0F172A" }}>
-          <Link href="/vendeur/commandes" style={{ color: "#0F172A" }}>
-            <Package size={24} strokeWidth={2.8} />
-          </Link>
-          <Link href="/vendeur/produits" style={{ color: "#0F172A" }}>
-            <Store size={24} strokeWidth={2.8} />
-          </Link>
+        <div style={{ display: "flex", gap: "16px", alignItems: "center", color: "#0F172A" }}>
+          <Bell size={22} strokeWidth={2.8} />
         </div>
       </header>
     );
@@ -237,4 +232,4 @@ export default function Header() {
       </div>
     </header>
   );
-                  }
+}
