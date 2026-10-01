@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import LogoBoutique from "@/app/components/LogoBoutique";
 import NavigationBas from "./NavigationBas";
+import GraphiqueVendeur from "./GraphiqueVendeur";
+import TopProduits from "./TopProduits";
 import { Plus, Store, Camera, Package, ShoppingCart, CheckCircle, Clock } from "lucide-react";
 
 export default async function DashboardVendeur() {
@@ -37,58 +39,92 @@ export default async function DashboardVendeur() {
     where: { vendeurId: vendeur.id, expireAt: { gt: new Date() } },
   });
 
-  const stats = [
-    {
-      label: "Statut",
-      valeur: vendeur.actif ? "Active" : "En attente",
-      Icon: vendeur.actif ? CheckCircle : Clock,
-      bg: vendeur.actif ? "#BBF7D0" : "#FED7AA",
-      iconColor: vendeur.actif ? "#15803d" : "#c2410c",
-      badge: vendeur.actif ? null : "Validation admin",
-      badgeColor: "#c2410c",
+  // Récupérer toutes les commandes validées pour stats
+  const commandesValidees = await prisma.commande.findMany({
+    where: {
+      vendeurId: vendeur.id,
+      statut: { in: ["PAYE", "PRET", "RETIRE"] },
     },
-    {
-      label: "Produits",
-      valeur: nombreProduits,
-      Icon: Package,
-      bg: "#DBEAFE",
-      iconColor: "#1D4ED8",
-      badge: null,
-      badgeColor: "#1D4ED8",
+    include: {
+      items: { include: { produit: true } },
     },
-    {
-      label: "Commandes",
-      valeur: nombreCommandes,
-      Icon: ShoppingCart,
-      bg: "#FEF3C7",
-      iconColor: "#c2410c",
-      badge: null,
-      badgeColor: "#c2410c",
-    },
-    {
-      label: "Stories",
-      valeur: `${nombreStories}/10`,
-      Icon: Camera,
-      bg: "#FCE7F3",
-      iconColor: "#BE185D",
-      badge: null,
-      badgeColor: "#BE185D",
-    },
-  ];
+  });
+
+  // Graphique : ventes par mois (6 derniers mois)
+  const maintenant = new Date();
+  const nomsMois = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
+  const venteParMois: { mois: string; montant: number }[] = [];
+
+  for (let i = 5; i >= 0; i--) {
+    const date = new Date(maintenant.getFullYear(), maintenant.getMonth() - i, 1);
+    const moisLabel = nomsMois[date.getMonth()];
+
+    const montantMois = commandesValidees
+      .filter((c) => {
+        const dc = new Date(c.createdAt);
+        return dc.getMonth() === date.getMonth() && dc.getFullYear() === date.getFullYear();
+      })
+      .reduce((acc, c) => {
+        return acc + c.items.reduce((sum, item) => {
+          const devise = item.produit.devise;
+          const montant = item.prixUnitaire * item.quantite;
+          // On convertit tout en FC pour le graphique (approximation)
+          if (devise === "USD") return sum + montant * 2800;
+          return sum + montant;
+        }, 0);
+      }, 0);
+
+    venteParMois.push({ mois: moisLabel, montant: montantMois });
+  }
+
+  // Top produits : compter les ventes par produit
+  const ventesParProduit = new Map<string, {
+    id: string;
+    nom: string;
+    photo: string | null;
+    quantiteVendue: number;
+    chiffreAffaires: number;
+    devise: string;
+  }>();
+
+  commandesValidees.forEach((c) => {
+    c.items.forEach((item) => {
+      const p = item.produit;
+      const existant = ventesParProduit.get(p.id);
+
+      if (existant) {
+        existant.quantiteVendue += item.quantite;
+        existant.chiffreAffaires += item.prixUnitaire * item.quantite;
+      } else {
+        ventesParProduit.set(p.id, {
+          id: p.id,
+          nom: p.nom,
+          photo: p.photo1,
+          quantiteVendue: item.quantite,
+          chiffreAffaires: item.prixUnitaire * item.quantite,
+          devise: p.devise,
+        });
+      }
+    });
+  });
+
+  const topProduits = Array.from(ventesParProduit.values())
+    .sort((a, b) => b.quantiteVendue - a.quantiteVendue)
+    .slice(0, 5);
 
   return (
     <>
       <div style={{
         backgroundColor: "#F3F4F6",
         minHeight: "100vh",
-        padding: "18px 14px 100px 14px",
+        padding: "16px 14px 100px 14px",
       }}>
         {/* Header vendeur */}
         <div style={{
           display: "flex",
           alignItems: "center",
           gap: "12px",
-          marginBottom: "18px",
+          marginBottom: "16px",
         }}>
           <LogoBoutique nom={vendeur.nomBoutique} taille={52} />
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -111,69 +147,153 @@ export default async function DashboardVendeur() {
           <div style={{
             backgroundColor: "#FEF3C7",
             color: "#78350F",
-            padding: "12px",
+            padding: "10px 12px",
             borderRadius: "10px",
-            marginBottom: "16px",
+            marginBottom: "14px",
             border: "1px solid #FDE68A",
           }}>
-            <p style={{ fontWeight: "700", fontSize: "12.5px", marginBottom: "3px" }}>
+            <p style={{ fontWeight: "800", fontSize: "12px", marginBottom: "2px" }}>
               ⏳ Boutique en attente de validation
             </p>
-            <p style={{ fontSize: "11px" }}>
+            <p style={{ fontSize: "10.5px", fontWeight: "500" }}>
               L&apos;administrateur va vérifier vos informations sous peu.
             </p>
           </div>
         )}
 
-        {/* 4 cartes stats */}
+        {/* 4 cartes stats cliquables */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "10px",
-          marginBottom: "18px",
+          marginBottom: "14px",
         }}>
-          {stats.map((stat) => {
-            const Icon = stat.Icon;
-            return (
-              <div key={stat.label} style={{
-                backgroundColor: "white",
-                borderRadius: "12px",
-                overflow: "hidden",
-                boxShadow: "0 1px 4px rgba(15, 23, 42, 0.06)",
-                border: "1px solid #F1F5F9",
+          <div style={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            overflow: "hidden",
+            boxShadow: "0 1px 4px rgba(15, 23, 42, 0.06)",
+            border: "1px solid #F1F5F9",
+          }}>
+            <div style={{
+              backgroundColor: vendeur.actif ? "#BBF7D0" : "#FED7AA",
+              padding: "8px",
+              display: "flex",
+              justifyContent: "center",
+            }}>
+              {vendeur.actif ? (
+                <CheckCircle size={18} color="#15803d" strokeWidth={2.5} />
+              ) : (
+                <Clock size={18} color="#c2410c" strokeWidth={2.5} />
+              )}
+            </div>
+            <div style={{ padding: "8px 6px 10px 6px", textAlign: "center" }}>
+              <p style={{ fontSize: "10px", color: "#475569", marginBottom: "3px", fontWeight: "700" }}>
+                Statut
+              </p>
+              <p style={{
+                fontSize: "13px",
+                fontWeight: "900",
+                color: vendeur.actif ? "#15803d" : "#c2410c",
+                lineHeight: 1.1,
               }}>
-                <div style={{
-                  backgroundColor: stat.bg,
-                  padding: "8px",
-                  display: "flex",
-                  justifyContent: "center",
-                }}>
-                  <Icon size={18} color={stat.iconColor} strokeWidth={2.5} />
-                </div>
-                <div style={{ padding: "8px 6px 10px 6px", textAlign: "center" }}>
-                  <p style={{ fontSize: "10px", color: "#475569", marginBottom: "3px", fontWeight: "700" }}>
-                    {stat.label}
-                  </p>
-                  <p style={{ fontSize: "20px", fontWeight: "900", color: "#0F172A", lineHeight: 1 }}>
-                    {stat.valeur}
-                  </p>
-                  {stat.badge && (
-                    <p style={{
-                      fontSize: "9px",
-                      color: stat.badgeColor,
-                      fontWeight: "800",
-                      marginTop: "3px",
-                    }}>
-                      {stat.badge}
-                    </p>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+                {vendeur.actif ? "Active" : "En attente"}
+              </p>
+            </div>
+          </div>
+
+          <Link href="/vendeur/produits" style={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            overflow: "hidden",
+            boxShadow: "0 1px 4px rgba(15, 23, 42, 0.06)",
+            border: "1px solid #F1F5F9",
+            textDecoration: "none",
+            color: "inherit",
+            display: "block",
+          }}>
+            <div style={{
+              backgroundColor: "#DBEAFE",
+              padding: "8px",
+              display: "flex",
+              justifyContent: "center",
+            }}>
+              <Package size={18} color="#1D4ED8" strokeWidth={2.5} />
+            </div>
+            <div style={{ padding: "8px 6px 10px 6px", textAlign: "center" }}>
+              <p style={{ fontSize: "10px", color: "#475569", marginBottom: "3px", fontWeight: "700" }}>
+                Produits
+              </p>
+              <p style={{ fontSize: "22px", fontWeight: "900", color: "#0F172A", lineHeight: 1 }}>
+                {nombreProduits}
+              </p>
+            </div>
+          </Link>
+
+          <Link href="/vendeur/commandes" style={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            overflow: "hidden",
+            boxShadow: "0 1px 4px rgba(15, 23, 42, 0.06)",
+            border: "1px solid #F1F5F9",
+            textDecoration: "none",
+            color: "inherit",
+            display: "block",
+          }}>
+            <div style={{
+              backgroundColor: "#FEF3C7",
+              padding: "8px",
+              display: "flex",
+              justifyContent: "center",
+            }}>
+              <ShoppingCart size={18} color="#c2410c" strokeWidth={2.5} />
+            </div>
+            <div style={{ padding: "8px 6px 10px 6px", textAlign: "center" }}>
+              <p style={{ fontSize: "10px", color: "#475569", marginBottom: "3px", fontWeight: "700" }}>
+                Commandes
+              </p>
+              <p style={{ fontSize: "22px", fontWeight: "900", color: "#0F172A", lineHeight: 1 }}>
+                {nombreCommandes}
+              </p>
+            </div>
+          </Link>
+
+          <Link href="/vendeur/stories" style={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            overflow: "hidden",
+            boxShadow: "0 1px 4px rgba(15, 23, 42, 0.06)",
+            border: "1px solid #F1F5F9",
+            textDecoration: "none",
+            color: "inherit",
+            display: "block",
+          }}>
+            <div style={{
+              backgroundColor: "#FCE7F3",
+              padding: "8px",
+              display: "flex",
+              justifyContent: "center",
+            }}>
+              <Camera size={18} color="#BE185D" strokeWidth={2.5} />
+            </div>
+            <div style={{ padding: "8px 6px 10px 6px", textAlign: "center" }}>
+              <p style={{ fontSize: "10px", color: "#475569", marginBottom: "3px", fontWeight: "700" }}>
+                Stories
+              </p>
+              <p style={{ fontSize: "22px", fontWeight: "900", color: "#0F172A", lineHeight: 1 }}>
+                {nombreStories}<span style={{ fontSize: "12px", color: "#94a3b8" }}>/10</span>
+              </p>
+            </div>
+          </Link>
         </div>
 
-        {/* Actions */}
+        {/* Graphique des ventes */}
+        <GraphiqueVendeur data={venteParMois} />
+
+        {/* Top produits */}
+        <TopProduits produits={topProduits} />
+
+        {/* Bouton principal */}
         <Link href="/vendeur/produits/nouveau" style={{
           display: "flex",
           alignItems: "center",
@@ -186,12 +306,14 @@ export default async function DashboardVendeur() {
           fontWeight: "800",
           fontSize: "13px",
           textDecoration: "none",
-          marginBottom: "12px",
+          marginBottom: "10px",
+          boxShadow: "0 2px 8px rgba(29, 78, 216, 0.2)",
         }}>
           <Plus size={16} strokeWidth={2.8} />
           Ajouter un produit
         </Link>
 
+        {/* 2 raccourcis */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
@@ -216,7 +338,7 @@ export default async function DashboardVendeur() {
             Ma boutique
           </Link>
 
-          <Link href="/vendeur/produits" style={{
+          <Link href="/" style={{
             backgroundColor: "white",
             color: "#1D4ED8",
             border: "1.5px solid #E8DFC8",
@@ -231,46 +353,7 @@ export default async function DashboardVendeur() {
             justifyContent: "center",
             gap: "6px",
           }}>
-            <Package size={15} strokeWidth={2.5} />
-            Mes produits
-          </Link>
-
-          <Link href="/vendeur/commandes" style={{
-            backgroundColor: "white",
-            color: "#1D4ED8",
-            border: "1.5px solid #E8DFC8",
-            padding: "12px",
-            borderRadius: "10px",
-            textAlign: "center",
-            fontWeight: "700",
-            fontSize: "12px",
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "6px",
-          }}>
-            <ShoppingCart size={15} strokeWidth={2.5} />
-            Mes commandes
-          </Link>
-
-          <Link href="/vendeur/stories" style={{
-            backgroundColor: "white",
-            color: "#1D4ED8",
-            border: "1.5px solid #E8DFC8",
-            padding: "12px",
-            borderRadius: "10px",
-            textAlign: "center",
-            fontWeight: "700",
-            fontSize: "12px",
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "6px",
-          }}>
-            <Camera size={15} strokeWidth={2.5} />
-            Mes stories
+            🌐 Voir le site
           </Link>
         </div>
       </div>
@@ -278,4 +361,4 @@ export default async function DashboardVendeur() {
       <NavigationBas />
     </>
   );
-      }
+        }
