@@ -10,7 +10,6 @@ export default function Connexion() {
   const [chargement, setChargement] = useState(false);
   const [erreur, setErreur] = useState("");
   const [voirMdp, setVoirMdp] = useState(false);
-
   const [form, setForm] = useState({ telephone: "", motDePasse: "" });
 
   const changer = (champ: string, valeur: string) => {
@@ -21,22 +20,18 @@ export default function Connexion() {
     e.preventDefault();
     setErreur("");
     setChargement(true);
-
     try {
       const res = await fetch("/api/vendeur/connexion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-
       const data = await res.json();
-
       if (!res.ok) {
         setErreur(data.erreur || "Identifiants incorrects");
         setChargement(false);
         return;
       }
-
       router.push(data.redirection || "/vendeur/dashboard");
     } catch {
       setErreur("Impossible de contacter le serveur");
@@ -47,94 +42,122 @@ export default function Connexion() {
   return (
     <div style={{
       minHeight: "100vh",
-      backgroundColor: "#FAF5E8",
-      padding: "24px 16px",
+      background: "linear-gradient(180deg, #FAF5E8 0%, #FAF5E8 60%, #F0E4CE 100%)",
+      padding: "20px 14px 30px 14px",
       position: "relative",
       overflow: "hidden",
     }}>
-      {/* Fond décoratif - forme orange en bas */}
+      {/* Skyline décoratif en bas */}
       <div style={{
         position: "absolute",
-        bottom: "-100px",
-        left: "-50px",
-        width: "200px",
-        height: "200px",
-        borderRadius: "50%",
-        background: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
-        opacity: 0.1,
-      }} />
-      <div style={{
-        position: "absolute",
-        bottom: "-80px",
-        right: "-40px",
-        width: "160px",
-        height: "160px",
-        borderRadius: "50%",
-        background: "linear-gradient(135deg, #1E3A5F 0%, #0F172A 100%)",
-        opacity: 0.08,
-      }} />
-
-      {/* Logo en haut */}
-      <div style={{ textAlign: "center", marginBottom: "24px", position: "relative", zIndex: 1 }}>
-        <img
-          src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
-          alt="GK Sensei"
-          style={{
-            height: "70px",
-            width: "auto",
-            mixBlendMode: "multiply",
-            marginBottom: "8px",
-          }}
-        />
-        <p style={{
-          fontSize: "11px",
-          color: "#78716C",
-          fontWeight: "700",
-          letterSpacing: "0.5px",
-        }}>
-          Le commerce en un clic
-        </p>
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: "120px",
+        background: "linear-gradient(180deg, transparent 0%, rgba(30, 58, 95, 0.06) 100%)",
+        pointerEvents: "none",
+      }}>
+        <div style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: "50px",
+          background: "linear-gradient(180deg, transparent 0%, #1E3A5F 100%)",
+          opacity: 0.08,
+          clipPath: "polygon(0 60%, 5% 40%, 10% 55%, 15% 30%, 20% 50%, 25% 35%, 30% 60%, 35% 45%, 40% 65%, 45% 50%, 50% 70%, 55% 55%, 60% 75%, 65% 60%, 70% 45%, 75% 65%, 80% 40%, 85% 55%, 90% 35%, 95% 50%, 100% 40%, 100% 100%, 0 100%)",
+        }} />
       </div>
 
-      {/* Carte de connexion */}
+      {/* Header haut : logo + slogan */}
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+        marginBottom: "24px",
+        position: "relative",
+        zIndex: 1,
+      }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <img
+            src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
+            alt="GK Sensei"
+            style={{
+              height: "56px",
+              width: "auto",
+              mixBlendMode: "multiply",
+              marginBottom: "2px",
+            }}
+          />
+          <p style={{
+            fontSize: "9.5px",
+            color: "#78716C",
+            fontWeight: "700",
+            letterSpacing: "0.3px",
+          }}>
+            Le commerce en un clic
+          </p>
+        </div>
+
+        <div style={{ textAlign: "right", maxWidth: "120px" }}>
+          <p style={{
+            fontSize: "10.5px",
+            color: "#1E3A5F",
+            fontWeight: "800",
+            lineHeight: 1.3,
+          }}>
+            Plus proche de vos besoins, partout à Kinshasa.
+          </p>
+          <div style={{
+            height: "2px",
+            width: "30px",
+            background: "#F97316",
+            marginLeft: "auto",
+            marginTop: "4px",
+            borderRadius: "2px",
+          }} />
+        </div>
+      </div>
+
+      {/* Carte connexion */}
       <div style={{
         backgroundColor: "white",
-        borderRadius: "16px",
-        padding: "22px 18px 24px 18px",
-        boxShadow: "0 4px 20px rgba(120, 100, 60, 0.08)",
+        borderRadius: "20px",
+        padding: "20px 16px 22px 16px",
+        boxShadow: "0 6px 24px rgba(120, 100, 60, 0.10)",
         border: "1px solid #F1ECE0",
-        maxWidth: "420px",
+        maxWidth: "400px",
         margin: "0 auto",
         position: "relative",
         zIndex: 1,
       }}>
         <h1 style={{
-          fontSize: "22px",
+          fontSize: "18px",
           fontWeight: "900",
           color: "#0F172A",
-          marginBottom: "6px",
+          marginBottom: "4px",
           letterSpacing: "-0.3px",
         }}>
           Connectez-vous
         </h1>
         <p style={{
-          fontSize: "12.5px",
+          fontSize: "11px",
           color: "#78716C",
           fontWeight: "500",
-          marginBottom: "20px",
+          marginBottom: "16px",
           lineHeight: 1.4,
         }}>
-          Accédez à votre espace GK Sensei et continuez vos achats.
+          Connectez-vous ou créez un compte.
         </p>
 
         {erreur && (
           <div style={{
             backgroundColor: "#FEE2E2",
             color: "#991B1B",
-            padding: "10px 12px",
-            borderRadius: "10px",
-            marginBottom: "14px",
-            fontSize: "12px",
+            padding: "8px 10px",
+            borderRadius: "8px",
+            marginBottom: "12px",
+            fontSize: "11px",
             fontWeight: "600",
           }}>
             {erreur}
@@ -142,20 +165,20 @@ export default function Connexion() {
         )}
 
         <form onSubmit={soumettre}>
-          {/* Champ téléphone */}
+          {/* Téléphone */}
           <div style={{
             display: "flex",
             alignItems: "center",
-            gap: "10px",
-            border: "1.5px solid #E5E0D5",
-            borderRadius: "12px",
-            padding: "10px 14px",
-            marginBottom: "12px",
+            gap: "8px",
+            border: "1px solid #E5E0D5",
+            borderRadius: "10px",
+            padding: "8px 12px",
+            marginBottom: "10px",
             backgroundColor: "#FEFCF8",
           }}>
-            <Phone size={16} color="#78716C" strokeWidth={2.2} />
+            <Phone size={14} color="#78716C" strokeWidth={2.2} />
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: "9.5px", color: "#94a3b8", fontWeight: "700", marginBottom: "1px" }}>
+              <p style={{ fontSize: "8.5px", color: "#94a3b8", fontWeight: "700", marginBottom: "0px" }}>
                 Numéro de téléphone
               </p>
               <input
@@ -169,7 +192,7 @@ export default function Connexion() {
                   border: "none",
                   outline: "none",
                   backgroundColor: "transparent",
-                  fontSize: "14px",
+                  fontSize: "12.5px",
                   fontWeight: "600",
                   color: "#0F172A",
                   fontFamily: "inherit",
@@ -178,20 +201,20 @@ export default function Connexion() {
             </div>
           </div>
 
-          {/* Champ mot de passe */}
+          {/* Mot de passe */}
           <div style={{
             display: "flex",
             alignItems: "center",
-            gap: "10px",
-            border: "1.5px solid #E5E0D5",
-            borderRadius: "12px",
-            padding: "10px 14px",
-            marginBottom: "8px",
+            gap: "8px",
+            border: "1px solid #E5E0D5",
+            borderRadius: "10px",
+            padding: "8px 12px",
+            marginBottom: "6px",
             backgroundColor: "#FEFCF8",
           }}>
-            <Lock size={16} color="#78716C" strokeWidth={2.2} />
+            <Lock size={14} color="#78716C" strokeWidth={2.2} />
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: "9.5px", color: "#94a3b8", fontWeight: "700", marginBottom: "1px" }}>
+              <p style={{ fontSize: "8.5px", color: "#94a3b8", fontWeight: "700", marginBottom: "0px" }}>
                 Mot de passe
               </p>
               <input
@@ -204,7 +227,7 @@ export default function Connexion() {
                   border: "none",
                   outline: "none",
                   backgroundColor: "transparent",
-                  fontSize: "14px",
+                  fontSize: "12.5px",
                   fontWeight: "600",
                   color: "#0F172A",
                   fontFamily: "inherit",
@@ -217,27 +240,26 @@ export default function Connexion() {
               style={{
                 background: "none",
                 border: "none",
-                padding: "4px",
+                padding: "2px",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
               }}
             >
               {voirMdp ? (
-                <EyeOff size={16} color="#78716C" strokeWidth={2.2} />
+                <EyeOff size={14} color="#78716C" strokeWidth={2.2} />
               ) : (
-                <Eye size={16} color="#78716C" strokeWidth={2.2} />
+                <Eye size={14} color="#78716C" strokeWidth={2.2} />
               )}
             </button>
           </div>
 
-          {/* Mot de passe oublié */}
-          <div style={{ textAlign: "right", marginBottom: "18px" }}>
+          <div style={{ textAlign: "right", marginBottom: "14px" }}>
             <Link
               href="/mot-de-passe-oublie"
               style={{
                 color: "#1D4ED8",
-                fontSize: "11.5px",
+                fontSize: "10.5px",
                 fontWeight: "700",
                 textDecoration: "none",
               }}
@@ -246,24 +268,23 @@ export default function Connexion() {
             </Link>
           </div>
 
-          {/* Bouton connexion */}
           <button
             type="submit"
             disabled={chargement}
             style={{
               width: "100%",
-              backgroundColor: "#0F172A",
+              background: "linear-gradient(135deg, #1E3A5F 0%, #0F172A 100%)",
               color: "white",
-              padding: "13px",
-              borderRadius: "12px",
+              padding: "11px",
+              borderRadius: "10px",
               border: "none",
               fontWeight: "800",
-              fontSize: "14px",
+              fontSize: "12.5px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: "8px",
+              gap: "6px",
               opacity: chargement ? 0.6 : 1,
             }}
           >
@@ -272,54 +293,51 @@ export default function Connexion() {
             ) : (
               <>
                 Se connecter
-                <ArrowRight size={16} strokeWidth={2.8} />
+                <ArrowRight size={14} strokeWidth={2.8} />
               </>
             )}
           </button>
         </form>
 
-        {/* Séparateur */}
         <div style={{
           display: "flex",
           alignItems: "center",
-          gap: "10px",
-          margin: "18px 0",
+          gap: "8px",
+          margin: "14px 0",
         }}>
           <div style={{ flex: 1, height: "1px", backgroundColor: "#E5E0D5" }} />
-          <span style={{ fontSize: "11px", color: "#94a3b8", fontWeight: "700" }}>
+          <span style={{ fontSize: "10px", color: "#94a3b8", fontWeight: "700" }}>
             Ou
           </span>
           <div style={{ flex: 1, height: "1px", backgroundColor: "#E5E0D5" }} />
         </div>
 
-        {/* Créer un compte client */}
         <Link
           href="/client/inscription"
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "8px",
+            gap: "6px",
             border: "1.5px solid #1D4ED8",
-            borderRadius: "12px",
-            padding: "12px",
+            borderRadius: "10px",
+            padding: "10px",
             textDecoration: "none",
             color: "#1D4ED8",
-            fontSize: "13px",
+            fontSize: "12px",
             fontWeight: "800",
           }}
         >
-          <UserPlus size={16} strokeWidth={2.8} />
+          <UserPlus size={14} strokeWidth={2.8} />
           Créer un compte client
         </Link>
 
-        {/* Devenir vendeur */}
         <p style={{
           textAlign: "center",
-          fontSize: "12px",
+          fontSize: "11px",
           color: "#78716C",
           fontWeight: "600",
-          marginTop: "16px",
+          marginTop: "12px",
         }}>
           Vous vendez déjà ?{" "}
           <Link
@@ -336,4 +354,4 @@ export default function Connexion() {
       </div>
     </div>
   );
-                  }
+          }
