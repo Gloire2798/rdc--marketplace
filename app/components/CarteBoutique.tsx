@@ -12,6 +12,13 @@ interface Boutique {
   nombreProduits: number;
 }
 
+const coinStyle = {
+  position: "absolute" as const,
+  width: "22px",
+  height: "22px",
+  background: "repeating-linear-gradient(45deg, #F97316 0px, #F97316 3px, #FBBF24 3px, #FBBF24 6px, #1E3A5F 6px, #1E3A5F 9px)",
+};
+
 export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
   const photo = boutique.photoCouverture || boutique.photo2 || boutique.photo3;
 
@@ -25,16 +32,21 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
         overflow: "hidden",
         textDecoration: "none",
         color: "inherit",
-        border: "1px solid #F1F5F9",
-        boxShadow: "0 1px 4px rgba(15, 23, 42, 0.06)",
-        marginBottom: "10px",
+        border: "1px solid #E8DFC8",
+        boxShadow: "0 2px 8px rgba(120, 100, 60, 0.08)",
+        marginBottom: "12px",
+        position: "relative",
       }}
     >
+      {/* Coins pagne en haut */}
+      <div style={{ ...coinStyle, top: 0, left: 0, borderBottomRightRadius: "50%", zIndex: 3 }} />
+      <div style={{ ...coinStyle, top: 0, right: 0, borderBottomLeftRadius: "50%", zIndex: 3 }} />
+
       {/* Photo de couverture bien cadrée */}
       {photo ? (
         <div style={{
           width: "100%",
-          height: "140px",
+          height: "150px",
           backgroundColor: "#F1F5F9",
           overflow: "hidden",
           position: "relative",
@@ -54,13 +66,14 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
       ) : (
         <div style={{
           width: "100%",
-          height: "100px",
-          background: "linear-gradient(135deg, #F5F1E8 0%, #E8DFC8 100%)",
+          height: "110px",
+          background: "linear-gradient(135deg, #FAF5E8 0%, #E8DFC8 100%)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          position: "relative",
         }}>
-          <LogoBoutique nom={boutique.nomBoutique} taille={56} />
+          <LogoBoutique nom={boutique.nomBoutique} taille={60} />
         </div>
       )}
 
@@ -82,7 +95,7 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
             {boutique.adresse && (
               <p style={{
                 fontSize: "10.5px",
-                color: "#94a3b8",
+                color: "#78716C",
                 fontWeight: "600",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -97,7 +110,7 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
         {boutique.description && (
           <p style={{
             fontSize: "11.5px",
-            color: "#475569",
+            color: "#57534E",
             fontWeight: "500",
             marginBottom: "10px",
             overflow: "hidden",
@@ -123,6 +136,10 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
           </span>
         </div>
       </div>
+
+      {/* Coins pagne en bas */}
+      <div style={{ ...coinStyle, bottom: 0, left: 0, borderTopRightRadius: "50%", zIndex: 3 }} />
+      <div style={{ ...coinStyle, bottom: 0, right: 0, borderTopLeftRadius: "50%", zIndex: 3 }} />
     </Link>
   );
-            }
+}
