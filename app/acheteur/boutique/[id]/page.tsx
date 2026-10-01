@@ -42,9 +42,10 @@ export default async function PageBoutique({
         ← Retour à l&apos;accueil
       </Link>
 
+      {/* Bloc description — pas de carte, juste du texte */}
       <div style={{
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         gap: "10px",
         marginTop: "14px",
         marginBottom: "18px",
@@ -55,20 +56,27 @@ export default async function PageBoutique({
             fontSize: "16px",
             fontWeight: "900",
             color: "#0F172A",
-            marginBottom: "2px",
+            marginBottom: "3px",
           }}>
             {vendeur.nomBoutique}
           </h1>
+          {vendeur.adresse && (
+            <p style={{
+              color: "#78716C",
+              fontSize: "10.5px",
+              fontWeight: "600",
+              marginBottom: "3px",
+            }}>
+              📍 {vendeur.adresse}
+            </p>
+          )}
           {vendeur.description && (
             <p style={{
               color: "#57534E",
-              fontSize: "11px",
+              fontSize: "11.5px",
               fontWeight: "500",
-              lineHeight: 1.3,
-              overflow: "hidden",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
+              lineHeight: 1.4,
+              whiteSpace: "pre-wrap",
             }}>
               {vendeur.description}
             </p>
@@ -206,4 +214,4 @@ export default async function PageBoutique({
       )}
     </div>
   );
-      }
+              }
