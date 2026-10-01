@@ -15,14 +15,19 @@ export default function NavigationPublique() {
   const pathname = usePathname();
   const [user, setUser] = useState<InfosUser | null>(null);
 
+  // Recharger à chaque changement de page
   useEffect(() => {
     fetch("/api/auth/moi")
       .then((res) => res.json())
       .then((data) => {
-        if (data.succes) setUser(data.user);
+        if (data.succes) {
+          setUser(data.user);
+        } else {
+          setUser(null);
+        }
       })
-      .catch(() => {});
-  }, []);
+      .catch(() => setUser(null));
+  }, [pathname]);
 
   // Ne pas afficher sur les pages admin, vendeur et client
   if (
@@ -33,19 +38,12 @@ export default function NavigationPublique() {
     return null;
   }
 
-  // Construire les onglets selon le rôle
   const onglets = [];
 
-  // 1. Accueil
   onglets.push({ href: "/", label: "Accueil", Icon: Home });
-
-  // 2. Boutiques
   onglets.push({ href: "/boutiques", label: "Boutiques", Icon: Store });
-
-  // 3. Stories
   onglets.push({ href: "/stories", label: "Stories", Icon: Camera });
 
-  // 4. Espace personnel selon le rôle
   if (user) {
     if (user.role === "VENDEUR") {
       onglets.push({ href: "/vendeur/dashboard", label: "Mon espace", Icon: LayoutDashboard });
@@ -54,13 +52,9 @@ export default function NavigationPublique() {
     } else {
       onglets.push({ href: "/client/compte", label: "Mon compte", Icon: User });
     }
+    onglets.push({ href: "/deconnexion", label: "Quitter", Icon: LogOut });
   } else {
     onglets.push({ href: "/compte", label: "Compte", Icon: User });
-  }
-
-  // 5. Déconnexion si connecté, sinon rien
-  if (user) {
-    onglets.push({ href: "/deconnexion", label: "Quitter", Icon: LogOut });
   }
 
   return (
