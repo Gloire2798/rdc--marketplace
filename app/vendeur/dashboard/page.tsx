@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import LogoBoutique from "@/app/components/LogoBoutique";
+import { Plus, Store, Camera, Package, ShoppingCart } from "lucide-react";
 
 export default async function DashboardVendeur() {
   const session = await getSession();
@@ -31,22 +32,16 @@ export default async function DashboardVendeur() {
     where: { vendeurId: vendeur.id, statut: { not: "ANNULE" } },
   });
 
+  const nombreStories = await prisma.story.count({
+    where: { vendeurId: vendeur.id, expireAt: { gt: new Date() } },
+  });
+
   return (
     <div className="container" style={{ padding: "20px 14px" }}>
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "12px",
-        marginBottom: "20px",
-      }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
         <LogoBoutique nom={vendeur.nomBoutique} taille={56} />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 style={{
-            fontSize: "18px",
-            fontWeight: "800",
-            color: "#0F172A",
-            marginBottom: "2px",
-          }}>
+          <h1 style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A", marginBottom: "2px" }}>
             Bonjour {session.nom}
           </h1>
           <p style={{ fontSize: "12px", color: "#64748b", fontWeight: "600" }}>
@@ -73,128 +68,125 @@ export default async function DashboardVendeur() {
         </div>
       )}
 
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: "10px",
-        marginBottom: "16px",
-      }}>
-        <div style={{
-          backgroundColor: "white",
-          borderRadius: "10px",
-          padding: "12px",
-          border: "1px solid #F1F5F9",
-          boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
-        }}>
-          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>
-            Statut
-          </p>
-          <p style={{
-            fontSize: "14px",
-            fontWeight: "800",
-            color: vendeur.actif ? "#16a34a" : "#c2410c",
-          }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "16px" }}>
+        <div style={{ backgroundColor: "white", borderRadius: "10px", padding: "12px", border: "1px solid #F1F5F9", boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)" }}>
+          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>Statut</p>
+          <p style={{ fontSize: "14px", fontWeight: "800", color: vendeur.actif ? "#16a34a" : "#c2410c" }}>
             {vendeur.actif ? "✅ Active" : "⏳ En attente"}
           </p>
         </div>
 
-        <div style={{
-          backgroundColor: "white",
-          borderRadius: "10px",
-          padding: "12px",
-          border: "1px solid #F1F5F9",
-          boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
-        }}>
-          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>
-            Produits
-          </p>
-          <p style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A" }}>
-            {nombreProduits}
-          </p>
+        <div style={{ backgroundColor: "white", borderRadius: "10px", padding: "12px", border: "1px solid #F1F5F9", boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)" }}>
+          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>Produits</p>
+          <p style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A" }}>{nombreProduits}</p>
         </div>
 
-        <div style={{
-          backgroundColor: "white",
-          borderRadius: "10px",
-          padding: "12px",
-          border: "1px solid #F1F5F9",
-          boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
-        }}>
-          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>
-            Commandes
-          </p>
-          <p style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A" }}>
-            {nombreCommandes}
-          </p>
+        <div style={{ backgroundColor: "white", borderRadius: "10px", padding: "12px", border: "1px solid #F1F5F9", boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)" }}>
+          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>Commandes</p>
+          <p style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A" }}>{nombreCommandes}</p>
         </div>
 
-        <div style={{
-          backgroundColor: "white",
-          borderRadius: "10px",
-          padding: "12px",
-          border: "1px solid #F1F5F9",
-          boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
-        }}>
-          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>
-            Téléphone
-          </p>
-          <p style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A" }}>
-            {vendeur.telephone}
-          </p>
+        <div style={{ backgroundColor: "white", borderRadius: "10px", padding: "12px", border: "1px solid #F1F5F9", boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)" }}>
+          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>Stories</p>
+          <p style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A" }}>{nombreStories} / 10</p>
         </div>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <Link
-          href="/vendeur/produits/nouveau"
-          style={{
-            backgroundColor: "#1D4ED8",
-            color: "white",
-            padding: "12px",
-            borderRadius: "10px",
-            textAlign: "center",
-            fontWeight: "700",
-            fontSize: "13px",
-            textDecoration: "none",
-          }}
-        >
-          + Ajouter un produit
+        <Link href="/vendeur/produits/nouveau" style={{
+          backgroundColor: "#1D4ED8",
+          color: "white",
+          padding: "12px",
+          borderRadius: "10px",
+          textAlign: "center",
+          fontWeight: "700",
+          fontSize: "13px",
+          textDecoration: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "6px",
+        }}>
+          <Plus size={16} strokeWidth={2.5} />
+          Ajouter un produit
         </Link>
 
-        <Link
-          href="/vendeur/produits"
-          style={{
-            backgroundColor: "white",
-            color: "#1D4ED8",
-            border: "1.5px solid #1D4ED8",
-            padding: "12px",
-            borderRadius: "10px",
-            textAlign: "center",
-            fontWeight: "700",
-            fontSize: "13px",
-            textDecoration: "none",
-          }}
-        >
-          📦 Voir mes produits
+        <Link href="/vendeur/boutique" style={{
+          backgroundColor: "white",
+          color: "#1D4ED8",
+          border: "1.5px solid #1D4ED8",
+          padding: "12px",
+          borderRadius: "10px",
+          textAlign: "center",
+          fontWeight: "700",
+          fontSize: "13px",
+          textDecoration: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "6px",
+        }}>
+          <Store size={16} strokeWidth={2.5} />
+          Ma boutique
         </Link>
 
-        <Link
-          href="/vendeur/commandes"
-          style={{
-            backgroundColor: "white",
-            color: "#1D4ED8",
-            border: "1.5px solid #1D4ED8",
-            padding: "12px",
-            borderRadius: "10px",
-            textAlign: "center",
-            fontWeight: "700",
-            fontSize: "13px",
-            textDecoration: "none",
-          }}
-        >
-          🛒 Voir mes commandes
+        <Link href="/vendeur/stories" style={{
+          backgroundColor: "white",
+          color: "#1D4ED8",
+          border: "1.5px solid #1D4ED8",
+          padding: "12px",
+          borderRadius: "10px",
+          textAlign: "center",
+          fontWeight: "700",
+          fontSize: "13px",
+          textDecoration: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "6px",
+        }}>
+          <Camera size={16} strokeWidth={2.5} />
+          Mes stories ({nombreStories}/10)
+        </Link>
+
+        <Link href="/vendeur/produits" style={{
+          backgroundColor: "white",
+          color: "#1D4ED8",
+          border: "1.5px solid #1D4ED8",
+          padding: "12px",
+          borderRadius: "10px",
+          textAlign: "center",
+          fontWeight: "700",
+          fontSize: "13px",
+          textDecoration: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "6px",
+        }}>
+          <Package size={16} strokeWidth={2.5} />
+          Voir mes produits
+        </Link>
+
+        <Link href="/vendeur/commandes" style={{
+          backgroundColor: "white",
+          color: "#1D4ED8",
+          border: "1.5px solid #1D4ED8",
+          padding: "12px",
+          borderRadius: "10px",
+          textAlign: "center",
+          fontWeight: "700",
+          fontSize: "13px",
+          textDecoration: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "6px",
+        }}>
+          <ShoppingCart size={16} strokeWidth={2.5} />
+          Voir mes commandes
         </Link>
       </div>
     </div>
   );
-}
+            }
