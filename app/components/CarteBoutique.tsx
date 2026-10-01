@@ -34,13 +34,9 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
       {/* PHOTO À GAUCHE */}
       <div style={{
         width: "110px",
-        height: "110px",
         flexShrink: 0,
         backgroundColor: "#F1F5F9",
         overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
       }}>
         {photo ? (
           <img
@@ -68,12 +64,8 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
         )}
       </div>
 
-      {/* SÉPARATION VERTICALE */}
-      <div style={{
-        width: "1px",
-        backgroundColor: "#E8DFC8",
-        flexShrink: 0,
-      }} />
+      {/* SÉPARATION */}
+      <div style={{ width: "1px", backgroundColor: "#E8DFC8", flexShrink: 0 }} />
 
       {/* INFOS À DROITE */}
       <div style={{
@@ -82,54 +74,52 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
         padding: "10px 12px",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
       }}>
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
-            <LogoBoutique nom={boutique.nomBoutique} taille={24} />
-            <h3 style={{
-              fontSize: "13px",
-              fontWeight: "800",
-              color: "#0F172A",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}>
-              {boutique.nomBoutique}
-            </h3>
-          </div>
-
-          {boutique.adresse && (
-            <p style={{
-              fontSize: "10px",
-              color: "#78716C",
-              fontWeight: "600",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              marginBottom: "3px",
-            }}>
-              📍 {boutique.adresse}
-            </p>
-          )}
-
-          {boutique.description && (
-            <p style={{
-              fontSize: "10.5px",
-              color: "#57534E",
-              fontWeight: "500",
-              overflow: "hidden",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              lineHeight: 1.3,
-            }}>
-              {boutique.description}
-            </p>
-          )}
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
+          <LogoBoutique nom={boutique.nomBoutique} taille={24} />
+          <h3 style={{
+            fontSize: "13px",
+            fontWeight: "800",
+            color: "#0F172A",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}>
+            {boutique.nomBoutique}
+          </h3>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "4px" }}>
+        {boutique.adresse && (
+          <p style={{
+            fontSize: "10px",
+            color: "#78716C",
+            fontWeight: "600",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            marginBottom: "3px",
+          }}>
+            📍 {boutique.adresse}
+          </p>
+        )}
+
+        {boutique.description && (
+          <p style={{
+            fontSize: "10.5px",
+            color: "#57534E",
+            fontWeight: "500",
+            overflow: "hidden",
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+            lineHeight: 1.35,
+            marginBottom: "8px",
+          }}>
+            {boutique.description}
+          </p>
+        )}
+
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "auto" }}>
           <span style={{
             backgroundColor: "#0F172A",
             color: "white",
@@ -144,4 +134,4 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
       </div>
     </Link>
   );
-      }
+}
