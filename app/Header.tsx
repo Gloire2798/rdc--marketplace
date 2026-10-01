@@ -40,7 +40,7 @@ export default function Header() {
     pathname === "/client/inscription" ||
     pathname === "/mot-de-passe-oublie";
 
-  // HEADER ADMIN
+  // HEADER ADMIN (reste blanc)
   if (pathname.startsWith("/admin") && !estPageConnexion) {
     return (
       <header style={{
@@ -53,7 +53,6 @@ export default function Header() {
         position: "sticky",
         top: 0,
         zIndex: 50,
-        boxShadow: "0 1px 4px rgba(15, 23, 42, 0.04)",
       }}>
         <MenuBurger />
         <Link href="/admin/dashboard" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
@@ -75,7 +74,7 @@ export default function Header() {
     );
   }
 
-  // HEADER VENDEUR
+  // HEADER VENDEUR (reste blanc)
   if (pathname.startsWith("/vendeur") && user && user.role === "VENDEUR") {
     return (
       <header style={{
@@ -112,7 +111,7 @@ export default function Header() {
     );
   }
 
-  // HEADER CLIENT
+  // HEADER CLIENT (reste blanc)
   if (pathname.startsWith("/client") && user && user.role === "ACHETEUR") {
     return (
       <header style={{
@@ -163,15 +162,15 @@ export default function Header() {
     );
   }
 
-  // HEADER PUBLIC
+  // HEADER PUBLIC (fond beige)
   return (
     <header style={{
-      backgroundColor: "white",
+      backgroundColor: "#FAF5E8",
       padding: "14px 16px",
       position: "sticky",
       top: 0,
       zIndex: 50,
-      borderBottom: "1px solid #F1F5F9",
+      borderBottom: "1px solid #E8DFC8",
     }}>
       <div style={{
         display: "flex",
@@ -198,7 +197,7 @@ export default function Header() {
             <span style={{ fontSize: "18px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1, letterSpacing: "-0.3px" }}>
               GK Sensei
             </span>
-            <span style={{ fontSize: "11.5px", color: "#64748b", fontWeight: "700" }}>
+            <span style={{ fontSize: "11.5px", color: "#78716C", fontWeight: "700" }}>
               Complexe Commercial
             </span>
           </div>
