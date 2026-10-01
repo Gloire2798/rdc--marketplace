@@ -1,10 +1,17 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Store, Camera, User } from "lucide-react";
+import { Home, Store, Camera, User, LogOut } from "lucide-react";
 
-const onglets = [
+interface InfosUser {
+  id: string;
+  nom: string | null;
+  role: string;
+}
+
+const ongletsBase = [
   { href: "/", label: "Accueil", Icon: Home },
   { href: "/boutiques", label: "Boutiques", Icon: Store },
   { href: "/stories", label: "Stories", Icon: Camera },
@@ -13,6 +20,16 @@ const onglets = [
 
 export default function NavigationPublique() {
   const pathname = usePathname();
+  const [user, setUser] = useState<InfosUser | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/moi")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.succes) setUser(data.user);
+      })
+      .catch(() => {});
+  }, []);
 
   // Ne pas afficher sur les pages admin, vendeur et client
   if (
@@ -23,6 +40,16 @@ export default function NavigationPublique() {
     return null;
   }
 
+  // Si connecté, on remplace "Compte" par "Déconnexion"
+  const onglets = user
+    ? [
+        { href: "/", label: "Accueil", Icon: Home },
+        { href: "/boutiques", label: "Boutiques", Icon: Store },
+        { href: "/stories", label: "Stories", Icon: Camera },
+        { href: "/deconnexion", label: "Déconnexion", Icon: LogOut },
+      ]
+    : ongletsBase;
+
   return (
     <nav style={{
       position: "fixed",
@@ -30,16 +57,18 @@ export default function NavigationPublique() {
       left: 0,
       right: 0,
       backgroundColor: "white",
-      borderTop: "1px solid #E2E8F0",
+      borderTop: "1px solid #E8DFC8",
       display: "flex",
       justifyContent: "space-around",
       padding: "8px 0 10px 0",
       zIndex: 100,
-      boxShadow: "0 -2px 8px rgba(15, 23, 42, 0.06)",
+      boxShadow: "0 -2px 8px rgba(120, 100, 60, 0.08)",
     }}>
       {onglets.map((onglet) => {
         const actif = pathname === onglet.href;
         const Icon = onglet.Icon;
+        const estDeconnexion = onglet.href === "/deconnexion";
+
         return (
           <Link
             key={onglet.href}
@@ -50,14 +79,18 @@ export default function NavigationPublique() {
               alignItems: "center",
               gap: "3px",
               textDecoration: "none",
-              color: actif ? "#F97316" : "#94a3b8",
+              color: estDeconnexion
+                ? "#dc2626"
+                : actif
+                ? "#F97316"
+                : "#94a3b8",
               fontSize: "10px",
-              fontWeight: actif ? "800" : "600",
+              fontWeight: actif || estDeconnexion ? "800" : "600",
               padding: "4px 10px",
               position: "relative",
             }}
           >
-            {actif && (
+            {actif && !estDeconnexion && (
               <span style={{
                 position: "absolute",
                 top: "-8px",
@@ -69,7 +102,7 @@ export default function NavigationPublique() {
                 borderRadius: "2px",
               }} />
             )}
-            <Icon size={20} strokeWidth={actif ? 2.8 : 2.2} />
+            <Icon size={20} strokeWidth={actif || estDeconnexion ? 2.8 : 2.2} />
             <span>{onglet.label}</span>
           </Link>
         );
