@@ -16,13 +16,13 @@ export default function GaleriePhotos({
       <div
         style={{
           width: "100%",
-          height: "300px",
-          backgroundColor: "#f3f4f6",
+          height: "180px",
+          backgroundColor: "#F1F5F9",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: "60px",
-          borderRadius: "16px",
+          fontSize: "40px",
+          borderRadius: "12px",
         }}
       >
         📦
@@ -32,17 +32,19 @@ export default function GaleriePhotos({
 
   return (
     <div>
+      {/* Grande photo */}
       <div
         style={{
           width: "100%",
-          height: "300px",
-          backgroundColor: "#f9fafb",
-          borderRadius: "16px",
+          height: "180px",
+          backgroundColor: "white",
+          borderRadius: "12px",
           overflow: "hidden",
-          marginBottom: "12px",
+          marginBottom: "8px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          border: "1px solid #E8DFC8",
         }}
       >
         <img
@@ -56,11 +58,12 @@ export default function GaleriePhotos({
         />
       </div>
 
+      {/* Miniatures */}
       {photos.length > 1 && (
         <div
           style={{
             display: "flex",
-            gap: "8px",
+            gap: "6px",
             justifyContent: "center",
             flexWrap: "wrap",
           }}
@@ -70,10 +73,10 @@ export default function GaleriePhotos({
               key={index}
               onClick={() => setPhotoActive(index)}
               style={{
-                width: "70px",
-                height: "70px",
-                borderRadius: "10px",
-                border: photoActive === index ? "3px solid #2563eb" : "1px solid #d1d5db",
+                width: "50px",
+                height: "50px",
+                borderRadius: "8px",
+                border: photoActive === index ? "2px solid #1D4ED8" : "1px solid #E8DFC8",
                 padding: "2px",
                 backgroundColor: "white",
                 cursor: "pointer",
