@@ -65,7 +65,7 @@ export default async function FicheProduit({
         ← Retour à {produit.vendeur.nomBoutique}
       </Link>
 
-      <div style={{ marginBottom: "10px" }}>
+      <div style={{ marginBottom: "12px" }}>
         <GaleriePhotos photos={photos} nomProduit={produit.nom} />
       </div>
 
@@ -73,8 +73,8 @@ export default async function FicheProduit({
         fontSize: "16px",
         fontWeight: "900",
         color: "#0F172A",
-        marginBottom: "3px",
-        lineHeight: 1.2,
+        marginBottom: "4px",
+        lineHeight: 1.25,
       }}>
         {produit.nom}
       </h1>
@@ -84,19 +84,16 @@ export default async function FicheProduit({
           color: "#57534E",
           fontSize: "11.5px",
           fontWeight: "500",
-          marginBottom: "8px",
-          lineHeight: 1.3,
-          overflow: "hidden",
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
+          marginBottom: "10px",
+          lineHeight: 1.45,
+          whiteSpace: "pre-wrap",
         }}>
           {produit.description}
         </p>
       )}
 
       {enPromo ? (
-        <div style={{ marginBottom: "6px" }}>
+        <div style={{ marginBottom: "8px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
             <span style={{ fontSize: "20px", fontWeight: "900", color: "#16a34a", lineHeight: 1 }}>
               {formaterPrix(produit.prixPromo!, produit.devise)}
@@ -121,7 +118,7 @@ export default async function FicheProduit({
           </div>
         </div>
       ) : (
-        <p style={{ fontSize: "20px", fontWeight: "900", color: "#1D4ED8", marginBottom: "6px", lineHeight: 1 }}>
+        <p style={{ fontSize: "20px", fontWeight: "900", color: "#1D4ED8", marginBottom: "8px", lineHeight: 1 }}>
           {formaterPrix(produit.prix, produit.devise)}
         </p>
       )}
@@ -130,7 +127,7 @@ export default async function FicheProduit({
         fontSize: "11px",
         color: produit.stock > 0 ? "#16a34a" : "#dc2626",
         fontWeight: "700",
-        marginBottom: "10px",
+        marginBottom: "12px",
       }}>
         {produit.stock > 0
           ? `✅ En stock (${produit.stock})`
@@ -146,7 +143,7 @@ export default async function FicheProduit({
           backgroundColor: "white",
           borderRadius: "10px",
           padding: "8px 10px",
-          marginBottom: "12px",
+          marginBottom: "14px",
           textDecoration: "none",
           color: "inherit",
           border: "1px solid #E8DFC8",
@@ -174,4 +171,4 @@ export default async function FicheProduit({
       <BoutonPanier article={article} stock={produit.stock} />
     </div>
   );
-                }
+}
