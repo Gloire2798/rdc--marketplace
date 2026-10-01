@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "./Header";
+import NavigationPublique from "./components/NavigationPublique";
 
 export const metadata: Metadata = {
   title: "GK Sensei — Complexe Commercial en ligne",
@@ -16,7 +17,8 @@ export default function RootLayout({
     <html lang="fr">
       <body>
         <Header />
-        <main style={{ minHeight: "80vh" }}>{children}</main>
+        <main style={{ minHeight: "80vh", paddingBottom: "80px" }}>{children}</main>
+        <NavigationPublique />
       </body>
     </html>
   );
