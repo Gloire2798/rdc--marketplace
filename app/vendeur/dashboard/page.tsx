@@ -1,192 +1,162 @@
-import { getSession } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import LogoBoutique from "@/app/components/LogoBoutique";
-import { Plus, Store, Camera, Package, ShoppingCart } from "lucide-react";
+import { usePathname } from "next/navigation";
+import {
+  Menu,
+  X,
+  LayoutDashboard,
+  Store,
+  Package,
+  ShoppingCart,
+  Camera,
+  LogOut,
+  Plus,
+} from "lucide-react";
 
-export default async function DashboardVendeur() {
-  const session = await getSession();
+const liensMenu = [
+  { href: "/vendeur/dashboard", label: "Tableau de bord", Icon: LayoutDashboard },
+  { href: "/vendeur/boutique", label: "Ma boutique", Icon: Store },
+  { href: "/vendeur/produits", label: "Mes produits", Icon: Package },
+  { href: "/vendeur/commandes", label: "Mes commandes", Icon: ShoppingCart },
+  { href: "/vendeur/stories", label: "Mes stories", Icon: Camera },
+  { href: "/vendeur/produits/nouveau", label: "Ajouter un produit", Icon: Plus },
+];
 
-  if (!session) {
-    redirect("/vendeur/connexion");
-  }
-
-  if (session.role !== "VENDEUR") {
-    redirect("/");
-  }
-
-  const vendeur = await prisma.vendeur.findUnique({
-    where: { userId: session.id },
-  });
-
-  if (!vendeur) {
-    redirect("/vendeur/connexion");
-  }
-
-  const nombreProduits = await prisma.produit.count({
-    where: { vendeurId: vendeur.id },
-  });
-
-  const nombreCommandes = await prisma.commande.count({
-    where: { vendeurId: vendeur.id, statut: { not: "ANNULE" } },
-  });
-
-  const nombreStories = await prisma.story.count({
-    where: { vendeurId: vendeur.id, expireAt: { gt: new Date() } },
-  });
+export default function MenuBurger() {
+  const [ouvert, setOuvert] = useState(false);
+  const pathname = usePathname();
 
   return (
-    <div className="container" style={{ padding: "20px 14px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-        <LogoBoutique nom={vendeur.nomBoutique} taille={56} />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A", marginBottom: "2px" }}>
-            Bonjour {session.nom}
-          </h1>
-          <p style={{ fontSize: "12px", color: "#64748b", fontWeight: "600" }}>
-            {vendeur.nomBoutique}
-          </p>
-        </div>
-      </div>
+    <>
+      <button
+        onClick={() => setOuvert(true)}
+        style={{
+          background: "none",
+          border: "none",
+          color: "#0F172A",
+          cursor: "pointer",
+          padding: "4px",
+          display: "flex",
+          alignItems: "center",
+        }}
+        aria-label="Ouvrir le menu"
+      >
+        <Menu size={24} strokeWidth={2.5} />
+      </button>
 
-      {!vendeur.actif && (
-        <div style={{
-          backgroundColor: "#FEF3C7",
-          color: "#78350F",
-          padding: "12px",
-          borderRadius: "10px",
-          marginBottom: "16px",
-          border: "1px solid #FDE68A",
-        }}>
-          <p style={{ fontWeight: "700", fontSize: "13px", marginBottom: "4px" }}>
-            ⏳ Boutique en attente de validation
-          </p>
-          <p style={{ fontSize: "11px" }}>
-            L&apos;administrateur va vérifier vos informations sous peu.
-          </p>
-        </div>
+      {ouvert && (
+        <div
+          onClick={() => setOuvert(false)}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(15, 23, 42, 0.6)",
+            zIndex: 999,
+          }}
+        />
       )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "16px" }}>
-        <div style={{ backgroundColor: "white", borderRadius: "10px", padding: "12px", border: "1px solid #F1F5F9", boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)" }}>
-          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>Statut</p>
-          <p style={{ fontSize: "14px", fontWeight: "800", color: vendeur.actif ? "#16a34a" : "#c2410c" }}>
-            {vendeur.actif ? "✅ Active" : "⏳ En attente"}
-          </p>
-        </div>
-
-        <div style={{ backgroundColor: "white", borderRadius: "10px", padding: "12px", border: "1px solid #F1F5F9", boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)" }}>
-          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>Produits</p>
-          <p style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A" }}>{nombreProduits}</p>
-        </div>
-
-        <div style={{ backgroundColor: "white", borderRadius: "10px", padding: "12px", border: "1px solid #F1F5F9", boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)" }}>
-          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>Commandes</p>
-          <p style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A" }}>{nombreCommandes}</p>
-        </div>
-
-        <div style={{ backgroundColor: "white", borderRadius: "10px", padding: "12px", border: "1px solid #F1F5F9", boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)" }}>
-          <p style={{ color: "#64748b", fontSize: "11px", fontWeight: "700", marginBottom: "3px" }}>Stories</p>
-          <p style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A" }}>{nombreStories} / 10</p>
-        </div>
-      </div>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <Link href="/vendeur/produits/nouveau" style={{
-          backgroundColor: "#1D4ED8",
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          bottom: 0,
+          width: "270px",
+          maxWidth: "80%",
+          backgroundColor: "#0F172A",
           color: "white",
-          padding: "12px",
-          borderRadius: "10px",
-          textAlign: "center",
-          fontWeight: "700",
-          fontSize: "13px",
-          textDecoration: "none",
+          zIndex: 1000,
+          transform: ouvert ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.3s ease",
+          overflowY: "auto",
           display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div style={{
+          padding: "18px 16px",
+          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          display: "flex",
+          justifyContent: "space-between",
           alignItems: "center",
-          justifyContent: "center",
-          gap: "6px",
         }}>
-          <Plus size={16} strokeWidth={2.5} />
-          Ajouter un produit
-        </Link>
+          <div>
+            <p style={{ fontSize: "16px", fontWeight: "800" }}>GK Sensei</p>
+            <p style={{ fontSize: "11px", color: "#94a3b8", marginTop: "2px", fontWeight: "600" }}>
+              Espace vendeur
+            </p>
+          </div>
+          <button
+            onClick={() => setOuvert(false)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "white",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+            }}
+            aria-label="Fermer le menu"
+          >
+            <X size={22} strokeWidth={2.5} />
+          </button>
+        </div>
 
-        <Link href="/vendeur/boutique" style={{
-          backgroundColor: "white",
-          color: "#1D4ED8",
-          border: "1.5px solid #1D4ED8",
-          padding: "12px",
-          borderRadius: "10px",
-          textAlign: "center",
-          fontWeight: "700",
-          fontSize: "13px",
-          textDecoration: "none",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "6px",
-        }}>
-          <Store size={16} strokeWidth={2.5} />
-          Ma boutique
-        </Link>
+        <nav style={{ flex: 1, padding: "10px 0" }}>
+          {liensMenu.map((lien) => {
+            const actif = pathname === lien.href;
+            const Icon = lien.Icon;
+            return (
+              <Link
+                key={lien.href}
+                href={lien.href}
+                onClick={() => setOuvert(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "13px 18px",
+                  color: actif ? "white" : "#cbd5e1",
+                  textDecoration: "none",
+                  fontSize: "14px",
+                  fontWeight: "700",
+                  borderLeft: actif ? "3px solid #3B82F6" : "3px solid transparent",
+                  backgroundColor: actif ? "rgba(59, 130, 246, 0.15)" : "transparent",
+                }}
+              >
+                <Icon size={18} strokeWidth={2.5} />
+                <span>{lien.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
-        <Link href="/vendeur/stories" style={{
-          backgroundColor: "white",
-          color: "#1D4ED8",
-          border: "1.5px solid #1D4ED8",
-          padding: "12px",
-          borderRadius: "10px",
-          textAlign: "center",
-          fontWeight: "700",
-          fontSize: "13px",
-          textDecoration: "none",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "6px",
-        }}>
-          <Camera size={16} strokeWidth={2.5} />
-          Mes stories ({nombreStories}/10)
-        </Link>
-
-        <Link href="/vendeur/produits" style={{
-          backgroundColor: "white",
-          color: "#1D4ED8",
-          border: "1.5px solid #1D4ED8",
-          padding: "12px",
-          borderRadius: "10px",
-          textAlign: "center",
-          fontWeight: "700",
-          fontSize: "13px",
-          textDecoration: "none",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "6px",
-        }}>
-          <Package size={16} strokeWidth={2.5} />
-          Voir mes produits
-        </Link>
-
-        <Link href="/vendeur/commandes" style={{
-          backgroundColor: "white",
-          color: "#1D4ED8",
-          border: "1.5px solid #1D4ED8",
-          padding: "12px",
-          borderRadius: "10px",
-          textAlign: "center",
-          fontWeight: "700",
-          fontSize: "13px",
-          textDecoration: "none",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "6px",
-        }}>
-          <ShoppingCart size={16} strokeWidth={2.5} />
-          Voir mes commandes
-        </Link>
+        <div style={{ padding: "10px 0", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+          <Link
+            href="/deconnexion"
+            onClick={() => setOuvert(false)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              padding: "13px 18px",
+              color: "#f87171",
+              textDecoration: "none",
+              fontSize: "14px",
+              fontWeight: "700",
+            }}
+          >
+            <LogOut size={18} strokeWidth={2.5} />
+            <span>Déconnexion</span>
+          </Link>
+        </div>
       </div>
-    </div>
+    </>
   );
-            }
+              }
