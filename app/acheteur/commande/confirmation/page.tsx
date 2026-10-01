@@ -3,12 +3,46 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import QRCode from "qrcode";
 
 function ContenuConfirmation() {
   const searchParams = useSearchParams();
   const commandeId = searchParams.get("commande");
 
   const [copie, setCopie] = useState(false);
+  const [qrImage, setQrImage] = useState("");
+  const [chargement, setChargement] = useState(true);
+
+  useEffect(() => {
+    if (!commandeId) {
+      setChargement(false);
+      return;
+    }
+
+    // Récupérer le token QR de la commande
+    fetch(`/api/client/commande/qr?commande=${commandeId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.succes && data.qrToken) {
+          QRCode.toDataURL(data.qrToken, {
+            width: 300,
+            margin: 2,
+            color: {
+              dark: "#0F172A",
+              light: "#FFFFFF",
+            },
+          })
+            .then((url) => {
+              setQrImage(url);
+              setChargement(false);
+            })
+            .catch(() => setChargement(false));
+        } else {
+          setChargement(false);
+        }
+      })
+      .catch(() => setChargement(false));
+  }, [commandeId]);
 
   const copierId = () => {
     if (commandeId) {
@@ -19,37 +53,43 @@ function ContenuConfirmation() {
   };
 
   return (
-    <div className="container" style={{ padding: "40px 16px", maxWidth: "600px" }}>
-      <div style={{ textAlign: "center", marginBottom: "32px" }}>
-        <p style={{ fontSize: "64px", marginBottom: "16px" }}>🎉</p>
-        <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px" }}>
+    <div style={{ padding: "20px 14px", maxWidth: "500px", margin: "0 auto", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <p style={{ fontSize: "48px", marginBottom: "10px" }}>🎉</p>
+        <h1 style={{ fontSize: "20px", fontWeight: "900", color: "#0F172A", marginBottom: "4px" }}>
           Commande enregistrée !
         </h1>
-        <p style={{ color: "#6b7280" }}>
-          Votre commande a bien été transmise au vendeur.
+        <p style={{ color: "#64748b", fontSize: "12px", fontWeight: "600" }}>
+          Votre commande a été transmise au vendeur.
         </p>
       </div>
 
       {commandeId && (
-        <div className="card" style={{ marginBottom: "24px" }}>
-          <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "4px" }}>
+        <div style={{
+          backgroundColor: "white",
+          borderRadius: "12px",
+          padding: "12px",
+          marginBottom: "14px",
+          border: "1px solid #E8DFC8",
+        }}>
+          <p style={{ fontSize: "10.5px", color: "#64748b", marginBottom: "3px", fontWeight: "700" }}>
             Numéro de commande
           </p>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
-            <p style={{ fontSize: "16px", fontWeight: "600", wordBreak: "break-all" }}>
-              {commandeId.slice(0, 12)}...
+            <p style={{ fontSize: "13px", fontWeight: "800", wordBreak: "break-all", color: "#0F172A" }}>
+              #{commandeId.slice(0, 12)}...
             </p>
             <button
               onClick={copierId}
               style={{
-                padding: "6px 12px",
-                fontSize: "13px",
-                backgroundColor: copie ? "#16a34a" : "#e5e7eb",
+                padding: "5px 10px",
+                fontSize: "10.5px",
+                backgroundColor: copie ? "#16a34a" : "#F1ECE0",
                 color: copie ? "white" : "#374151",
                 border: "none",
                 borderRadius: "6px",
                 cursor: "pointer",
-                fontWeight: "600",
+                fontWeight: "700",
                 flexShrink: 0,
               }}
             >
@@ -59,40 +99,102 @@ function ContenuConfirmation() {
         </div>
       )}
 
+      {/* QR CODE */}
+      {qrImage && (
+        <div style={{
+          backgroundColor: "white",
+          borderRadius: "12px",
+          padding: "16px",
+          marginBottom: "14px",
+          border: "1px solid #E8DFC8",
+          textAlign: "center",
+        }}>
+          <p style={{
+            fontSize: "10.5px",
+            color: "#1E3A5F",
+            marginBottom: "10px",
+            fontWeight: "800",
+            textTransform: "uppercase",
+            letterSpacing: "0.5px",
+          }}>
+            🎫 Votre QR code de retrait
+          </p>
+
+          <img
+            src={qrImage}
+            alt="QR Code"
+            style={{
+              width: "220px",
+              height: "220px",
+              display: "block",
+              margin: "0 auto",
+              borderRadius: "8px",
+              backgroundColor: "white",
+            }}
+          />
+
+          <p style={{
+            fontSize: "10px",
+            color: "#64748b",
+            marginTop: "10px",
+            fontWeight: "600",
+            lineHeight: 1.4,
+          }}>
+            Présentez ce QR au vendeur lors du retrait.
+            <br />
+            Il ne peut être utilisé qu&apos;une seule fois.
+          </p>
+        </div>
+      )}
+
+      {chargement && (
+        <div style={{
+          backgroundColor: "white",
+          borderRadius: "12px",
+          padding: "20px",
+          marginBottom: "14px",
+          border: "1px solid #E8DFC8",
+          textAlign: "center",
+        }}>
+          <p style={{ fontSize: "11px", color: "#64748b", fontWeight: "600" }}>
+            ⏳ Chargement du QR code...
+          </p>
+        </div>
+      )}
+
       <div style={{
-        backgroundColor: "#fef3c7",
-        color: "#92400e",
-        padding: "16px",
-        borderRadius: "8px",
-        marginBottom: "24px",
+        backgroundColor: "#FEF3C7",
+        color: "#78350F",
+        padding: "12px",
+        borderRadius: "10px",
+        marginBottom: "16px",
+        border: "1px solid #FDE68A",
       }}>
-        <p style={{ fontWeight: "600", marginBottom: "8px" }}>
+        <p style={{ fontWeight: "800", marginBottom: "4px", fontSize: "11.5px" }}>
           ⏳ En attente de validation
         </p>
-        <p style={{ fontSize: "14px" }}>
+        <p style={{ fontSize: "10.5px", fontWeight: "500", lineHeight: 1.4 }}>
           Le vendeur va vérifier votre paiement et valider la commande.
-          Vous serez contacté par téléphone ou WhatsApp.
+          Vous recevrez le statut "Prêt" pour venir récupérer.
         </p>
-      </div>
-
-      <div className="card" style={{ marginBottom: "24px" }}>
-        <h2 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "12px" }}>
-          Prochaines étapes
-        </h2>
-        <ol style={{ paddingLeft: "20px", fontSize: "14px", lineHeight: "1.8", color: "#374151" }}>
-          <li>Le vendeur vérifie votre acompte</li>
-          <li>Il valide la commande</li>
-          <li>Vous recevez un QR code par SMS/WhatsApp</li>
-          <li>Vous récupérez le produit et payez le reste</li>
-        </ol>
       </div>
 
       <Link
         href="/"
-        className="btn btn-primary"
-        style={{ display: "block", textAlign: "center" }}
+        style={{
+          display: "block",
+          backgroundColor: "#1D4ED8",
+          color: "white",
+          padding: "12px",
+          borderRadius: "10px",
+          textAlign: "center",
+          textDecoration: "none",
+          fontWeight: "800",
+          fontSize: "12.5px",
+          marginBottom: "8px",
+        }}
       >
-        🏪 Retour à l'accueil
+        🏪 Retour à l&apos;accueil
       </Link>
 
       <Link
@@ -100,9 +202,10 @@ function ContenuConfirmation() {
         style={{
           display: "block",
           textAlign: "center",
-          marginTop: "12px",
-          color: "#2563eb",
-          fontSize: "14px",
+          color: "#1D4ED8",
+          fontSize: "11.5px",
+          fontWeight: "700",
+          textDecoration: "none",
         }}
       >
         Voir mes commandes
@@ -114,11 +217,11 @@ function ContenuConfirmation() {
 export default function PageConfirmation() {
   return (
     <Suspense fallback={
-      <div className="container" style={{ padding: "60px 16px", textAlign: "center" }}>
+      <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
         <p>Chargement...</p>
       </div>
     }>
       <ContenuConfirmation />
     </Suspense>
   );
-      }
+    }
