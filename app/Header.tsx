@@ -57,9 +57,9 @@ export default function Header() {
       }}>
         <MenuBurger />
         <Link href="/admin/dashboard" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none" }}>
-          <ShoppingCart size={22} color="#1D4ED8" strokeWidth={2.5} />
+          <img src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg" alt="GK" style={{ height: "30px", width: "auto" }} />
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "15px", fontWeight: "800", color: "#1D4ED8", lineHeight: 1.1 }}>GK Sensei</span>
+            <span style={{ fontSize: "15px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1 }}>GK Sensei</span>
             <span style={{ fontSize: "10px", color: "#64748b", fontWeight: "600" }}>Espace Admin</span>
           </div>
         </Link>
@@ -86,9 +86,9 @@ export default function Header() {
         zIndex: 50,
       }}>
         <Link href="/vendeur/dashboard" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none" }}>
-          <ShoppingCart size={22} color="#1D4ED8" strokeWidth={2.5} />
+          <img src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg" alt="GK" style={{ height: "30px", width: "auto" }} />
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "15px", fontWeight: "800", color: "#1D4ED8", lineHeight: 1.1 }}>GK Sensei</span>
+            <span style={{ fontSize: "15px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1 }}>GK Sensei</span>
             <span style={{ fontSize: "10px", color: "#64748b", fontWeight: "600" }}>Espace vendeur</span>
           </div>
         </Link>
@@ -119,9 +119,9 @@ export default function Header() {
         zIndex: 50,
       }}>
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none" }}>
-          <ShoppingCart size={22} color="#1D4ED8" strokeWidth={2.5} />
+          <img src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg" alt="GK" style={{ height: "30px", width: "auto" }} />
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "15px", fontWeight: "800", color: "#1D4ED8", lineHeight: 1.1 }}>GK Sensei</span>
+            <span style={{ fontSize: "15px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1 }}>GK Sensei</span>
             <span style={{ fontSize: "10px", color: "#64748b", fontWeight: "600" }}>Mon compte</span>
           </div>
         </Link>
@@ -132,7 +132,7 @@ export default function Header() {
               position: "absolute",
               top: "-6px",
               right: "-8px",
-              backgroundColor: "#F97316",
+              backgroundColor: "#dc2626",
               color: "white",
               fontSize: "9px",
               fontWeight: "800",
@@ -151,7 +151,7 @@ export default function Header() {
     );
   }
 
-  // HEADER PUBLIC (style maquette — logo GK carré orange)
+  // HEADER PUBLIC
   return (
     <header style={{
       backgroundColor: "white",
@@ -169,37 +169,16 @@ export default function Header() {
         <Link href="/" style={{
           display: "flex",
           alignItems: "center",
-          gap: "8px",
+          gap: "10px",
           textDecoration: "none",
         }}>
-          <div style={{
-            width: "36px",
-            height: "36px",
-            borderRadius: "10px",
-            background: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "white",
-            fontWeight: "900",
-            fontSize: "16px",
-            letterSpacing: "-0.5px",
-            boxShadow: "0 2px 6px rgba(249, 115, 22, 0.3)",
-            position: "relative",
-          }}>
-            GK
-            <span style={{
-              position: "absolute",
-              top: "-4px",
-              right: "-4px",
-              fontSize: "10px",
-              color: "#F97316",
-            }}>
-              ✦
-            </span>
-          </div>
+          <img
+            src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
+            alt="GK Sensei"
+            style={{ height: "42px", width: "auto", objectFit: "contain" }}
+          />
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: "15px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1, letterSpacing: "-0.3px" }}>
+            <span style={{ fontSize: "16px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1, letterSpacing: "-0.3px" }}>
               GK Sensei
             </span>
             <span style={{ fontSize: "10px", color: "#64748b", fontWeight: "600" }}>
@@ -217,7 +196,7 @@ export default function Header() {
                 position: "absolute",
                 top: "-6px",
                 right: "-8px",
-                backgroundColor: "#F97316",
+                backgroundColor: "#dc2626",
                 color: "white",
                 fontSize: "9px",
                 fontWeight: "800",
@@ -236,4 +215,4 @@ export default function Header() {
       </div>
     </header>
   );
-}
+        }
