@@ -40,7 +40,7 @@ export default function Header() {
     pathname === "/client/inscription" ||
     pathname === "/mot-de-passe-oublie";
 
-  // HEADER ADMIN (reste blanc)
+  // HEADER ADMIN (logo → accueil)
   if (pathname.startsWith("/admin") && !estPageConnexion) {
     return (
       <header style={{
@@ -55,7 +55,7 @@ export default function Header() {
         zIndex: 50,
       }}>
         <MenuBurger />
-        <Link href="/admin/dashboard" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
           <img
             src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
             alt="GK"
@@ -74,7 +74,7 @@ export default function Header() {
     );
   }
 
-  // HEADER VENDEUR (reste blanc)
+  // HEADER VENDEUR (logo → accueil)
   if (pathname.startsWith("/vendeur") && user && user.role === "VENDEUR") {
     return (
       <header style={{
@@ -88,7 +88,7 @@ export default function Header() {
         top: 0,
         zIndex: 50,
       }}>
-        <Link href="/vendeur/dashboard" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
           <img
             src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
             alt="GK"
@@ -111,7 +111,7 @@ export default function Header() {
     );
   }
 
-  // HEADER CLIENT (reste blanc)
+  // HEADER CLIENT (logo → accueil)
   if (pathname.startsWith("/client") && user && user.role === "ACHETEUR") {
     return (
       <header style={{
@@ -162,7 +162,7 @@ export default function Header() {
     );
   }
 
-  // HEADER PUBLIC (fond beige)
+  // HEADER PUBLIC
   return (
     <header style={{
       backgroundColor: "#FAF5E8",
@@ -231,4 +231,4 @@ export default function Header() {
       </div>
     </header>
   );
-          }
+}
