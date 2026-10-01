@@ -68,6 +68,13 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
         )}
       </div>
 
+      {/* SÉPARATION VERTICALE */}
+      <div style={{
+        width: "1px",
+        backgroundColor: "#E8DFC8",
+        flexShrink: 0,
+      }} />
+
       {/* INFOS À DROITE */}
       <div style={{
         flex: 1,
