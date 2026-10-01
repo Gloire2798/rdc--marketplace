@@ -15,6 +15,7 @@ export default async function AdminCommandes() {
     where: { statut: { not: "ANNULE" } },
     include: {
       vendeur: true,
+      acheteur: true,
       items: { include: { produit: true } },
     },
     orderBy: { createdAt: "desc" },
@@ -214,4 +215,4 @@ export default async function AdminCommandes() {
       )}
     </div>
   );
-            }
+              }
