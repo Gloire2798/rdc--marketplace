@@ -13,10 +13,12 @@ import {
   Camera,
   LogOut,
   Plus,
+  ScanLine,
 } from "lucide-react";
 
 const liensMenu = [
   { href: "/vendeur/dashboard", label: "Tableau de bord", Icon: LayoutDashboard },
+  { href: "/vendeur/scanner", label: "Scanner un QR", Icon: ScanLine },
   { href: "/vendeur/boutique", label: "Ma boutique", Icon: Store },
   { href: "/vendeur/produits", label: "Mes produits", Icon: Package },
   { href: "/vendeur/commandes", label: "Mes commandes", Icon: ShoppingCart },
@@ -159,4 +161,4 @@ export default function MenuBurger() {
       </div>
     </>
   );
-              }
+          }
