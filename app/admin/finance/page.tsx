@@ -7,7 +7,7 @@ import {
   TrendingUp,
   TrendingDown,
   AlertCircle,
-  CheckCircle2,
+  CheckCircle,
   XCircle,
   Store,
   Phone,
@@ -117,7 +117,7 @@ export default function FinancePage() {
   }, []);
 
   // ----------------------------------------------------------
-  // Afficher un toast
+  // Toast
   // ----------------------------------------------------------
   const afficherToast = (message: string, type: "ok" | "err" = "ok") => {
     setToast({ message, type });
@@ -191,7 +191,7 @@ export default function FinancePage() {
   };
 
   // ----------------------------------------------------------
-  // Marquer TOUT payé pour un vendeur
+  // Tout marquer payé
   // ----------------------------------------------------------
   const toutMarquerPaye = async (vendeur: VendeurFinance) => {
     const inscription = vendeur.paiementsFinance.find(
@@ -214,7 +214,7 @@ export default function FinancePage() {
   };
 
   // ----------------------------------------------------------
-  // Filtrer les vendeurs
+  // Filtrer
   // ----------------------------------------------------------
   const vendeursFiltres = vendeurs.filter((v) => {
     if (filtre === "TOUT") return true;
@@ -237,7 +237,7 @@ export default function FinancePage() {
   });
 
   // ----------------------------------------------------------
-  // Stats globales
+  // Stats
   // ----------------------------------------------------------
   let inscriptionsEncaissees = 0;
   let loyersEncaissees = 0;
@@ -256,177 +256,307 @@ export default function FinancePage() {
   const totalACollecter =
     vendeurs.length * (FRAIS_INSCRIPTION + LOYER_MENSUEL) - totalCollecte;
 
+  const stats = [
+    {
+      label: "Inscriptions",
+      valeur: formatFC(inscriptionsEncaissees),
+      Icon: Wallet,
+      bg: "#DBEAFE",
+      iconColor: "#1D4ED8",
+      valueColor: "#0F172A",
+    },
+    {
+      label: "Loyers",
+      valeur: formatFC(loyersEncaissees),
+      Icon: Wallet,
+      bg: "#FED7AA",
+      iconColor: "#c2410c",
+      valueColor: "#0F172A",
+    },
+    {
+      label: "Total encaissé",
+      valeur: formatFC(totalCollecte),
+      Icon: TrendingUp,
+      bg: "#BBF7D0",
+      iconColor: "#15803d",
+      valueColor: "#15803d",
+    },
+    {
+      label: "À collecter",
+      valeur: formatFC(totalACollecter),
+      Icon: TrendingDown,
+      bg: "#FECACA",
+      iconColor: "#b91c1c",
+      valueColor: "#b91c1c",
+    },
+  ];
+
   // ============================================================
   // RENDU
   // ============================================================
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8 pb-24">
+    <div
+      style={{
+        backgroundColor: "#F1F5F9",
+        minHeight: "100vh",
+        padding: "16px 12px 90px 12px",
+      }}
+    >
       {/* ---------- TOAST ---------- */}
       {toast && (
         <div
-          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl shadow-lg text-sm font-semibold flex items-center gap-2 ${
-            toast.type === "ok"
-              ? "bg-green-600 text-white"
-              : "bg-red-600 text-white"
-          }`}
+          style={{
+            position: "fixed",
+            top: "16px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 50,
+            backgroundColor: toast.type === "ok" ? "#16a34a" : "#dc2626",
+            color: "white",
+            padding: "10px 16px",
+            borderRadius: "10px",
+            fontSize: "12.5px",
+            fontWeight: "700",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+          }}
         >
-          {toast.type === "ok" ? <Check size={16} /> : <XCircle size={16} />}
+          {toast.type === "ok" ? <Check size={14} /> : <XCircle size={14} />}
           {toast.message}
         </div>
       )}
 
-      <div className="mx-auto max-w-4xl">
+      {/* ---------- EN-TÊTE ---------- */}
+      <div style={{ marginBottom: "16px" }}>
+        <h1
+          style={{
+            fontSize: "20px",
+            fontWeight: "800",
+            color: "#0F172A",
+            marginBottom: "2px",
+            letterSpacing: "-0.3px",
+          }}
+        >
+          Finance
+        </h1>
+        <p style={{ fontSize: "11px", color: "#475569", fontWeight: "600" }}>
+          Gestion des frais d'inscription et des loyers
+        </p>
+      </div>
 
-        {/* ---------- EN-TÊTE ---------- */}
-        <div className="mb-7">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-            Finance
-          </h1>
-          <p className="mt-1 text-sm text-slate-500 sm:text-base">
-            Gestion des frais d'inscription et des loyers
+      {/* ---------- STATS 2x2 ---------- */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "8px",
+          marginBottom: "16px",
+        }}
+      >
+        {stats.map((stat) => {
+          const Icon = stat.Icon;
+          return (
+            <div
+              key={stat.label}
+              style={{
+                backgroundColor: "white",
+                borderRadius: "10px",
+                overflow: "hidden",
+                boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+                border: "1px solid #F1F5F9",
+              }}
+            >
+              <div
+                style={{
+                  backgroundColor: stat.bg,
+                  padding: "6px",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Icon size={14} color={stat.iconColor} strokeWidth={2.5} />
+              </div>
+              <div style={{ padding: "6px 4px 8px 4px", textAlign: "center" }}>
+                <p
+                  style={{
+                    fontSize: "9.5px",
+                    color: "#475569",
+                    marginBottom: "2px",
+                    fontWeight: "700",
+                  }}
+                >
+                  {stat.label}
+                </p>
+                <p
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: "800",
+                    color: stat.valueColor,
+                    lineHeight: 1.1,
+                  }}
+                >
+                  {stat.valeur}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ---------- FILTRES ---------- */}
+      <div
+        style={{
+          display: "flex",
+          gap: "6px",
+          marginBottom: "12px",
+          overflowX: "auto",
+        }}
+      >
+        <FiltreBouton
+          actif={filtre === "TOUT"}
+          onClick={() => setFiltre("TOUT")}
+          label={`Tout (${vendeurs.length})`}
+          couleur="blue"
+        />
+        <FiltreBouton
+          actif={filtre === "IMPAYES"}
+          onClick={() => setFiltre("IMPAYES")}
+          label="Impayés"
+          couleur="red"
+        />
+        <FiltreBouton
+          actif={filtre === "AJOUR"}
+          onClick={() => setFiltre("AJOUR")}
+          label="À jour"
+          couleur="green"
+        />
+      </div>
+
+      {/* ---------- CHARGEMENT ---------- */}
+      {chargement && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "60px 0",
+          }}
+        >
+          <Loader2
+            size={28}
+            color="#1D4ED8"
+            style={{ animation: "spin 1s linear infinite" }}
+          />
+          <p
+            style={{
+              marginTop: "10px",
+              fontSize: "12px",
+              color: "#475569",
+              fontWeight: "600",
+            }}
+          >
+            Chargement...
           </p>
         </div>
+      )}
 
-        {/* ---------- STATS 2x2 ---------- */}
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
-          <StatCard
-            label="Inscriptions"
-            value={formatFC(inscriptionsEncaissees)}
-            icon={<Wallet size={18} className="text-blue-700" />}
-            iconBg="bg-blue-100"
-          />
-          <StatCard
-            label="Loyers"
-            value={formatFC(loyersEncaissees)}
-            icon={<Wallet size={18} className="text-orange-700" />}
-            iconBg="bg-orange-100"
-          />
-          <StatCard
-            label="Total encaissé"
-            value={formatFC(totalCollecte)}
-            icon={<TrendingUp size={18} className="text-green-700" />}
-            iconBg="bg-green-100"
-            valueColor="text-green-700"
-          />
-          <StatCard
-            label="À collecter"
-            value={formatFC(totalACollecter)}
-            icon={<TrendingDown size={18} className="text-red-700" />}
-            iconBg="bg-red-100"
-            valueColor="text-red-700"
-          />
+      {/* ---------- ERREUR ---------- */}
+      {erreur && !chargement && (
+        <div
+          style={{
+            backgroundColor: "#FEF2F2",
+            border: "1px solid #FECACA",
+            borderRadius: "10px",
+            padding: "12px",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            fontSize: "12px",
+            color: "#b91c1c",
+            fontWeight: "600",
+          }}
+        >
+          <AlertCircle size={16} />
+          {erreur}
         </div>
+      )}
 
-        {/* ---------- FILTRES ---------- */}
-        <div className="flex items-center gap-2 mt-7 mb-4 overflow-x-auto">
-          <FiltreBouton
-            actif={filtre === "TOUT"}
-            onClick={() => setFiltre("TOUT")}
-            label={`Tout (${vendeurs.length})`}
-            couleur="blue"
-          />
-          <FiltreBouton
-            actif={filtre === "IMPAYES"}
-            onClick={() => setFiltre("IMPAYES")}
-            label="Impayés"
-            couleur="red"
-          />
-          <FiltreBouton
-            actif={filtre === "AJOUR"}
-            onClick={() => setFiltre("AJOUR")}
-            label="À jour"
-            couleur="green"
-          />
-        </div>
+      {/* ---------- LISTE VENDEURS ---------- */}
+      {!chargement && !erreur && (
+        <>
+          {vendeursFiltres.length === 0 ? (
+            <div
+              style={{
+                backgroundColor: "white",
+                borderRadius: "10px",
+                border: "1px solid #E2E8F0",
+                padding: "32px 20px",
+                textAlign: "center",
+              }}
+            >
+              <Store
+                size={36}
+                color="#94a3b8"
+                style={{ margin: "0 auto 8px auto", display: "block" }}
+              />
+              <p
+                style={{
+                  fontSize: "13px",
+                  fontWeight: "700",
+                  color: "#0F172A",
+                }}
+              >
+                Aucun vendeur
+              </p>
+              <p
+                style={{
+                  fontSize: "11px",
+                  color: "#64748b",
+                  marginTop: "4px",
+                }}
+              >
+                {filtre === "TOUT"
+                  ? "Aucun vendeur enregistré."
+                  : "Aucun vendeur dans ce filtre."}
+              </p>
+            </div>
+          ) : (
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+            >
+              {vendeursFiltres.map((v) => (
+                <CarteVendeur
+                  key={v.id}
+                  vendeur={v}
+                  moisActuel={moisActuel}
+                  enCours={enCours}
+                  onMarquerPaye={marquerPaye}
+                  onToutMarquerPaye={toutMarquerPaye}
+                />
+              ))}
+            </div>
+          )}
+        </>
+      )}
 
-        {/* ---------- CHARGEMENT ---------- */}
-        {chargement && (
-          <div className="flex flex-col items-center justify-center py-16">
-            <Loader2 size={28} className="animate-spin text-blue-700" />
-            <p className="mt-3 text-sm text-slate-500 font-medium">
-              Chargement...
-            </p>
-          </div>
-        )}
-
-        {/* ---------- ERREUR ---------- */}
-        {erreur && !chargement && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-2 text-sm text-red-700 font-medium">
-            <AlertCircle size={18} />
-            {erreur}
-          </div>
-        )}
-
-        {/* ---------- LISTE VENDEURS ---------- */}
-        {!chargement && !erreur && (
-          <>
-            {vendeursFiltres.length === 0 ? (
-              <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
-                <Store size={36} className="mx-auto text-slate-400 mb-2" />
-                <p className="text-base font-semibold text-slate-900">
-                  Aucun vendeur
-                </p>
-                <p className="text-sm text-slate-500 mt-1">
-                  {filtre === "TOUT"
-                    ? "Aucun vendeur enregistré."
-                    : "Aucun vendeur dans ce filtre."}
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {vendeursFiltres.map((v) => (
-                  <CarteVendeur
-                    key={v.id}
-                    vendeur={v}
-                    moisActuel={moisActuel}
-                    enCours={enCours}
-                    onMarquerPaye={marquerPaye}
-                    onToutMarquerPaye={toutMarquerPaye}
-                  />
-                ))}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </main>
+      {/* Animation spinner CSS inline */}
+      <style jsx global>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
   );
 }
 
 // ============================================================
 // SOUS-COMPOSANTS
 // ============================================================
-
-function StatCard({
-  label,
-  value,
-  icon,
-  iconBg,
-  valueColor,
-}: {
-  label: string;
-  value: string;
-  icon: React.ReactNode;
-  iconBg: string;
-  valueColor?: string;
-}) {
-  return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-      <div className="flex items-center gap-2 mb-2">
-        <div className={`w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center shrink-0`}>
-          {icon}
-        </div>
-        <p className="text-xs font-medium text-slate-500 sm:text-sm truncate">
-          {label}
-        </p>
-      </div>
-      <p className={`text-lg font-bold sm:text-2xl ${valueColor || "text-slate-900"} truncate`}>
-        {value}
-      </p>
-    </div>
-  );
-}
 
 function FiltreBouton({
   actif,
@@ -439,18 +569,24 @@ function FiltreBouton({
   label: string;
   couleur: "blue" | "red" | "green";
 }) {
-  let actifClass = "bg-blue-700 text-white border-blue-700";
-  if (couleur === "red") actifClass = "bg-red-600 text-white border-red-600";
-  if (couleur === "green") actifClass = "bg-green-600 text-white border-green-600";
+  let bgActif = "#1D4ED8";
+  if (couleur === "red") bgActif = "#dc2626";
+  if (couleur === "green") bgActif = "#16a34a";
 
   return (
     <button
       onClick={onClick}
-      className={`px-3 py-1.5 rounded-full text-xs font-semibold transition whitespace-nowrap border ${
-        actif
-          ? actifClass
-          : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
-      }`}
+      style={{
+        padding: "6px 12px",
+        borderRadius: "20px",
+        fontSize: "11px",
+        fontWeight: "700",
+        whiteSpace: "nowrap",
+        border: actif ? "1px solid transparent" : "1px solid #E2E8F0",
+        backgroundColor: actif ? bgActif : "white",
+        color: actif ? "white" : "#475569",
+        cursor: "pointer",
+      }}
     >
       {label}
     </button>
@@ -485,131 +621,104 @@ function CarteVendeur({
     (loyerPaye ? 0 : LOYER_MENSUEL);
 
   const toutPaye = inscriptionPayee && loyerPaye;
-
-  const bordCouleur = toutPaye
-    ? "border-l-4 border-l-green-500"
-    : "border-l-4 border-l-red-500";
+  const bordCouleur = toutPaye ? "#16a34a" : "#dc2626";
 
   return (
-    <div className={`bg-white rounded-xl border border-slate-200 ${bordCouleur} shadow-sm overflow-hidden`}>
-      {/* ---------- EN-TÊTE CARTE ---------- */}
-      <div className="px-4 pt-4 pb-3 border-b border-slate-100">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5">
-              <Store size={14} className="text-blue-700 shrink-0" />
-              <h3 className="text-sm font-bold text-slate-900 truncate">
-                {vendeur.nomBoutique}
-              </h3>
-            </div>
-            <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
-              {vendeur.userNom || vendeur.userEmail || "—"}
-            </p>
-            <p className="text-xs text-slate-400 font-medium flex items-center gap-1 mt-0.5">
-              <Phone size={10} />
-              {vendeur.telephone}
-            </p>
-          </div>
-          {toutPaye ? (
-            <span className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
-              <CheckCircle2 size={12} />
-              À JOUR
-            </span>
-          ) : (
-            <span className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold">
-              <AlertCircle size={12} />
-              IMPAYÉ
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* ---------- LIGNES PAIEMENTS ---------- */}
-      <div className="px-4 py-3 space-y-2">
-        <LignePaiement
-          label="Inscription"
-          montant={FRAIS_INSCRIPTION}
-          paye={inscriptionPayee}
-          enCours={enCours === `${vendeur.id}-INSCRIPTION-INSCRIPTION`}
-          onMarquer={() => onMarquerPaye(vendeur.id, "INSCRIPTION", "INSCRIPTION")}
-        />
-
-        <LignePaiement
-          label={getMoisLisible(moisActuel)}
-          montant={LOYER_MENSUEL}
-          paye={loyerPaye}
-          enCours={enCours === `${vendeur.id}-LOYER-${moisActuel}`}
-          onMarquer={() => onMarquerPaye(vendeur.id, "LOYER", moisActuel)}
-        />
-      </div>
-
-      {/* ---------- TOTAL + ACTION GLOBALE ---------- */}
-      <div className="px-4 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
-        <div>
-          <p className="text-xs font-medium text-slate-500 uppercase">
-            Total dû
-          </p>
-          <p className={`text-base font-bold ${toutPaye ? "text-green-700" : "text-red-700"}`}>
-            {formatFC(totalDu)}
-          </p>
-        </div>
-
-        {!toutPaye && (
-          <button
-            onClick={() => onToutMarquerPaye(vendeur)}
-            disabled={enCours !== null && enCours.startsWith(vendeur.id)}
-            className="px-3 py-2 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold flex items-center gap-1.5 active:scale-95 transition disabled:opacity-60 shrink-0"
+    <div
+      style={{
+        backgroundColor: "white",
+        borderRadius: "10px",
+        border: "1px solid #E2E8F0",
+        borderLeft: `4px solid ${bordCouleur}`,
+        boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+        overflow: "hidden",
+      }}
+    >
+      {/* En-tête */}
+      <div
+        style={{
+          padding: "12px 14px 10px 14px",
+          borderBottom: "1px solid #F1F5F9",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: "8px",
+        }}
+      >
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              marginBottom: "3px",
+            }}
           >
-            <Check size={14} />
-            Tout marquer payé
-          </button>
-        )}
-      </div>
-    </div>
-  );
-}
+            <Store size={13} color="#1D4ED8" strokeWidth={2.5} />
+            <h3
+              style={{
+                fontSize: "13px",
+                fontWeight: "800",
+                color: "#0F172A",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {vendeur.nomBoutique}
+            </h3>
+          </div>
+          <p
+            style={{
+              fontSize: "10.5px",
+              color: "#64748b",
+              fontWeight: "600",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {vendeur.userNom || vendeur.userEmail || "—"}
+          </p>
+          <p
+            style={{
+              fontSize: "10px",
+              color: "#94a3b8",
+              fontWeight: "600",
+              display: "flex",
+              alignItems: "center",
+              gap: "3px",
+              marginTop: "2px",
+            }}
+          >
+            <Phone size={9} />
+            {vendeur.telephone}
+          </p>
+        </div>
 
-function LignePaiement({
-  label,
-  montant,
-  paye,
-  enCours,
-  onMarquer,
-}: {
-  label: string;
-  montant: number;
-  paye: boolean;
-  enCours: boolean;
-  onMarquer: () => void;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-2">
-      <div className="min-w-0 flex-1">
-        <p className="text-sm font-semibold text-slate-900 truncate">{label}</p>
-        <p className="text-xs font-medium text-slate-500">
-          {formatFC(montant)}
-        </p>
-      </div>
-
-      {paye ? (
-        <span className="shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
-          <Check size={11} />
-          Payé
-        </span>
-      ) : (
-        <button
-          onClick={onMarquer}
-          disabled={enCours}
-          className="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-red-50 text-red-700 text-xs font-bold border border-red-200 active:scale-95 transition disabled:opacity-60"
-        >
-          {enCours ? (
-            <Loader2 size={12} className="animate-spin" />
-          ) : (
-            <XCircle size={12} />
-          )}
-          {enCours ? "..." : "Marquer payé"}
-        </button>
-      )}
-    </div>
-  );
-      }
+        {toutPaye ? (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "3px",
+              padding: "3px 8px",
+              borderRadius: "12px",
+              backgroundColor: "#DCFCE7",
+              color: "#15803d",
+              fontSize: "9px",
+              fontWeight: "800",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <CheckCircle size={10} strokeWidth={2.5} />
+            À JOUR
+          </span>
+        ) : (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "3px",
+              padding: "3px 8px",
+              borderRadius: 
