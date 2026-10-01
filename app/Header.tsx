@@ -34,14 +34,20 @@ export default function Header() {
       .catch(() => {});
   }, []);
 
-  const estPageConnexion =
+  // Cacher le header sur les pages de connexion/inscription
+  const pageSansHeader =
     pathname === "/vendeur/connexion" ||
     pathname === "/vendeur/inscription" ||
     pathname === "/client/inscription" ||
+    pathname === "/compte" ||
     pathname === "/mot-de-passe-oublie";
 
-  // HEADER ADMIN (logo → accueil)
-  if (pathname.startsWith("/admin") && !estPageConnexion) {
+  if (pageSansHeader) {
+    return null;
+  }
+
+  // HEADER ADMIN
+  if (pathname.startsWith("/admin")) {
     return (
       <header style={{
         backgroundColor: "white",
@@ -74,7 +80,7 @@ export default function Header() {
     );
   }
 
-  // HEADER VENDEUR (logo → accueil)
+  // HEADER VENDEUR
   if (pathname.startsWith("/vendeur") && user && user.role === "VENDEUR") {
     return (
       <header style={{
@@ -111,7 +117,7 @@ export default function Header() {
     );
   }
 
-  // HEADER CLIENT (logo → accueil)
+  // HEADER CLIENT
   if (pathname.startsWith("/client") && user && user.role === "ACHETEUR") {
     return (
       <header style={{
@@ -231,4 +237,4 @@ export default function Header() {
       </div>
     </header>
   );
-}
+                  }
