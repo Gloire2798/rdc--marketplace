@@ -1,0 +1,182 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/auth";
+
+// POST : Valider le QR et retourner les infos
+export async function POST(request: Request) {
+  try {
+    const session = await getSession();
+
+    if (!session || session.role !== "VENDEUR") {
+      return NextResponse.json({ erreur: "Non autorisé" }, { status: 403 });
+    }
+
+    const vendeur = await prisma.vendeur.findUnique({
+      where: { userId: session.id },
+    });
+
+    if (!vendeur) {
+      return NextResponse.json({ erreur: "Boutique introuvable" }, { status: 404 });
+    }
+
+    const body = await request.json();
+    const { qrToken } = body;
+
+    if (!qrToken || typeof qrToken !== "string") {
+      return NextResponse.json({ erreur: "QR invalide" }, { status: 400 });
+    }
+
+    // Format attendu : CMD:commandeId:token
+    const parts = qrToken.split(":");
+    if (parts.length !== 3 || parts[0] !== "CMD") {
+      return NextResponse.json({ erreur: "QR non reconnu" }, { status: 400 });
+    }
+
+    const [, commandeId, token] = parts;
+
+    const commande = await prisma.commande.findUnique({
+      where: { id: commandeId },
+      include: {
+        items: { include: { produit: true } },
+      },
+    });
+
+    if (!commande) {
+      return NextResponse.json({ erreur: "Commande introuvable" }, { status: 404 });
+    }
+
+    // Vérifier que le token correspond
+    if (commande.qrToken !== token) {
+      return NextResponse.json({ erreur: "QR falsifié" }, { status: 400 });
+    }
+
+    // Vérifier que la commande appartient à ce vendeur
+    if (commande.vendeurId !== vendeur.id) {
+      return NextResponse.json(
+        { erreur: "Ce QR n'appartient pas à votre boutique" },
+        { status: 403 }
+      );
+    }
+
+    // Vérifier que la commande n'a pas déjà été retirée
+    if (commande.statut === "RETIRE") {
+      return NextResponse.json(
+        { erreur: "Cette commande a déjà été retirée" },
+        { status: 400 }
+      );
+    }
+
+    // Vérifier que la commande est prête
+    if (commande.statut !== "PRET") {
+      return NextResponse.json(
+        {
+          erreur:
+            commande.statut === "EN_ATTENTE"
+              ? "Cette commande n'a pas encore été validée par vos soins"
+              : "Cette commande n'est pas encore prête pour le retrait",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Vérifier que le QR n'a pas expiré
+    if (commande.qrExpireAt && commande.qrExpireAt < new Date()) {
+      return NextResponse.json(
+        { erreur: "Ce QR a expiré" },
+        { status: 400 }
+      );
+    }
+
+    // Récupérer la devise depuis le premier article
+    const devise = commande.items[0]?.produit.devise || "FC";
+    const acompte = Math.round(commande.total * 0.1 * 100) / 100;
+    const reste = commande.total - acompte;
+
+    return NextResponse.json({
+      succes: true,
+      commande: {
+        id: commande.id,
+        nomClient: commande.nomClient || "Client",
+        telephoneClient: commande.telephoneClient || "—",
+        adresse: commande.adresse,
+        mode: commande.mode,
+        total: commande.total,
+        acompte,
+        reste,
+        devise,
+        statut: commande.statut,
+        createdAt: commande.createdAt.toISOString(),
+        nomBoutique: vendeur.nomBoutique,
+        items: commande.items.map((i) => ({
+          nom: i.produit.nom,
+          quantite: i.quantite,
+          prixUnitaire: i.prixUnitaire,
+          devise: i.produit.devise,
+        })),
+      },
+    });
+  } catch (error) {
+    console.error("Erreur scanner:", error);
+    return NextResponse.json({ erreur: "Erreur serveur" }, { status: 500 });
+  }
+}
+
+// PUT : Confirmer le retrait (marquer comme RETIRE + invalider le QR)
+export async function PUT(request: Request) {
+  try {
+    const session = await getSession();
+
+    if (!session || session.role !== "VENDEUR") {
+      return NextResponse.json({ erreur: "Non autorisé" }, { status: 403 });
+    }
+
+    const vendeur = await prisma.vendeur.findUnique({
+      where: { userId: session.id },
+    });
+
+    if (!vendeur) {
+      return NextResponse.json({ erreur: "Boutique introuvable" }, { status: 404 });
+    }
+
+    const body = await request.json();
+    const { commandeId } = body;
+
+    if (!commandeId) {
+      return NextResponse.json({ erreur: "ID manquant" }, { status: 400 });
+    }
+
+    const commande = await prisma.commande.findUnique({
+      where: { id: commandeId },
+    });
+
+    if (!commande) {
+      return NextResponse.json({ erreur: "Commande introuvable" }, { status: 404 });
+    }
+
+    if (commande.vendeurId !== vendeur.id) {
+      return NextResponse.json({ erreur: "Non autorisé" }, { status: 403 });
+    }
+
+    if (commande.statut === "RETIRE") {
+      return NextResponse.json(
+        { erreur: "Déjà retirée" },
+        { status: 400 }
+      );
+    }
+
+    // Marquer la commande comme retirée + invalider le QR
+    await prisma.commande.update({
+      where: { id: commandeId },
+      data: {
+        statut: "RETIRE",
+        retireAt: new Date(),
+        qrToken: `USED_${commande.qrToken}`, // invalider le token
+      },
+    });
+
+    return NextResponse.json({ succes: true });
+  } catch (error) {
+    console.error("Erreur validation retrait:", error);
+    return NextResponse.json({ erreur: "Erreur serveur" }, { status: 500 });
+  }
+      }
