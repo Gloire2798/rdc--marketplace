@@ -19,7 +19,6 @@ export default async function PageBoutique({
     notFound();
   }
 
-  // Si c'est le propriétaire de la boutique, rediriger vers son dashboard
   const session = await getSession();
   if (session && session.role === "VENDEUR" && session.id === vendeur.userId) {
     redirect("/vendeur/dashboard");
@@ -38,7 +37,7 @@ export default async function PageBoutique({
   };
 
   return (
-    <div style={{ padding: "16px 14px", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
+    <div style={{ padding: "16px 12px", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
       <Link href="/" style={{ color: "#1D4ED8", fontSize: "12px", fontWeight: "700" }}>
         ← Retour à l&apos;accueil
       </Link>
@@ -46,27 +45,33 @@ export default async function PageBoutique({
       <div style={{
         display: "flex",
         alignItems: "center",
-        gap: "12px",
-        marginTop: "16px",
-        marginBottom: "20px",
+        gap: "10px",
+        marginTop: "14px",
+        marginBottom: "18px",
       }}>
-        <LogoBoutique nom={vendeur.nomBoutique} taille={56} />
+        <LogoBoutique nom={vendeur.nomBoutique} taille={48} />
         <div style={{ flex: 1, minWidth: 0 }}>
           <h1 style={{
-            fontSize: "18px",
+            fontSize: "16px",
             fontWeight: "900",
             color: "#0F172A",
-            marginBottom: "3px",
+            marginBottom: "2px",
           }}>
             {vendeur.nomBoutique}
           </h1>
           {vendeur.description && (
-            <p style={{ color: "#57534E", fontSize: "12px", fontWeight: "500", marginBottom: "2px" }}>
+            <p style={{
+              color: "#57534E",
+              fontSize: "11px",
+              fontWeight: "500",
+              lineHeight: 1.3,
+              overflow: "hidden",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+            }}>
               {vendeur.description}
             </p>
-          )}
-          {vendeur.adresse && (
-            <p style={{ color: "#78716C", fontSize: "11px" }}>📍 {vendeur.adresse}</p>
           )}
         </div>
       </div>
@@ -79,18 +84,18 @@ export default async function PageBoutique({
           borderRadius: "12px",
           border: "1px solid #E8DFC8",
         }}>
-          <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "6px" }}>
+          <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "6px" }}>
             Aucun produit pour le moment
           </p>
-          <p style={{ color: "#78716C", fontSize: "12px" }}>
+          <p style={{ color: "#78716C", fontSize: "11px" }}>
             Cette boutique n&apos;a pas encore publié d&apos;articles.
           </p>
         </div>
       ) : (
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
-          gap: "10px",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          gap: "6px",
         }}>
           {produits.map((p) => {
             const enPromo = p.prixPromo !== null && p.prixPromo < p.prix;
@@ -104,26 +109,28 @@ export default async function PageBoutique({
                 href={`/acheteur/produit/${p.id}`}
                 style={{
                   backgroundColor: "white",
-                  borderRadius: "10px",
+                  borderRadius: "8px",
                   overflow: "hidden",
                   textDecoration: "none",
                   color: "inherit",
                   position: "relative",
                   border: "1px solid #E8DFC8",
-                  boxShadow: "0 1px 3px rgba(120, 100, 60, 0.05)",
+                  boxShadow: "0 1px 2px rgba(120, 100, 60, 0.05)",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
                 {enPromo && (
                   <span style={{
                     position: "absolute",
-                    top: "6px",
-                    left: "6px",
+                    top: "3px",
+                    left: "3px",
                     backgroundColor: "#dc2626",
                     color: "white",
-                    fontSize: "10px",
+                    fontSize: "8px",
                     fontWeight: "800",
-                    padding: "2px 7px",
-                    borderRadius: "5px",
+                    padding: "1px 4px",
+                    borderRadius: "3px",
                     zIndex: 2,
                   }}>
                     -{pourcentage}%
@@ -131,62 +138,64 @@ export default async function PageBoutique({
                 )}
 
                 {p.photo1 ? (
-                  <img
-                    src={p.photo1}
-                    alt={p.nom}
-                    style={{
-                      width: "100%",
-                      height: "130px",
-                      objectFit: "contain",
-                      backgroundColor: "#F8FAFC",
-                      display: "block",
-                    }}
-                  />
+                  <div style={{
+                    width: "100%",
+                    height: "80px",
+                    backgroundColor: "#F8FAFC",
+                    overflow: "hidden",
+                  }}>
+                    <img
+                      src={p.photo1}
+                      alt={p.nom}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        objectPosition: "center",
+                        display: "block",
+                      }}
+                    />
+                  </div>
                 ) : (
                   <div style={{
                     width: "100%",
-                    height: "130px",
+                    height: "80px",
                     backgroundColor: "#F8FAFC",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "32px",
+                    fontSize: "20px",
                   }}>
                     📦
                   </div>
                 )}
 
-                <div style={{ padding: "8px 10px 10px 10px" }}>
+                <div style={{ padding: "5px 6px 7px 6px", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <h3 style={{
-                    fontSize: "12px",
+                    fontSize: "9.5px",
                     fontWeight: "700",
-                    marginBottom: "4px",
+                    marginBottom: "3px",
                     color: "#0F172A",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
+                    lineHeight: 1.2,
                   }}>
                     {p.nom}
                   </h3>
 
                   {enPromo ? (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
-                      <span style={{ fontSize: "13px", fontWeight: "800", color: "#16a34a" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0px" }}>
+                      <span style={{ fontSize: "10px", fontWeight: "800", color: "#16a34a", lineHeight: 1.1 }}>
                         {formaterPrix(p.prixPromo!, p.devise)}
                       </span>
-                      <span style={{ fontSize: "10px", color: "#94a3b8", textDecoration: "line-through" }}>
+                      <span style={{ fontSize: "8px", color: "#94a3b8", textDecoration: "line-through", lineHeight: 1.1 }}>
                         {formaterPrix(p.prix, p.devise)}
                       </span>
                     </div>
                   ) : (
-                    <p style={{ fontSize: "13px", fontWeight: "800", color: "#1D4ED8" }}>
+                    <p style={{ fontSize: "10px", fontWeight: "800", color: "#1D4ED8", lineHeight: 1.1 }}>
                       {formaterPrix(p.prix, p.devise)}
-                    </p>
-                  )}
-
-                  {p.stock === 0 && (
-                    <p style={{ fontSize: "10px", color: "#dc2626", marginTop: "3px", fontWeight: "700" }}>
-                      Rupture de stock
                     </p>
                   )}
                 </div>
@@ -197,4 +206,4 @@ export default async function PageBoutique({
       )}
     </div>
   );
-                     }
+      }
