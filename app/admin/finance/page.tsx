@@ -13,7 +13,6 @@ import {
   Phone,
   Check,
   Loader2,
-  Filter,
 } from "lucide-react";
 
 // ============================================================
@@ -151,7 +150,6 @@ export default function FinancePage() {
         return;
       }
 
-      // Mettre à jour localement (pas besoin de recharger)
       setVendeurs((prev) =>
         prev.map((v) => {
           if (v.id !== vendeurId) return v;
@@ -185,7 +183,7 @@ export default function FinancePage() {
         })
       );
 
-      afficherToast("✅ Paiement marqué comme payé");
+      afficherToast("Paiement marqué comme payé");
     } catch {
       afficherToast("Impossible de contacter le serveur", "err");
     }
@@ -263,14 +261,14 @@ export default function FinancePage() {
   // ============================================================
 
   return (
-    <main className="min-h-screen bg-[#FDF6EC] pb-24">
+    <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8 pb-24">
       {/* ---------- TOAST ---------- */}
       {toast && (
         <div
-          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl shadow-lg text-[12.5px] font-bold flex items-center gap-2 ${
+          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl shadow-lg text-sm font-semibold flex items-center gap-2 ${
             toast.type === "ok"
-              ? "bg-emerald-500 text-white"
-              : "bg-red-500 text-white"
+              ? "bg-green-600 text-white"
+              : "bg-red-600 text-white"
           }`}
         >
           {toast.type === "ok" ? <Check size={16} /> : <XCircle size={16} />}
@@ -278,56 +276,55 @@ export default function FinancePage() {
         </div>
       )}
 
-      <div className="max-w-3xl mx-auto px-4 pt-5">
+      <div className="mx-auto max-w-4xl">
+
         {/* ---------- EN-TÊTE ---------- */}
-        <div className="mb-5">
-          <h1 className="text-[24px] font-black text-[#0F172A] tracking-tight">
+        <div className="mb-7">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
             Finance
           </h1>
-          <p className="text-[12px] text-[#64748B] font-semibold mt-0.5">
+          <p className="mt-1 text-sm text-slate-500 sm:text-base">
             Gestion des frais d'inscription et des loyers
           </p>
         </div>
 
         {/* ---------- STATS 2x2 ---------- */}
-        <div className="grid grid-cols-2 gap-2.5 mb-5">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
           <StatCard
             label="Inscriptions"
             value={formatFC(inscriptionsEncaissees)}
-            icon={<Wallet size={16} className="text-blue-600" />}
-            bg="bg-blue-50"
+            icon={<Wallet size={18} className="text-blue-700" />}
+            iconBg="bg-blue-100"
           />
           <StatCard
             label="Loyers"
             value={formatFC(loyersEncaissees)}
-            icon={<Wallet size={16} className="text-orange-600" />}
-            bg="bg-orange-50"
+            icon={<Wallet size={18} className="text-orange-700" />}
+            iconBg="bg-orange-100"
           />
           <StatCard
             label="Total encaissé"
             value={formatFC(totalCollecte)}
-            icon={<TrendingUp size={16} className="text-emerald-600" />}
-            bg="bg-emerald-50"
-            highlight="emerald"
+            icon={<TrendingUp size={18} className="text-green-700" />}
+            iconBg="bg-green-100"
+            valueColor="text-green-700"
           />
           <StatCard
             label="À collecter"
             value={formatFC(totalACollecter)}
-            icon={<TrendingDown size={16} className="text-red-600" />}
-            bg="bg-red-50"
-            highlight="red"
+            icon={<TrendingDown size={18} className="text-red-700" />}
+            iconBg="bg-red-100"
+            valueColor="text-red-700"
           />
         </div>
 
         {/* ---------- FILTRES ---------- */}
-        <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
-          <div className="flex items-center gap-1 text-[#64748B] shrink-0">
-            <Filter size={13} strokeWidth={2.5} />
-          </div>
+        <div className="flex items-center gap-2 mt-7 mb-4 overflow-x-auto">
           <FiltreBouton
             actif={filtre === "TOUT"}
             onClick={() => setFiltre("TOUT")}
             label={`Tout (${vendeurs.length})`}
+            couleur="blue"
           />
           <FiltreBouton
             actif={filtre === "IMPAYES"}
@@ -339,15 +336,15 @@ export default function FinancePage() {
             actif={filtre === "AJOUR"}
             onClick={() => setFiltre("AJOUR")}
             label="À jour"
-            couleur="emerald"
+            couleur="green"
           />
         </div>
 
         {/* ---------- CHARGEMENT ---------- */}
         {chargement && (
           <div className="flex flex-col items-center justify-center py-16">
-            <Loader2 size={28} className="animate-spin text-[#1E3A8A]" />
-            <p className="mt-3 text-[12px] text-[#64748B] font-semibold">
+            <Loader2 size={28} className="animate-spin text-blue-700" />
+            <p className="mt-3 text-sm text-slate-500 font-medium">
               Chargement...
             </p>
           </div>
@@ -355,8 +352,8 @@ export default function FinancePage() {
 
         {/* ---------- ERREUR ---------- */}
         {erreur && !chargement && (
-          <div className="bg-red-50 border border-red-100 rounded-2xl p-4 flex items-center gap-2 text-[12.5px] text-red-700 font-semibold">
-            <AlertCircle size={16} />
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-2 text-sm text-red-700 font-medium">
+            <AlertCircle size={18} />
             {erreur}
           </div>
         )}
@@ -365,12 +362,12 @@ export default function FinancePage() {
         {!chargement && !erreur && (
           <>
             {vendeursFiltres.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-[#E8DFC8] p-8 text-center">
-                <Store size={32} className="mx-auto text-[#94A3B8] mb-2" />
-                <p className="text-[13px] font-bold text-[#0F172A]">
+              <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
+                <Store size={36} className="mx-auto text-slate-400 mb-2" />
+                <p className="text-base font-semibold text-slate-900">
                   Aucun vendeur
                 </p>
-                <p className="text-[11.5px] text-[#64748B] mt-1">
+                <p className="text-sm text-slate-500 mt-1">
                   {filtre === "TOUT"
                     ? "Aucun vendeur enregistré."
                     : "Aucun vendeur dans ce filtre."}
@@ -405,33 +402,28 @@ function StatCard({
   label,
   value,
   icon,
-  bg,
-  highlight,
+  iconBg,
+  valueColor,
 }: {
   label: string;
   value: string;
   icon: React.ReactNode;
-  bg: string;
-  highlight?: "emerald" | "red";
+  iconBg: string;
+  valueColor?: string;
 }) {
-  const valueColor =
-    highlight === "emerald"
-      ? "text-emerald-600"
-      : highlight === "red"
-      ? "text-red-600"
-      : "text-[#0F172A]";
-
   return (
-    <div className="bg-white rounded-2xl border border-[#E8DFC8] p-3 shadow-sm">
-      <div className="flex items-center gap-1.5 mb-2">
-        <div className={`w-6 h-6 rounded-lg ${bg} flex items-center justify-center shrink-0`}>
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+      <div className="flex items-center gap-2 mb-2">
+        <div className={`w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center shrink-0`}>
           {icon}
         </div>
-        <p className="text-[10.5px] font-bold text-[#64748B] uppercase tracking-wide truncate">
+        <p className="text-xs font-medium text-slate-500 sm:text-sm truncate">
           {label}
         </p>
       </div>
-      <p className={`text-[14px] font-black ${valueColor} truncate`}>{value}</p>
+      <p className={`text-lg font-bold sm:text-2xl ${valueColor || "text-slate-900"} truncate`}>
+        {value}
+      </p>
     </div>
   );
 }
@@ -445,23 +437,19 @@ function FiltreBouton({
   actif: boolean;
   onClick: () => void;
   label: string;
-  couleur?: "red" | "emerald";
+  couleur: "blue" | "red" | "green";
 }) {
-  const base =
-    "px-3 py-1.5 rounded-full text-[11.5px] font-bold transition whitespace-nowrap border";
-
-  let actifClass = "bg-[#1E3A8A] text-white border-[#1E3A8A]";
-  if (couleur === "red") actifClass = "bg-red-500 text-white border-red-500";
-  if (couleur === "emerald")
-    actifClass = "bg-emerald-500 text-white border-emerald-500";
+  let actifClass = "bg-blue-700 text-white border-blue-700";
+  if (couleur === "red") actifClass = "bg-red-600 text-white border-red-600";
+  if (couleur === "green") actifClass = "bg-green-600 text-white border-green-600";
 
   return (
     <button
       onClick={onClick}
-      className={`${base} ${
+      className={`px-3 py-1.5 rounded-full text-xs font-semibold transition whitespace-nowrap border ${
         actif
           ? actifClass
-          : "bg-white text-[#64748B] border-[#E8DFC8] hover:border-[#1E3A8A]"
+          : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"
       }`}
     >
       {label}
@@ -499,39 +487,37 @@ function CarteVendeur({
   const toutPaye = inscriptionPayee && loyerPaye;
 
   const bordCouleur = toutPaye
-    ? "border-l-emerald-500"
-    : "border-l-red-500";
+    ? "border-l-4 border-l-green-500"
+    : "border-l-4 border-l-red-500";
 
   return (
-    <div
-      className={`bg-white rounded-2xl border border-[#E8DFC8] border-l-4 ${bordCouleur} shadow-sm overflow-hidden`}
-    >
+    <div className={`bg-white rounded-xl border border-slate-200 ${bordCouleur} shadow-sm overflow-hidden`}>
       {/* ---------- EN-TÊTE CARTE ---------- */}
-      <div className="px-3.5 pt-3.5 pb-3 border-b border-[#F1ECE0]">
+      <div className="px-4 pt-4 pb-3 border-b border-slate-100">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <Store size={13} className="text-[#1E3A8A] shrink-0" strokeWidth={2.5} />
-              <h3 className="text-[13.5px] font-black text-[#0F172A] truncate">
+              <Store size={14} className="text-blue-700 shrink-0" />
+              <h3 className="text-sm font-bold text-slate-900 truncate">
                 {vendeur.nomBoutique}
               </h3>
             </div>
-            <p className="text-[11px] text-[#64748B] font-semibold truncate mt-0.5">
-              👤 {vendeur.userNom || vendeur.userEmail || "—"}
+            <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
+              {vendeur.userNom || vendeur.userEmail || "—"}
             </p>
-            <p className="text-[10.5px] text-[#94A3B8] font-semibold flex items-center gap-1 mt-0.5">
-              <Phone size={9} strokeWidth={2.5} />
+            <p className="text-xs text-slate-400 font-medium flex items-center gap-1 mt-0.5">
+              <Phone size={10} />
               {vendeur.telephone}
             </p>
           </div>
           {toutPaye ? (
-            <span className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-black">
-              <CheckCircle2 size={11} strokeWidth={3} />
+            <span className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
+              <CheckCircle2 size={12} />
               À JOUR
             </span>
           ) : (
-            <span className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 text-red-700 text-[10px] font-black">
-              <AlertCircle size={11} strokeWidth={3} />
+            <span className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold">
+              <AlertCircle size={12} />
               IMPAYÉ
             </span>
           )}
@@ -539,7 +525,7 @@ function CarteVendeur({
       </div>
 
       {/* ---------- LIGNES PAIEMENTS ---------- */}
-      <div className="px-3.5 py-3 space-y-2">
+      <div className="px-4 py-3 space-y-2">
         <LignePaiement
           label="Inscription"
           montant={FRAIS_INSCRIPTION}
@@ -558,16 +544,12 @@ function CarteVendeur({
       </div>
 
       {/* ---------- TOTAL + ACTION GLOBALE ---------- */}
-      <div className="px-3.5 py-3 bg-[#FAF6EE] border-t border-[#F1ECE0] flex items-center justify-between gap-2">
+      <div className="px-4 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
         <div>
-          <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wide">
+          <p className="text-xs font-medium text-slate-500 uppercase">
             Total dû
           </p>
-          <p
-            className={`text-[15px] font-black ${
-              toutPaye ? "text-emerald-600" : "text-red-600"
-            }`}
-          >
+          <p className={`text-base font-bold ${toutPaye ? "text-green-700" : "text-red-700"}`}>
             {formatFC(totalDu)}
           </p>
         </div>
@@ -576,9 +558,9 @@ function CarteVendeur({
           <button
             onClick={() => onToutMarquerPaye(vendeur)}
             disabled={enCours !== null && enCours.startsWith(vendeur.id)}
-            className="px-3 py-2 rounded-xl bg-[#1E3A8A] text-white text-[11.5px] font-black flex items-center gap-1.5 active:scale-95 transition disabled:opacity-60 shrink-0"
+            className="px-3 py-2 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold flex items-center gap-1.5 active:scale-95 transition disabled:opacity-60 shrink-0"
           >
-            <Check size={13} strokeWidth={3} />
+            <Check size={14} />
             Tout marquer payé
           </button>
         )}
@@ -603,31 +585,31 @@ function LignePaiement({
   return (
     <div className="flex items-center justify-between gap-2">
       <div className="min-w-0 flex-1">
-        <p className="text-[12px] font-bold text-[#0F172A] truncate">{label}</p>
-        <p className="text-[11px] font-semibold text-[#64748B]">
+        <p className="text-sm font-semibold text-slate-900 truncate">{label}</p>
+        <p className="text-xs font-medium text-slate-500">
           {formatFC(montant)}
         </p>
       </div>
 
       {paye ? (
-        <span className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-black">
-          <Check size={10} strokeWidth={3} />
+        <span className="shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
+          <Check size={11} />
           Payé
         </span>
       ) : (
         <button
           onClick={onMarquer}
           disabled={enCours}
-          className="shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-red-50 text-red-700 text-[10.5px] font-black border border-red-100 active:scale-95 transition disabled:opacity-60"
+          className="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-red-50 text-red-700 text-xs font-bold border border-red-200 active:scale-95 transition disabled:opacity-60"
         >
           {enCours ? (
-            <Loader2 size={11} className="animate-spin" />
+            <Loader2 size={12} className="animate-spin" />
           ) : (
-            <XCircle size={11} strokeWidth={3} />
+            <XCircle size={12} />
           )}
           {enCours ? "..." : "Marquer payé"}
         </button>
       )}
     </div>
   );
-        }
+      }
