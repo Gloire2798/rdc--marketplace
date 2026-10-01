@@ -32,27 +32,29 @@ export default function GaleriePhotos({
 
   return (
     <div>
-      {/* Grande photo — s'adapte à la taille réelle */}
+      {/* Grande photo — s'adapte à la taille réelle, sans fond blanc */}
       <div
         style={{
           width: "100%",
-          backgroundColor: "white",
           borderRadius: "12px",
           overflow: "hidden",
           marginBottom: "8px",
-          border: "1px solid #E8DFC8",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          backgroundColor: "#FFFFFF",
+          minHeight: "140px",
+          maxHeight: "280px",
         }}
       >
         <img
           src={photos[photoActive]}
           alt={nomProduit}
           style={{
-            width: "100%",
+            maxWidth: "100%",
+            maxHeight: "280px",
+            width: "auto",
             height: "auto",
-            maxHeight: "260px",
             objectFit: "contain",
             display: "block",
           }}
