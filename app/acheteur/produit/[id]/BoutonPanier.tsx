@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ajouterAuPanier } from "@/lib/panier";
+import { ShoppingCart, Check } from "lucide-react";
 
 interface Article {
   produitId: string;
@@ -49,29 +50,41 @@ export default function BoutonPanier({
         style={{
           width: "100%",
           backgroundColor:
-            stock === 0 ? "#9ca3af" : ajoute ? "#16a34a" : "#2563eb",
+            stock === 0 ? "#9ca3af" : ajoute ? "#16a34a" : "#1D4ED8",
           color: "white",
-          padding: "16px",
-          borderRadius: "12px",
+          padding: "10px 14px",
+          borderRadius: "10px",
           border: "none",
-          fontWeight: "600",
-          fontSize: "16px",
+          fontWeight: "800",
+          fontSize: "13px",
           cursor: stock === 0 ? "not-allowed" : "pointer",
           transition: "background-color 0.3s",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "6px",
         }}
       >
-        {stock === 0
-          ? "❌ Rupture de stock"
-          : ajoute
-          ? "✅ Ajouté au panier !"
-          : "🛒 Ajouter au panier"}
+        {stock === 0 ? (
+          "❌ Rupture de stock"
+        ) : ajoute ? (
+          <>
+            <Check size={16} strokeWidth={3} />
+            Ajouté au panier !
+          </>
+        ) : (
+          <>
+            <ShoppingCart size={16} strokeWidth={2.8} />
+            Ajouter au panier
+          </>
+        )}
       </button>
 
       {erreur && (
-        <p style={{ color: "#dc2626", fontSize: "13px", marginTop: "8px", textAlign: "center" }}>
+        <p style={{ color: "#dc2626", fontSize: "11px", marginTop: "6px", textAlign: "center", fontWeight: "600" }}>
           {erreur}
         </p>
       )}
     </div>
   );
-          }
+}
