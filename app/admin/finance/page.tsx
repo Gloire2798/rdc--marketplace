@@ -75,107 +75,111 @@ export default async function FinancePage() {
   });
 
   return (
-    <main className="min-h-screen bg-gray-50 p-6">
+    <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
 
         {/* EN-TÊTE */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
+        <div className="mb-7">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
             Finance
           </h1>
 
-          <p className="mt-1 text-gray-500">
+          <p className="mt-1 text-sm text-slate-500 sm:text-base">
             Gestion des frais d'inscription et des loyers des boutiques
           </p>
         </div>
 
-        {/* RÉSUMÉ */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        {/* CARTES FINANCIÈRES */}
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
 
-          <div className="rounded-2xl bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-500">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+            <p className="text-xs font-medium text-slate-500 sm:text-sm">
               Inscriptions encaissées
             </p>
 
-            <p className="mt-2 text-2xl font-bold text-gray-900">
+            <p className="mt-2 text-lg font-bold text-slate-900 sm:text-2xl">
               {formatFC(inscriptionsPayees)}
             </p>
           </div>
 
-          <div className="rounded-2xl bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-500">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+            <p className="text-xs font-medium text-slate-500 sm:text-sm">
               Loyers encaissés
             </p>
 
-            <p className="mt-2 text-2xl font-bold text-gray-900">
+            <p className="mt-2 text-lg font-bold text-slate-900 sm:text-2xl">
               {formatFC(loyersPayes)}
             </p>
           </div>
 
-          <div className="rounded-2xl bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-500">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+            <p className="text-xs font-medium text-slate-500 sm:text-sm">
               Total encaissé
             </p>
 
-            <p className="mt-2 text-2xl font-bold text-green-600">
+            <p className="mt-2 text-lg font-bold text-emerald-600 sm:text-2xl">
               {formatFC(totalCollecte)}
             </p>
           </div>
 
-          <div className="rounded-2xl bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-500">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+            <p className="text-xs font-medium text-slate-500 sm:text-sm">
               Total à collecter
             </p>
 
-            <p className="mt-2 text-2xl font-bold text-red-600">
+            <p className="mt-2 text-lg font-bold text-red-600 sm:text-2xl">
               {formatFC(totalACollecter)}
             </p>
           </div>
 
         </div>
 
-        {/* SITUATION DES BOUTIQUES */}
-        <div className="mt-8 rounded-2xl bg-white shadow-sm">
+        {/* TABLEAU */}
+        <section className="mt-7 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
 
-          <div className="border-b p-5">
-            <h2 className="text-xl font-bold text-gray-900">
+          {/* TITRE DU TABLEAU */}
+          <div className="flex flex-col gap-1 border-b border-slate-200 px-4 py-4 sm:px-6">
+            <h2 className="text-lg font-bold text-slate-900 sm:text-xl">
               Situation des boutiques
             </h2>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="text-xs text-slate-500 sm:text-sm">
               Période actuelle : {moisActuel}
             </p>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* CONTENEUR DU TABLEAU */}
+          <div className="w-full overflow-x-auto">
 
-            <table className="w-full text-left">
+            <table className="min-w-[850px] w-full border-collapse text-sm">
 
-              <thead className="bg-gray-50 text-sm text-gray-500">
-                <tr>
-                  <th className="px-5 py-4">
+              <thead>
+                <tr className="border-b border-slate-200 bg-slate-50">
+
+                  <th className="whitespace-nowrap px-5 py-4 text-left font-semibold text-slate-600">
                     Boutique
                   </th>
 
-                  <th className="px-5 py-4">
+                  <th className="whitespace-nowrap px-5 py-4 text-left font-semibold text-slate-600">
                     Vendeur
                   </th>
 
-                  <th className="px-5 py-4">
+                  <th className="whitespace-nowrap px-5 py-4 text-center font-semibold text-slate-600">
                     Inscription
                   </th>
 
-                  <th className="px-5 py-4">
+                  <th className="whitespace-nowrap px-5 py-4 text-center font-semibold text-slate-600">
                     Loyer
                   </th>
 
-                  <th className="px-5 py-4">
+                  <th className="whitespace-nowrap px-5 py-4 text-right font-semibold text-slate-600">
                     Total payé
                   </th>
+
                 </tr>
               </thead>
 
-              <tbody className="divide-y">
+              <tbody>
 
                 {lignes.map(
                   ({
@@ -183,48 +187,62 @@ export default async function FinancePage() {
                     inscriptionPayee,
                     loyerPayee,
                   }) => (
+
                     <tr
                       key={vendeur.id}
-                      className="hover:bg-gray-50"
+                      className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50"
                     >
 
-                      <td className="px-5 py-4 font-medium text-gray-900">
-                        {vendeur.nomBoutique}
-                      </td>
-
-                      <td className="px-5 py-4 text-gray-600">
-                        {vendeur.user?.nom || "—"}
-                      </td>
-
+                      {/* BOUTIQUE */}
                       <td className="px-5 py-4">
+                        <div className="whitespace-nowrap font-semibold text-slate-900">
+                          {vendeur.nomBoutique}
+                        </div>
+
+                        <div className="mt-1 whitespace-nowrap text-xs text-slate-400">
+                          {vendeur.telephone}
+                        </div>
+                      </td>
+
+                      {/* VENDEUR */}
+                      <td className="px-5 py-4">
+                        <div className="whitespace-nowrap text-slate-700">
+                          {vendeur.user?.nom || "—"}
+                        </div>
+                      </td>
+
+                      {/* INSCRIPTION */}
+                      <td className="px-5 py-4 text-center">
 
                         {inscriptionPayee ? (
-                          <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
+                          <span className="inline-flex whitespace-nowrap rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
                             Payé
                           </span>
                         ) : (
-                          <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700">
+                          <span className="inline-flex whitespace-nowrap rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
                             Impayé
                           </span>
                         )}
 
                       </td>
 
-                      <td className="px-5 py-4">
+                      {/* LOYER */}
+                      <td className="px-5 py-4 text-center">
 
                         {loyerPayee ? (
-                          <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
+                          <span className="inline-flex whitespace-nowrap rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
                             Payé
                           </span>
                         ) : (
-                          <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700">
+                          <span className="inline-flex whitespace-nowrap rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
                             Impayé
                           </span>
                         )}
 
                       </td>
 
-                      <td className="px-5 py-4 font-semibold">
+                      {/* TOTAL */}
+                      <td className="whitespace-nowrap px-5 py-4 text-right font-semibold text-slate-900">
                         {formatFC(
                           (inscriptionPayee
                             ? FRAIS_INSCRIPTION
@@ -236,6 +254,7 @@ export default async function FinancePage() {
                       </td>
 
                     </tr>
+
                   )
                 )}
 
@@ -245,15 +264,23 @@ export default async function FinancePage() {
 
           </div>
 
+          {/* AUCUN VENDEUR */}
           {vendeurs.length === 0 && (
-            <div className="p-10 text-center text-gray-500">
+            <div className="px-6 py-12 text-center text-sm text-slate-500">
               Aucun vendeur enregistré.
             </div>
           )}
 
-        </div>
+          {/* INDICATION MOBILE */}
+          {vendeurs.length > 0 && (
+            <div className="border-t border-slate-100 px-4 py-3 text-center text-xs text-slate-400 sm:hidden">
+              Faites glisser le tableau horizontalement pour voir les autres colonnes.
+            </div>
+          )}
+
+        </section>
 
       </div>
     </main>
   );
-      }
+                      }
