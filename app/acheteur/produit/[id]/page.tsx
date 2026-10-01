@@ -52,38 +52,33 @@ export default async function FicheProduit({
 
   return (
     <div style={{
-      padding: "12px 14px",
+      padding: "12px 14px 20px 14px",
       backgroundColor: "#FAF5E8",
       minHeight: "100vh",
       maxWidth: "600px",
       margin: "0 auto",
-      display: "flex",
-      flexDirection: "column",
     }}>
       <Link
         href={`/acheteur/boutique/${produit.vendeur.id}`}
-        style={{ color: "#1D4ED8", fontSize: "11px", fontWeight: "700", marginBottom: "10px" }}
+        style={{ color: "#1D4ED8", fontSize: "11px", fontWeight: "700", display: "inline-block", marginBottom: "10px" }}
       >
         ← Retour à {produit.vendeur.nomBoutique}
       </Link>
 
-      {/* Galerie photos */}
-      <div style={{ marginBottom: "12px" }}>
+      <div style={{ marginBottom: "10px" }}>
         <GaleriePhotos photos={photos} nomProduit={produit.nom} />
       </div>
 
-      {/* Titre */}
       <h1 style={{
         fontSize: "16px",
         fontWeight: "900",
         color: "#0F172A",
-        marginBottom: "4px",
+        marginBottom: "3px",
         lineHeight: 1.2,
       }}>
         {produit.nom}
       </h1>
 
-      {/* Description */}
       {produit.description && (
         <p style={{
           color: "#57534E",
@@ -100,9 +95,8 @@ export default async function FicheProduit({
         </p>
       )}
 
-      {/* Prix */}
       {enPromo ? (
-        <div style={{ marginBottom: "8px" }}>
+        <div style={{ marginBottom: "6px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
             <span style={{ fontSize: "20px", fontWeight: "900", color: "#16a34a", lineHeight: 1 }}>
               {formaterPrix(produit.prixPromo!, produit.devise)}
@@ -127,12 +121,11 @@ export default async function FicheProduit({
           </div>
         </div>
       ) : (
-        <p style={{ fontSize: "20px", fontWeight: "900", color: "#1D4ED8", marginBottom: "8px", lineHeight: 1 }}>
+        <p style={{ fontSize: "20px", fontWeight: "900", color: "#1D4ED8", marginBottom: "6px", lineHeight: 1 }}>
           {formaterPrix(produit.prix, produit.devise)}
         </p>
       )}
 
-      {/* Stock */}
       <p style={{
         fontSize: "11px",
         color: produit.stock > 0 ? "#16a34a" : "#dc2626",
@@ -144,7 +137,6 @@ export default async function FicheProduit({
           : "❌ Rupture de stock"}
       </p>
 
-      {/* Vendeur */}
       <Link
         href={`/acheteur/boutique/${produit.vendeur.id}`}
         style={{
@@ -154,7 +146,7 @@ export default async function FicheProduit({
           backgroundColor: "white",
           borderRadius: "10px",
           padding: "8px 10px",
-          marginBottom: "10px",
+          marginBottom: "12px",
           textDecoration: "none",
           color: "inherit",
           border: "1px solid #E8DFC8",
@@ -179,10 +171,7 @@ export default async function FicheProduit({
         <span style={{ fontSize: "11px", color: "#1D4ED8", fontWeight: "700" }}>→</span>
       </Link>
 
-      {/* Bouton ajouter au panier */}
-      <div style={{ marginTop: "auto" }}>
-        <BoutonPanier article={article} stock={produit.stock} />
-      </div>
+      <BoutonPanier article={article} stock={produit.stock} />
     </div>
   );
-      }
+                }
