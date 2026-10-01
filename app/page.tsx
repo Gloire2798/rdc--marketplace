@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
 import Stories from "./components/Stories";
 import CarteBoutique from "./components/CarteBoutique";
 import { MapPin, Clock } from "lucide-react";
@@ -49,71 +48,81 @@ export default async function Home() {
 
   return (
     <div>
-      {/* BANDEAU STYLE AFRICAIN */}
+      {/* BANDEAU AVEC MOTIF PAGNE EN FOND */}
       <div style={{
-        background: "linear-gradient(135deg, #FEF3C7 0%, #FED7AA 100%)",
-        padding: "20px 16px 22px 16px",
-        marginBottom: "18px",
         position: "relative",
+        padding: "24px 18px 28px 18px",
+        marginBottom: "18px",
         overflow: "hidden",
+        backgroundColor: "#1E3A5F",
       }}>
+        {/* Image pagne en fond */}
         <div style={{
           position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "7px",
-          background: "repeating-linear-gradient(90deg, #F97316 0px, #F97316 20px, #FBBF24 20px, #FBBF24 40px, #16A34A 40px, #16A34A 60px, #0F172A 60px, #0F172A 80px)",
+          inset: 0,
+          backgroundImage: "url('https://i.ibb.co/6c6z6hB/pagne-motif.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          opacity: 0.35,
         }} />
 
+        {/* Overlay bleu pour la lisibilité */}
         <div style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "6px",
-          backgroundColor: "rgba(255, 255, 255, 0.9)",
-          padding: "5px 11px",
-          borderRadius: "20px",
-          fontSize: "10px",
-          fontWeight: "700",
-          color: "#0F172A",
-          marginBottom: "12px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-        }}>
-          <MapPin size={11} strokeWidth={2.5} />
-          Kinshasa • Gombe
-          <span style={{ color: "#94a3b8" }}>•</span>
-          <Clock size={11} strokeWidth={2.5} />
-          08:00 - 21:00
-        </div>
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(135deg, rgba(30, 58, 95, 0.75) 0%, rgba(15, 23, 42, 0.65) 100%)",
+        }} />
 
-        <h1 style={{
-          fontSize: "28px",
-          fontWeight: "900",
-          color: "#0F172A",
-          lineHeight: 0.95,
-          letterSpacing: "-0.8px",
-          marginBottom: "6px",
-          textTransform: "uppercase",
-        }}>
-          Le Guide du<br />
-          <span style={{
-            background: "linear-gradient(90deg, #F97316 0%, #EA580C 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
+        {/* Contenu */}
+        <div style={{ position: "relative", zIndex: 1 }}>
+          {/* Localisation 24/24 */}
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            backgroundColor: "rgba(255, 255, 255, 0.95)",
+            padding: "5px 11px",
+            borderRadius: "20px",
+            fontSize: "10px",
+            fontWeight: "800",
+            color: "#0F172A",
+            marginBottom: "14px",
           }}>
-            Complexe
-          </span>
-        </h1>
+            <MapPin size={11} strokeWidth={2.5} />
+            Kinshasa
+            <span style={{ color: "#CBD5E1" }}>•</span>
+            <Clock size={11} strokeWidth={2.5} />
+            Ouvert 24h/24
+          </div>
 
-        <p style={{
-          fontSize: "11px",
-          fontWeight: "700",
-          color: "#475569",
-          lineHeight: 1.4,
-        }}>
-          Découvre. Explore. Shop en live • Kinshasa
-        </p>
+          {/* Titre sur 1 ligne */}
+          <h1 style={{
+            fontSize: "26px",
+            fontWeight: "900",
+            color: "white",
+            lineHeight: 1.05,
+            letterSpacing: "-0.6px",
+            marginBottom: "8px",
+            textTransform: "uppercase",
+          }}>
+            Le Guide du <span style={{
+              background: "linear-gradient(90deg, #F97316 0%, #FBBF24 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}>Complexe</span>
+          </h1>
+
+          {/* Sous-titre */}
+          <p style={{
+            fontSize: "12px",
+            fontWeight: "600",
+            color: "rgba(255, 255, 255, 0.9)",
+            lineHeight: 1.4,
+          }}>
+            Découvre. Explore. Shop en ligne.
+          </p>
+        </div>
       </div>
 
       <div style={{ padding: "0 14px 20px 14px" }}>
@@ -146,68 +155,7 @@ export default async function Home() {
             ))}
           </div>
         )}
-
-        {boutiques.length > 0 && (
-          <div style={{
-            marginTop: "16px",
-            background: "linear-gradient(135deg, #FEF3C7 0%, #FED7AA 100%)",
-            borderRadius: "16px",
-            padding: "14px",
-            position: "relative",
-            overflow: "hidden",
-          }}>
-            <div style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              height: "4px",
-              background: "repeating-linear-gradient(90deg, #F97316 0px, #F97316 15px, #FBBF24 15px, #FBBF24 30px, #16A34A 30px, #16A34A 45px)",
-            }} />
-
-            <p style={{
-              fontSize: "10px",
-              fontWeight: "900",
-              color: "#F97316",
-              letterSpacing: "0.5px",
-              marginBottom: "3px",
-            }}>
-              ⭐ COUP DE CŒUR GK
-            </p>
-            <h3 style={{
-              fontSize: "14px",
-              fontWeight: "900",
-              color: "#0F172A",
-              marginBottom: "4px",
-            }}>
-              {boutiques[0].nomBoutique}
-            </h3>
-            <p style={{
-              fontSize: "11px",
-              color: "#475569",
-              fontWeight: "500",
-              marginBottom: "10px",
-            }}>
-              {boutiques[0].description || "Découvrez cette boutique en vedette"}
-            </p>
-            <Link
-              href={`/acheteur/boutique/${boutiques[0].id}`}
-              style={{
-                display: "inline-block",
-                backgroundColor: "#0F172A",
-                color: "white",
-                fontSize: "11px",
-                fontWeight: "800",
-                padding: "7px 14px",
-                borderRadius: "20px",
-                textDecoration: "none",
-              }}
-            >
-              Voir la boutique →
-            </Link>
-          </div>
-        )}
       </div>
     </div>
   );
-            }
+    }
