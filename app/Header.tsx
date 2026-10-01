@@ -57,7 +57,11 @@ export default function Header() {
       }}>
         <MenuBurger />
         <Link href="/admin/dashboard" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
-          <img src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg" alt="GK" style={{ height: "36px", width: "auto" }} />
+          <img
+            src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
+            alt="GK"
+            style={{ height: "36px", width: "auto", mixBlendMode: "multiply" }}
+          />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontSize: "16px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1 }}>GK Sensei</span>
             <span style={{ fontSize: "10.5px", color: "#64748b", fontWeight: "700" }}>Espace Admin</span>
@@ -86,7 +90,11 @@ export default function Header() {
         zIndex: 50,
       }}>
         <Link href="/vendeur/dashboard" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
-          <img src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg" alt="GK" style={{ height: "36px", width: "auto" }} />
+          <img
+            src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
+            alt="GK"
+            style={{ height: "36px", width: "auto", mixBlendMode: "multiply" }}
+          />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontSize: "16px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1 }}>GK Sensei</span>
             <span style={{ fontSize: "10.5px", color: "#64748b", fontWeight: "700" }}>Espace vendeur</span>
@@ -119,7 +127,11 @@ export default function Header() {
         zIndex: 50,
       }}>
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
-          <img src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg" alt="GK" style={{ height: "36px", width: "auto" }} />
+          <img
+            src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
+            alt="GK"
+            style={{ height: "36px", width: "auto", mixBlendMode: "multiply" }}
+          />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontSize: "16px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1 }}>GK Sensei</span>
             <span style={{ fontSize: "10.5px", color: "#64748b", fontWeight: "700" }}>Mon compte</span>
@@ -175,7 +187,12 @@ export default function Header() {
           <img
             src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
             alt="GK Sensei"
-            style={{ height: "48px", width: "auto", objectFit: "contain" }}
+            style={{
+              height: "48px",
+              width: "auto",
+              objectFit: "contain",
+              mixBlendMode: "multiply",
+            }}
           />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontSize: "18px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1, letterSpacing: "-0.3px" }}>
@@ -215,4 +232,4 @@ export default function Header() {
       </div>
     </header>
   );
-        }
+          }
