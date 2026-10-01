@@ -51,53 +51,65 @@ export default async function FicheProduit({
   };
 
   return (
-    <div className="container" style={{ padding: "20px 16px", maxWidth: "600px" }}>
+    <div style={{
+      padding: "12px 14px",
+      backgroundColor: "#FAF5E8",
+      minHeight: "100vh",
+      maxWidth: "600px",
+      margin: "0 auto",
+      display: "flex",
+      flexDirection: "column",
+    }}>
       <Link
         href={`/acheteur/boutique/${produit.vendeur.id}`}
-        style={{ color: "#2563eb", fontSize: "14px" }}
+        style={{ color: "#1D4ED8", fontSize: "11px", fontWeight: "700", marginBottom: "10px" }}
       >
         ← Retour à {produit.vendeur.nomBoutique}
       </Link>
 
-      <div style={{ marginTop: "16px", marginBottom: "24px", position: "relative" }}>
-        {enPromo && (
-          <span style={{
-            position: "absolute",
-            top: "12px",
-            left: "12px",
-            backgroundColor: "#dc2626",
-            color: "white",
-            fontSize: "14px",
-            fontWeight: "bold",
-            padding: "6px 12px",
-            borderRadius: "8px",
-            zIndex: 2,
-          }}>
-            -{pourcentage}%
-          </span>
-        )}
+      {/* Galerie photos */}
+      <div style={{ marginBottom: "12px" }}>
         <GaleriePhotos photos={photos} nomProduit={produit.nom} />
       </div>
 
-      <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "8px" }}>
+      {/* Titre */}
+      <h1 style={{
+        fontSize: "16px",
+        fontWeight: "900",
+        color: "#0F172A",
+        marginBottom: "4px",
+        lineHeight: 1.2,
+      }}>
         {produit.nom}
       </h1>
 
+      {/* Description */}
       {produit.description && (
-        <p style={{ color: "#6b7280", fontSize: "15px", marginBottom: "16px" }}>
+        <p style={{
+          color: "#57534E",
+          fontSize: "11.5px",
+          fontWeight: "500",
+          marginBottom: "8px",
+          lineHeight: 1.3,
+          overflow: "hidden",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+        }}>
           {produit.description}
         </p>
       )}
 
+      {/* Prix */}
       {enPromo ? (
-        <div style={{ marginBottom: "16px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-            <span style={{ fontSize: "28px", fontWeight: "bold", color: "#16a34a" }}>
+        <div style={{ marginBottom: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+            <span style={{ fontSize: "20px", fontWeight: "900", color: "#16a34a", lineHeight: 1 }}>
               {formaterPrix(produit.prixPromo!, produit.devise)}
             </span>
             <span style={{
-              fontSize: "18px",
-              color: "#9ca3af",
+              fontSize: "12px",
+              color: "#94a3b8",
               textDecoration: "line-through",
             }}>
               {formaterPrix(produit.prix, produit.devise)}
@@ -105,56 +117,72 @@ export default async function FicheProduit({
             <span style={{
               backgroundColor: "#dc2626",
               color: "white",
-              fontSize: "13px",
-              fontWeight: "bold",
-              padding: "4px 10px",
-              borderRadius: "6px",
+              fontSize: "10px",
+              fontWeight: "800",
+              padding: "2px 7px",
+              borderRadius: "5px",
             }}>
               -{pourcentage}%
             </span>
           </div>
-          <p style={{ fontSize: "13px", color: "#16a34a", marginTop: "4px" }}>
-            💰 Vous économisez {formaterPrix(produit.prix - produit.prixPromo!, produit.devise)}
-          </p>
         </div>
       ) : (
-        <p style={{ fontSize: "28px", fontWeight: "bold", color: "#2563eb", marginBottom: "8px" }}>
+        <p style={{ fontSize: "20px", fontWeight: "900", color: "#1D4ED8", marginBottom: "8px", lineHeight: 1 }}>
           {formaterPrix(produit.prix, produit.devise)}
         </p>
       )}
 
+      {/* Stock */}
       <p style={{
-        fontSize: "14px",
+        fontSize: "11px",
         color: produit.stock > 0 ? "#16a34a" : "#dc2626",
-        fontWeight: "600",
-        marginBottom: "24px",
+        fontWeight: "700",
+        marginBottom: "10px",
       }}>
         {produit.stock > 0
-          ? `✅ En stock (${produit.stock} disponible${produit.stock > 1 ? "s" : ""})`
+          ? `✅ En stock (${produit.stock})`
           : "❌ Rupture de stock"}
       </p>
 
-      <div
+      {/* Vendeur */}
+      <Link
+        href={`/acheteur/boutique/${produit.vendeur.id}`}
         style={{
-          backgroundColor: "#f9fafb",
-          border: "1px solid #e5e7eb",
-          borderRadius: "12px",
-          padding: "16px",
-          marginBottom: "24px",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          backgroundColor: "white",
+          borderRadius: "10px",
+          padding: "8px 10px",
+          marginBottom: "10px",
+          textDecoration: "none",
+          color: "inherit",
+          border: "1px solid #E8DFC8",
         }}
       >
-        <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "4px" }}>
-          Vendu par
-        </p>
-        <Link
-          href={`/acheteur/boutique/${produit.vendeur.id}`}
-          style={{ fontSize: "16px", fontWeight: "600", color: "#111827" }}
-        >
-          🏪 {produit.vendeur.nomBoutique}
-        </Link>
-      </div>
+        <span style={{ fontSize: "14px" }}>🏪</span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ fontSize: "9.5px", color: "#78716C", fontWeight: "600" }}>
+            Vendu par
+          </p>
+          <p style={{
+            fontSize: "12px",
+            fontWeight: "800",
+            color: "#0F172A",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}>
+            {produit.vendeur.nomBoutique}
+          </p>
+        </div>
+        <span style={{ fontSize: "11px", color: "#1D4ED8", fontWeight: "700" }}>→</span>
+      </Link>
 
-      <BoutonPanier article={article} stock={produit.stock} />
+      {/* Bouton ajouter au panier */}
+      <div style={{ marginTop: "auto" }}>
+        <BoutonPanier article={article} stock={produit.stock} />
+      </div>
     </div>
   );
-  }
+      }
