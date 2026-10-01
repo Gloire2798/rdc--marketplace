@@ -21,58 +21,68 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
       style={{
         display: "block",
         backgroundColor: "white",
-        borderRadius: "16px",
+        borderRadius: "14px",
         overflow: "hidden",
         textDecoration: "none",
         color: "inherit",
         border: "1px solid #F1F5F9",
-        boxShadow: "0 2px 8px rgba(15, 23, 42, 0.06)",
-        marginBottom: "12px",
+        boxShadow: "0 1px 4px rgba(15, 23, 42, 0.06)",
+        marginBottom: "10px",
       }}
     >
+      {/* Photo de couverture bien cadrée */}
       {photo ? (
-        <img
-          src={photo}
-          alt={boutique.nomBoutique}
-          style={{
-            width: "100%",
-            height: "150px",
-            objectFit: "cover",
-            display: "block",
-            backgroundColor: "#F8FAFC",
-          }}
-        />
+        <div style={{
+          width: "100%",
+          height: "140px",
+          backgroundColor: "#F1F5F9",
+          overflow: "hidden",
+          position: "relative",
+        }}>
+          <img
+            src={photo}
+            alt={boutique.nomBoutique}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+              display: "block",
+            }}
+          />
+        </div>
       ) : (
         <div style={{
           width: "100%",
           height: "100px",
-          background: "linear-gradient(135deg, #FEF3C7 0%, #FED7AA 100%)",
+          background: "linear-gradient(135deg, #F5F1E8 0%, #E8DFC8 100%)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}>
-          <LogoBoutique nom={boutique.nomBoutique} taille={64} />
+          <LogoBoutique nom={boutique.nomBoutique} taille={56} />
         </div>
       )}
 
-      <div style={{ padding: "10px 12px 12px 12px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-          <LogoBoutique nom={boutique.nomBoutique} taille={32} />
+      <div style={{ padding: "12px 14px 14px 14px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
+          <LogoBoutique nom={boutique.nomBoutique} taille={36} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <h3 style={{
               fontSize: "14px",
-              fontWeight: "900",
+              fontWeight: "800",
               color: "#0F172A",
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
+              marginBottom: "2px",
             }}>
               {boutique.nomBoutique}
             </h3>
             {boutique.adresse && (
               <p style={{
                 fontSize: "10.5px",
-                color: "#64748b",
+                color: "#94a3b8",
                 fontWeight: "600",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -94,33 +104,25 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
-            lineHeight: 1.35,
+            lineHeight: 1.4,
           }}>
             {boutique.description}
           </p>
         )}
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span style={{
-            fontSize: "10.5px",
-            color: "#64748b",
-            fontWeight: "700",
-          }}>
-            📦 {boutique.nombreProduits} produit{boutique.nombreProduits > 1 ? "s" : ""}
-          </span>
-
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <span style={{
             backgroundColor: "#0F172A",
             color: "white",
             fontSize: "11px",
             fontWeight: "800",
-            padding: "6px 12px",
+            padding: "7px 14px",
             borderRadius: "20px",
           }}>
-            Voir →
+            Voir la boutique →
           </span>
         </div>
       </div>
     </Link>
   );
-          }
+            }
