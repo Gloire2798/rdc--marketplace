@@ -47,87 +47,74 @@ export default async function Home() {
   }));
 
   return (
-    <div>
-      {/* BANDEAU AVEC MOTIF PAGNE EN FOND */}
+    <div style={{ backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
+      {/* BANDEAU BEIGE CHAUD */}
       <div style={{
         position: "relative",
-        padding: "24px 18px 28px 18px",
-        marginBottom: "18px",
-        overflow: "hidden",
-        backgroundColor: "#1E3A5F",
+        padding: "22px 18px 24px 18px",
+        borderBottom: "1px solid #E8DFC8",
       }}>
-        {/* Image pagne en fond */}
+        {/* Petit bandeau décoratif en haut */}
         <div style={{
           position: "absolute",
-          inset: 0,
-          backgroundImage: "url('https://i.ibb.co/NdyLSGVs/fond-Gk.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "5px",
+          background: "repeating-linear-gradient(90deg, #F97316 0px, #F97316 20px, #FBBF24 20px, #FBBF24 40px, #16A34A 40px, #16A34A 60px, #1E3A5F 60px, #1E3A5F 80px)",
         }} />
 
-        {/* Overlay sombre pour la lisibilité */}
         <div style={{
-          position: "absolute",
-          inset: 0,
-          background: "linear-gradient(135deg, rgba(30, 58, 95, 0.82) 0%, rgba(15, 23, 42, 0.75) 100%)",
-        }} />
-
-        {/* Contenu */}
-        <div style={{ position: "relative", zIndex: 1 }}>
-          {/* Localisation 24/24 */}
-          <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "6px",
-            backgroundColor: "rgba(255, 255, 255, 0.95)",
-            padding: "5px 11px",
-            borderRadius: "20px",
-            fontSize: "10px",
-            fontWeight: "800",
-            color: "#0F172A",
-            marginBottom: "14px",
-          }}>
-            <MapPin size={11} strokeWidth={2.5} />
-            Kinshasa
-            <span style={{ color: "#CBD5E1" }}>•</span>
-            <Clock size={11} strokeWidth={2.5} />
-            Ouvert 24h/24
-          </div>
-
-          {/* Titre sur 1 ligne */}
-          <h1 style={{
-            fontSize: "24px",
-            fontWeight: "900",
-            color: "white",
-            lineHeight: 1.1,
-            letterSpacing: "-0.5px",
-            marginBottom: "8px",
-            textTransform: "uppercase",
-          }}>
-            Le Guide du{" "}
-            <span style={{
-              background: "linear-gradient(90deg, #F97316 0%, #FBBF24 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}>
-              Complexe
-            </span>
-          </h1>
-
-          {/* Sous-titre */}
-          <p style={{
-            fontSize: "12px",
-            fontWeight: "600",
-            color: "rgba(255, 255, 255, 0.9)",
-            lineHeight: 1.4,
-          }}>
-            Découvre. Explore. Shop en ligne.
-          </p>
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "6px",
+          backgroundColor: "white",
+          padding: "5px 11px",
+          borderRadius: "20px",
+          fontSize: "10px",
+          fontWeight: "800",
+          color: "#57534E",
+          marginBottom: "14px",
+          border: "1px solid #E8DFC8",
+        }}>
+          <MapPin size={11} strokeWidth={2.5} />
+          Kinshasa
+          <span style={{ color: "#CBD5E1" }}>•</span>
+          <Clock size={11} strokeWidth={2.5} />
+          Ouvert 24h/24
         </div>
+
+        <h1 style={{
+          fontSize: "24px",
+          fontWeight: "900",
+          color: "#0F172A",
+          lineHeight: 1.1,
+          letterSpacing: "-0.5px",
+          marginBottom: "8px",
+          textTransform: "uppercase",
+        }}>
+          Le Guide du{" "}
+          <span style={{
+            background: "linear-gradient(90deg, #F97316 0%, #EA580C 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}>
+            Complexe
+          </span>
+        </h1>
+
+        <p style={{
+          fontSize: "12px",
+          fontWeight: "600",
+          color: "#57534E",
+          lineHeight: 1.4,
+        }}>
+          Découvre. Explore. Shop en ligne.
+        </p>
       </div>
 
-      <div style={{ padding: "0 14px 20px 14px" }}>
+      <div style={{ padding: "16px 14px 20px 14px" }}>
         <Stories stories={stories} />
 
         <h2 style={{
@@ -142,11 +129,17 @@ export default async function Home() {
         </h2>
 
         {boutiques.length === 0 ? (
-          <div className="card" style={{ textAlign: "center", padding: "40px 20px" }}>
+          <div style={{
+            backgroundColor: "white",
+            textAlign: "center",
+            padding: "40px 20px",
+            borderRadius: "14px",
+            border: "1px solid #E8DFC8",
+          }}>
             <p style={{ fontSize: "14px", fontWeight: "700", marginBottom: "6px" }}>
               Aucune boutique pour le moment
             </p>
-            <p style={{ color: "#64748b", fontSize: "12px" }}>
+            <p style={{ color: "#78716C", fontSize: "12px" }}>
               Les boutiques apparaîtront ici dès qu&apos;elles seront validées.
             </p>
           </div>
