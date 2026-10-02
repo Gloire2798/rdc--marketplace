@@ -19,6 +19,12 @@ export async function GET(request: Request) {
         id: true,
         qrToken: true,
         statut: true,
+        retireAt: true,
+        vendeur: {
+          select: {
+            nomBoutique: true,
+          },
+        },
       },
     });
 
@@ -29,14 +35,20 @@ export async function GET(request: Request) {
       );
     }
 
-    // On retourne un token modifié pour identifier le type (commande:token)
-    // Ça évite qu'un token d'autre chose soit scanné par erreur
-    const tokenComplet = `CMD:${commande.id}:${commande.qrToken}`;
+    // Si la commande est déjà retirée, on ne renvoie PAS le token
+    // (le QR ne doit plus être affiché)
+    const estRetiree = commande.statut === "RETIRE";
+
+    const tokenComplet = estRetiree
+      ? null
+      : `CMD:${commande.id}:${commande.qrToken}`;
 
     return NextResponse.json({
       succes: true,
       qrToken: tokenComplet,
       statut: commande.statut,
+      retireAt: commande.retireAt ? commande.retireAt.toISOString() : null,
+      nomBoutique: commande.vendeur.nomBoutique,
     });
   } catch (error) {
     console.error("Erreur récupération QR:", error);
