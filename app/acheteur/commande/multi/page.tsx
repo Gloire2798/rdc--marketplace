@@ -27,10 +27,6 @@ function ContenuMulti() {
   const searchParams = useSearchParams();
 
   const groupeId = searchParams.get("groupeId") || "";
-  const nomInit = searchParams.get("nom") || "";
-  const telInit = searchParams.get("telephone") || "";
-  const adresseInit = searchParams.get("adresse") || "";
-  const modeInit = searchParams.get("mode") || "RETRAIT";
 
   const [panier, setPanier] = useState<ArticlePanier[]>([]);
   const [groupes, setGroupes] = useState<GroupeBoutique[]>([]);
@@ -42,15 +38,17 @@ function ContenuMulti() {
   const [copie, setCopie] = useState<string | null>(null);
   const [commandesCreees, setCommandesCreees] = useState<string[]>([]);
 
-  const [form, setForm] = useState({
-    nom: nomInit,
-    telephone: telInit,
-    adresse: adresseInit,
-    mode: modeInit,
-    reference: "",
+  // Infos saisies (partagées entre boutiques)
+  const [infos, setInfos] = useState({
+    nom: "",
+    telephone: "",
+    adresse: "",
+    mode: "RETRAIT",
   });
 
-  // Charger le panier et grouper par boutique
+  // Référence propre à chaque boutique
+  const [reference, setReference] = useState("");
+
   useEffect(() => {
     const p = getPanier();
     if (p.length === 0) {
@@ -68,7 +66,6 @@ function ContenuMulti() {
     }
   }, [router]);
 
-  // Charger les infos du vendeur actuel
   useEffect(() => {
     if (groupes.length === 0 || indexActuel >= groupes.length) return;
 
@@ -85,13 +82,8 @@ function ContenuMulti() {
       })
       .catch(() => setChargement(false));
 
-    // Reset le champ référence pour chaque nouvelle boutique
-    setForm((f) => ({ ...f, reference: "" }));
+    setReference("");
   }, [indexActuel, groupes]);
-
-  const changer = (champ: string, valeur: string) => {
-    setForm({ ...form, [champ]: valeur });
-  };
 
   const copier = (texte: string, cle: string) => {
     navigator.clipboard.writeText(texte);
@@ -106,17 +98,18 @@ function ContenuMulti() {
     e.preventDefault();
     setErreur("");
 
-    if (!form.nom || !form.telephone) {
-      setErreur("Nom et téléphone sont obligatoires");
-      return;
+    if (indexActuel === 0) {
+      if (!infos.nom || !infos.telephone) {
+        setErreur("Nom et téléphone sont obligatoires");
+        return;
+      }
+      if (infos.mode === "LIVRAISON" && !infos.adresse) {
+        setErreur("L'adresse est obligatoire pour la livraison");
+        return;
+      }
     }
 
-    if (form.mode === "LIVRAISON" && !form.adresse) {
-      setErreur("L'adresse est obligatoire pour la livraison");
-      return;
-    }
-
-    if (!form.reference) {
+    if (!reference) {
       setErreur("La référence de la transaction est obligatoire");
       return;
     }
@@ -129,11 +122,11 @@ function ContenuMulti() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           vendeurId: groupeActuel.vendeurId,
-          nom: form.nom,
-          telephone: form.telephone,
-          adresse: form.adresse || null,
-          mode: form.mode,
-          reference: form.reference,
+          nom: infos.nom,
+          telephone: infos.telephone,
+          adresse: infos.adresse || null,
+          mode: infos.mode,
+          reference,
           articles: groupeActuel.articles,
           totalFC: groupeActuel.totalFC,
           totalUSD: groupeActuel.totalUSD,
@@ -155,11 +148,9 @@ function ContenuMulti() {
         return;
       }
 
-      // Ajouter la commande créée à la liste
       const nouvellesCommandes = [...commandesCreees, data.commandeId];
       setCommandesCreees(nouvellesCommandes);
 
-      // Si c'est le dernier groupe → rediriger vers la confirmation groupée
       if (estDernier) {
         viderPanier();
         router.push(
@@ -168,7 +159,6 @@ function ContenuMulti() {
         return;
       }
 
-      // Sinon → passer au groupe suivant
       setIndexActuel(indexActuel + 1);
       setEnvoi(false);
     } catch {
@@ -250,13 +240,16 @@ function ContenuMulti() {
     marginLeft: "6px",
   });
 
+  const aucunNumeroSpecifique =
+    !vendeur?.numMpesa && !vendeur?.numOrange && !vendeur?.numAirtel;
+
   return (
     <div style={{ padding: "16px 14px 20px 14px", maxWidth: "600px", margin: "0 auto", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
       <Link href="/acheteur/panier" style={{ color: "#1D4ED8", fontSize: "11px", fontWeight: "700" }}>
         ← Retour au panier
       </Link>
 
-      {/* Indicateur de progression */}
+      {/* Barre de progression */}
       <div style={{
         display: "flex",
         gap: "6px",
@@ -294,7 +287,6 @@ function ContenuMulti() {
         {groupeActuel.articles.length} article{groupeActuel.articles.length > 1 ? "s" : ""} chez cette boutique
       </p>
 
-      {/* Info multi-boutiques */}
       {groupes.length > 1 && indexActuel === 0 && (
         <div style={{
           backgroundColor: "#FEF3C7",
@@ -320,80 +312,102 @@ function ContenuMulti() {
       )}
 
       <form onSubmit={soumettre}>
-        <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px" }}>
-          Vos informations
-        </h2>
-
-        <label style={labelStyle}>Nom complet *</label>
-        <input
-          type="text"
-          style={champStyle}
-          value={form.nom}
-          onChange={(e) => changer("nom", e.target.value)}
-          required
-        />
-
-        <label style={labelStyle}>Numéro de téléphone *</label>
-        <input
-          type="tel"
-          placeholder="0812345678"
-          style={champStyle}
-          value={form.telephone}
-          onChange={(e) => changer("telephone", e.target.value)}
-          required
-        />
-
-        <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px", marginTop: "14px" }}>
-          Mode de réception
-        </h2>
-
-        <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-          <button
-            type="button"
-            onClick={() => changer("mode", "RETRAIT")}
-            style={{
-              flex: 1,
-              padding: "10px",
-              borderRadius: "10px",
-              border: form.mode === "RETRAIT" ? "2px solid #1D4ED8" : "1px solid #E5E0D5",
-              backgroundColor: form.mode === "RETRAIT" ? "#EFF6FF" : "white",
-              fontWeight: "700",
-              fontSize: "12px",
-              cursor: "pointer",
-            }}
-          >
-            🏪 Retrait
-          </button>
-          <button
-            type="button"
-            onClick={() => changer("mode", "LIVRAISON")}
-            style={{
-              flex: 1,
-              padding: "10px",
-              borderRadius: "10px",
-              border: form.mode === "LIVRAISON" ? "2px solid #1D4ED8" : "1px solid #E5E0D5",
-              backgroundColor: form.mode === "LIVRAISON" ? "#EFF6FF" : "white",
-              fontWeight: "700",
-              fontSize: "12px",
-              cursor: "pointer",
-            }}
-          >
-            🚚 Livraison
-          </button>
-        </div>
-
-        {form.mode === "LIVRAISON" && (
+        {/* Infos : seulement pour la 1ère boutique */}
+        {indexActuel === 0 && (
           <>
-            <label style={labelStyle}>Adresse de livraison *</label>
+            <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px" }}>
+              Vos informations
+            </h2>
+
+            <label style={labelStyle}>Nom complet *</label>
             <input
               type="text"
-              placeholder="Ex: Avenue du Commerce, Gombe"
               style={champStyle}
-              value={form.adresse}
-              onChange={(e) => changer("adresse", e.target.value)}
+              value={infos.nom}
+              onChange={(e) => setInfos({ ...infos, nom: e.target.value })}
               required
             />
+
+            <label style={labelStyle}>Numéro de téléphone *</label>
+            <input
+              type="tel"
+              placeholder="0812345678"
+              style={champStyle}
+              value={infos.telephone}
+              onChange={(e) => setInfos({ ...infos, telephone: e.target.value })}
+              required
+            />
+
+            <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px", marginTop: "14px" }}>
+              Mode de réception
+            </h2>
+
+            <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+              <button
+                type="button"
+                onClick={() => setInfos({ ...infos, mode: "RETRAIT" })}
+                style={{
+                  flex: 1,
+                  padding: "10px",
+                  borderRadius: "10px",
+                  border: infos.mode === "RETRAIT" ? "2px solid #1D4ED8" : "1px solid #E5E0D5",
+                  backgroundColor: infos.mode === "RETRAIT" ? "#EFF6FF" : "white",
+                  fontWeight: "700",
+                  fontSize: "12px",
+                  cursor: "pointer",
+                }}
+              >
+                🏪 Retrait
+              </button>
+              <button
+                type="button"
+                onClick={() => setInfos({ ...infos, mode: "LIVRAISON" })}
+                style={{
+                  flex: 1,
+                  padding: "10px",
+                  borderRadius: "10px",
+                  border: infos.mode === "LIVRAISON" ? "2px solid #1D4ED8" : "1px solid #E5E0D5",
+                  backgroundColor: infos.mode === "LIVRAISON" ? "#EFF6FF" : "white",
+                  fontWeight: "700",
+                  fontSize: "12px",
+                  cursor: "pointer",
+                }}
+              >
+                🚚 Livraison
+              </button>
+            </div>
+
+            {infos.mode === "LIVRAISON" && (
+              <>
+                <label style={labelStyle}>Adresse de livraison *</label>
+                <input
+                  type="text"
+                  placeholder="Ex: Avenue du Commerce, Gombe"
+                  style={champStyle}
+                  value={infos.adresse}
+                  onChange={(e) => setInfos({ ...infos, adresse: e.target.value })}
+                  required
+                />
+              </>
+            )}
           </>
+        )}
+
+        {indexActuel > 0 && (
+          <div style={{
+            backgroundColor: "#EFF6FF",
+            border: "1px solid #BFDBFE",
+            borderRadius: "10px",
+            padding: "10px 12px",
+            marginBottom: "14px",
+          }}>
+            <p style={{ fontSize: "10.5px", fontWeight: "800", color: "#1E40AF", marginBottom: "4px" }}>
+              👤 {infos.nom} · 📞 {infos.telephone}
+            </p>
+            <p style={{ fontSize: "10px", color: "#475569", fontWeight: "500" }}>
+              Vos infos sont conservées. Il ne reste que la référence de paiement à saisir.
+            </p>
+          </div>
         )}
 
         <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px", marginTop: "14px" }}>
@@ -441,6 +455,7 @@ function ContenuMulti() {
             Envoyez l&apos;acompte à <strong>{vendeur?.nomBoutique}</strong> via l&apos;un des numéros ci-dessous.
           </p>
 
+          {/* M-Pesa */}
           {vendeur?.numMpesa && (
             <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center", marginTop: "10px" }}>
               <div style={logoBox}>
@@ -450,17 +465,14 @@ function ContenuMulti() {
                 <span style={{ fontSize: "12.5px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {vendeur.numMpesa}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => copier(vendeur.numMpesa!, "mpesa")}
-                  style={copierBtnStyle(copie === "mpesa")}
-                >
+                <button type="button" onClick={() => copier(vendeur.numMpesa!, "mpesa")} style={copierBtnStyle(copie === "mpesa")}>
                   {copie === "mpesa" ? "✅" : "📋"}
                 </button>
               </div>
             </div>
           )}
 
+          {/* Orange */}
           {vendeur?.numOrange && (
             <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center" }}>
               <div style={logoBox}>
@@ -470,17 +482,14 @@ function ContenuMulti() {
                 <span style={{ fontSize: "12.5px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {vendeur.numOrange}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => copier(vendeur.numOrange!, "orange")}
-                  style={copierBtnStyle(copie === "orange")}
-                >
+                <button type="button" onClick={() => copier(vendeur.numOrange!, "orange")} style={copierBtnStyle(copie === "orange")}>
                   {copie === "orange" ? "✅" : "📋"}
                 </button>
               </div>
             </div>
           )}
 
+          {/* Airtel */}
           {vendeur?.numAirtel && (
             <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center" }}>
               <div style={logoBox}>
@@ -490,12 +499,30 @@ function ContenuMulti() {
                 <span style={{ fontSize: "12.5px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {vendeur.numAirtel}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => copier(vendeur.numAirtel!, "airtel")}
-                  style={copierBtnStyle(copie === "airtel")}
-                >
+                <button type="button" onClick={() => copier(vendeur.numAirtel!, "airtel")} style={copierBtnStyle(copie === "airtel")}>
                   {copie === "airtel" ? "✅" : "📋"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* FALLBACK : numMobileMoney */}
+          {aucunNumeroSpecifique && vendeur?.numMobileMoney && (
+            <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center", marginTop: "10px" }}>
+              <div style={logoBox}>
+                <span style={{ fontSize: "18px" }}>📱</span>
+              </div>
+              <div style={numeroBoxStyle}>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <p style={{ fontSize: "9px", color: "#64748b", fontWeight: "700", textTransform: "uppercase" }}>
+                    Mobile Money
+                  </p>
+                  <span style={{ fontSize: "12.5px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis", display: "block" }}>
+                    {vendeur.numMobileMoney}
+                  </span>
+                </div>
+                <button type="button" onClick={() => copier(vendeur.numMobileMoney!, "mobile")} style={copierBtnStyle(copie === "mobile")}>
+                  {copie === "mobile" ? "✅" : "📋"}
                 </button>
               </div>
             </div>
@@ -507,8 +534,8 @@ function ContenuMulti() {
           type="text"
           placeholder="Ex: MP250927.1432.A78432"
           style={champStyle}
-          value={form.reference}
-          onChange={(e) => changer("reference", e.target.value)}
+          value={reference}
+          onChange={(e) => setReference(e.target.value)}
           required
         />
 
@@ -560,48 +587,4 @@ function ContenuMulti() {
                 <p style={{ fontSize: "14px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.2 }}>
                   {formaterPrix(groupeActuel.totalFC, "FC")}
                 </p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          disabled={envoi}
-          style={{
-            width: "100%",
-            backgroundColor: estDernier ? "#16a34a" : "#1D4ED8",
-            color: "white",
-            padding: "13px",
-            borderRadius: "12px",
-            border: "none",
-            fontWeight: "800",
-            fontSize: "13px",
-            cursor: "pointer",
-            opacity: envoi ? 0.6 : 1,
-          }}
-        >
-          {envoi
-            ? "Envoi..."
-            : estDernier
-            ? "✅ Valider la dernière commande"
-            : "➡️ Valider et passer à la boutique suivante"}
-        </button>
-      </form>
-    </div>
-  );
-}
-
-export default function PageMulti() {
-  return (
-    <Suspense
-      fallback={
-        <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-          <p>Chargement...</p>
-        </div>
-      }
-    >
-      <ContenuMulti />
-    </Suspense>
-  );
-  }
+              )
