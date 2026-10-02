@@ -14,6 +14,7 @@ import {
   LogOut,
   Plus,
   ScanLine,
+  Heart,
 } from "lucide-react";
 
 const liensMenu = [
@@ -22,6 +23,7 @@ const liensMenu = [
   { href: "/vendeur/boutique", label: "Ma boutique", Icon: Store },
   { href: "/vendeur/produits", label: "Mes produits", Icon: Package },
   { href: "/vendeur/commandes", label: "Mes commandes", Icon: ShoppingCart },
+  { href: "/vendeur/abonnes", label: "Mes abonnés", Icon: Heart },
   { href: "/vendeur/stories", label: "Mes stories", Icon: Camera },
   { href: "/vendeur/produits/nouveau", label: "Ajouter un produit", Icon: Plus },
 ];
@@ -112,7 +114,7 @@ export default function MenuBurger() {
 
         <nav style={{ flex: 1, padding: "10px 0" }}>
           {liensMenu.map((lien) => {
-            const actif = pathname === lien.href;
+            const actif = pathname === lien.href || pathname.startsWith(lien.href + "/");
             const Icon = lien.Icon;
             return (
               <Link
@@ -161,4 +163,4 @@ export default function MenuBurger() {
       </div>
     </>
   );
-          }
+}
