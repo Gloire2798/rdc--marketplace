@@ -13,8 +13,8 @@ interface Item {
 interface Commande {
   id: string;
   statut: string;
-  total: number;
-  devise: string;
+  totalFC: number;
+  totalUSD: number;
   mode: string;
   adresse: string | null;
   createdAt: string;
@@ -27,9 +27,8 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
   const router = useRouter();
   const [chargement, setChargement] = useState(false);
 
-  const formaterPrix = (prix: number, devise?: string) => {
-    const d = devise || commande.devise;
-    if (d === "USD") {
+  const formaterPrix = (prix: number, devise: string) => {
+    if (devise === "USD") {
       return `${prix.toFixed(2)} $`;
     }
     return `${prix.toLocaleString("fr-FR")} FC`;
@@ -65,7 +64,7 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
   return (
     <div className="card" style={{ borderLeft: `4px solid ${couleurBordure()}` }}>
       <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", marginBottom: "12px" }}>
-        <div>
+        <div style={{ minWidth: 0, flex: 1 }}>
           <p style={{ fontSize: "12px", color: "#6b7280" }}>
             Commande #{commande.id.slice(0, 8)}
           </p>
@@ -76,10 +75,19 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
             📞 {commande.telephoneClient}
           </p>
         </div>
-        <div style={{ textAlign: "right" }}>
-          <p style={{ fontSize: "18px", fontWeight: "bold", color: "#2563eb" }}>
-            {formaterPrix(commande.total)}
-          </p>
+
+        {/* Totaux séparés par devise */}
+        <div style={{ textAlign: "right", flexShrink: 0 }}>
+          {commande.totalUSD > 0 && (
+            <p style={{ fontSize: "17px", fontWeight: "bold", color: "#2563eb", lineHeight: 1.2 }}>
+              {formaterPrix(commande.totalUSD, "USD")}
+            </p>
+          )}
+          {commande.totalFC > 0 && (
+            <p style={{ fontSize: "17px", fontWeight: "bold", color: "#2563eb", lineHeight: 1.2 }}>
+              {formaterPrix(commande.totalFC, "FC")}
+            </p>
+          )}
           <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>
             {commande.mode === "LIVRAISON" ? "🚚 Livraison" : "🏪 Retrait"}
           </p>
@@ -104,9 +112,12 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
             justifyContent: "space-between",
             fontSize: "13px",
             marginBottom: index < commande.items.length - 1 ? "4px" : "0",
+            gap: "8px",
           }}>
-            <span>{item.nom} × {item.quantite}</span>
-            <span style={{ color: "#6b7280" }}>
+            <span style={{ minWidth: 0, flex: 1 }}>
+              {item.nom} × {item.quantite}
+            </span>
+            <span style={{ color: "#6b7280", flexShrink: 0 }}>
               {formaterPrix(item.prixUnitaire * item.quantite, item.devise)}
             </span>
           </div>
@@ -225,4 +236,4 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
       </div>
     </div>
   );
-}
+                     }
