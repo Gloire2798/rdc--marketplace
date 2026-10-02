@@ -9,15 +9,17 @@ datasource db {
 
 // UTILISATEURS
 model User {
-  id           String    @id @default(cuid())
-  telephone    String    @unique
-  nom          String?
-  email        String?   @unique
-  motDePasse   String?
-  role         String    @default("ACHETEUR")
-  createdAt    DateTime  @default(now())
-  vendeur      Vendeur?
-  commandes    Commande[]
+  id             String         @id @default(cuid())
+  telephone      String         @unique
+  nom            String?
+  email          String?        @unique
+  motDePasse     String?
+  role           String         @default("ACHETEUR")
+  createdAt      DateTime       @default(now())
+  vendeur        Vendeur?
+  commandes      Commande[]
+  notifications  Notification[]
+  abonnements    Abonnement[]
 }
 
 // VENDEURS / BOUTIQUES
@@ -46,6 +48,7 @@ model Vendeur {
   commandes        Commande[]
   stories          Story[]
   paiementsFinance PaiementFinance[]
+  abonnes          Abonnement[]
 }
 
 // PRODUITS
@@ -161,7 +164,7 @@ model PaiementFinance {
   @@index([statut])
 }
 
-// PARAMÈTRES DU COMPLEXE (singleton - 1 seule ligne)
+// PARAMÈTRES DU COMPLEXE (singleton)
 model Parametre {
   id                String   @id @default("singleton")
   nomComplexe       String   @default("GK Sensei")
@@ -173,4 +176,37 @@ model Parametre {
   numMobileMoney    String?
   lienAnalytics     String?
   updatedAt         DateTime @updatedAt
+}
+
+// NOTIFICATIONS
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type      String   // COMMANDE_RECUE, COMMANDE_PAYEE, NOUVEAU_PRODUIT...
+  titre     String
+  message   String
+  lien      String?  // URL à ouvrir au clic
+  lu        Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, lu])
+  @@index([createdAt])
+}
+
+// ABONNEMENTS (client suit une boutique)
+model Abonnement {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendeurId String
+  vendeur   Vendeur  @relation(fields: [vendeurId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, vendeurId])
+  @@index([userId])
+  @@index([vendeurId])
 }
