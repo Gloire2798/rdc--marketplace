@@ -35,8 +35,6 @@ export async function GET(request: Request) {
       );
     }
 
-    // Si la commande est déjà retirée, on ne renvoie PAS le token
-    // (le QR ne doit plus être affiché)
     const estRetiree = commande.statut === "RETIRE";
 
     const tokenComplet = estRetiree
@@ -57,4 +55,4 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
-      }
+}
