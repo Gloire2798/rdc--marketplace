@@ -41,6 +41,7 @@ export default async function CompteClient() {
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
+      timeZone: "Africa/Kinshasa",
     });
   };
 
@@ -60,7 +61,6 @@ export default async function CompteClient() {
       backgroundColor: "#FAF5E8",
       minHeight: "100vh",
     }}>
-      {/* En-tête */}
       <h1 style={{ fontSize: "22px", fontWeight: "900", color: "#0F172A", marginBottom: "4px" }}>
         Bonjour {session.nom || "Client"}
       </h1>
@@ -68,7 +68,6 @@ export default async function CompteClient() {
         Bienvenue dans votre espace GK Sensei
       </p>
 
-      {/* Carte infos */}
       <div style={{
         backgroundColor: "white",
         borderRadius: "12px",
@@ -84,7 +83,6 @@ export default async function CompteClient() {
         </p>
       </div>
 
-      {/* Titre commandes */}
       <h2 style={{
         fontSize: "15px",
         fontWeight: "900",
@@ -94,7 +92,6 @@ export default async function CompteClient() {
         Mes commandes ({commandes.length})
       </h2>
 
-      {/* Liste commandes */}
       {commandes.length === 0 ? (
         <div style={{
           backgroundColor: "white",
@@ -129,10 +126,19 @@ export default async function CompteClient() {
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {commandes.map((c) => {
-            const devise = c.items[0]?.produit.devise || "FC";
-            const conf = configStatut[c.statut] || configStatut.EN_ATTENTE;
+            let totalFC = 0;
+            let totalUSD = 0;
 
-            // Une seule commande dans le groupe → afficher QR directement
+            c.items.forEach((item) => {
+              const montant = item.prixUnitaire * item.quantite;
+              if (item.produit.devise === "USD") {
+                totalUSD += montant;
+              } else {
+                totalFC += montant;
+              }
+            });
+
+            const conf = configStatut[c.statut] || configStatut.EN_ATTENTE;
             const qrVisible = c.statut === "EN_ATTENTE" || c.statut === "PAYE" || c.statut === "PRET";
 
             return (
@@ -145,7 +151,6 @@ export default async function CompteClient() {
                   border: "1px solid #E8DFC8",
                 }}
               >
-                {/* En-tête carte */}
                 <div style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -180,7 +185,6 @@ export default async function CompteClient() {
                   </span>
                 </div>
 
-                {/* Articles */}
                 <div style={{
                   backgroundColor: "#F8FAFC",
                   borderRadius: "8px",
@@ -195,38 +199,43 @@ export default async function CompteClient() {
                         justifyContent: "space-between",
                         fontSize: "11px",
                         marginBottom: "3px",
+                        gap: "8px",
                       }}
                     >
-                      <span style={{ color: "#334155", fontWeight: "600" }}>
+                      <span style={{ color: "#334155", fontWeight: "600", minWidth: 0, flex: 1 }}>
                         {item.produit.nom} × {item.quantite}
                       </span>
-                      <span style={{ color: "#64748b", fontWeight: "700" }}>
+                      <span style={{ color: "#64748b", fontWeight: "700", flexShrink: 0 }}>
                         {formaterPrix(item.prixUnitaire * item.quantite, item.produit.devise)}
                       </span>
                     </div>
                   ))}
                 </div>
 
-                {/* Total */}
                 <div style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: "center",
+                  alignItems: "flex-end",
+                  gap: "8px",
                   marginBottom: qrVisible ? "10px" : "0",
                 }}>
                   <span style={{ fontSize: "12px", fontWeight: "900", color: "#0F172A" }}>
                     TOTAL
                   </span>
                   <div style={{ textAlign: "right" }}>
-                    {c.total > 0 && (
-                      <p style={{ fontSize: "14px", fontWeight: "900", color: "#1D4ED8" }}>
-                        {formaterPrix(c.total, devise)}
+                    {totalUSD > 0 && (
+                      <p style={{ fontSize: "14px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.2 }}>
+                        {formaterPrix(totalUSD, "USD")}
+                      </p>
+                    )}
+                    {totalFC > 0 && (
+                      <p style={{ fontSize: "14px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.2 }}>
+                        {formaterPrix(totalFC, "FC")}
                       </p>
                     )}
                   </div>
                 </div>
 
-                {/* QR code (si commande active) */}
                 {qrVisible && (
                   <div style={{ marginTop: "10px" }}>
                     <CarteQR
@@ -243,4 +252,4 @@ export default async function CompteClient() {
       )}
     </div>
   );
-             }
+        }
