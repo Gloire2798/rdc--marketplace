@@ -1,210 +1,144 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import QRCode from "qrcode";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import CarteQR from "./CarteQR";
 
-interface Props {
-  commandeId: string;
-  index: number;
-  total: number;
-}
+function ContenuConfirmation() {
+  const searchParams = useSearchParams();
 
-interface DataCommande {
-  statut: string;
-  qrImage: string;
-  retireAt: string | null;
-  nomBoutique: string;
-}
+  const commandeUnique = searchParams.get("commande");
+  const groupeId = searchParams.get("groupe");
+  const commandesParam = searchParams.get("commandes");
 
-export default function CarteQR({ commandeId, index, total }: Props) {
-  const [data, setData] = useState<DataCommande | null>(null);
-  const [chargement, setChargement] = useState(true);
+  // Construire la liste des IDs de commandes
+  const commandesIds = commandeUnique
+    ? [commandeUnique]
+    : commandesParam
+    ? commandesParam.split(",").filter((id) => id.trim())
+    : [];
 
-  const chargerQR = async () => {
-    try {
-      const res = await fetch(`/api/client/commande/qr?commande=${commandeId}`);
-      const json = await res.json();
-
-      if (!json.succes) {
-        setChargement(false);
-        return;
-      }
-
-      if (json.statut === "RETIRE" || !json.qrToken) {
-        setData({
-          statut: json.statut,
-          qrImage: "",
-          retireAt: json.retireAt,
-          nomBoutique: json.nomBoutique || "",
-        });
-        setChargement(false);
-        return;
-      }
-
-      const url = await QRCode.toDataURL(json.qrToken, {
-        width: 260,
-        margin: 2,
-        color: { dark: "#0F172A", light: "#FFFFFF" },
-      });
-
-      setData({
-        statut: json.statut,
-        qrImage: url,
-        retireAt: json.retireAt,
-        nomBoutique: json.nomBoutique || "",
-      });
-      setChargement(false);
-    } catch {
-      setChargement(false);
-    }
-  };
-
-  useEffect(() => {
-    chargerQR();
-    const interval = setInterval(chargerQR, 5000);
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [commandeId]);
-
-  if (chargement) {
-    return (
-      <div style={{
-        backgroundColor: "white",
-        borderRadius: "12px",
-        padding: "20px",
-        marginBottom: "14px",
-        border: "1px solid #E8DFC8",
-        textAlign: "center",
-      }}>
-        <p style={{ fontSize: "11px", color: "#64748b", fontWeight: "600" }}>
-          ⏳ Chargement du QR {index + 1}...
-        </p>
-      </div>
-    );
-  }
-
-  if (!data) return null;
-
-  const configStatut = {
-    EN_ATTENTE: { titre: "⏳ En attente", bg: "#FEF3C7", color: "#78350F" },
-    PAYE: { titre: "✅ Payé", bg: "#DBEAFE", color: "#1E40AF" },
-    PRET: { titre: "🟢 Prêt", bg: "#DCFCE7", color: "#15803D" },
-    RETIRE: { titre: "🎉 Retiré", bg: "#DBEAFE", color: "#1E40AF" },
-  };
-  const conf = configStatut[data.statut as keyof typeof configStatut] || configStatut.EN_ATTENTE;
-
-  // Numéro d'ordre de la commande
-  const numeroOrdre = index + 1;
+  const estMulti = commandesIds.length > 1;
 
   return (
     <div style={{
-      backgroundColor: "white",
-      borderRadius: "12px",
-      padding: "14px",
-      marginBottom: "14px",
-      border: "1px solid #E8DFC8",
-      textAlign: "center",
+      padding: "20px 14px",
+      maxWidth: "500px",
+      margin: "0 auto",
+      backgroundColor: "#FAF5E8",
+      minHeight: "100vh",
     }}>
-      {/* En-tête : numéro + boutique + statut */}
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "10px",
-        paddingBottom: "8px",
-        borderBottom: "1px solid #F1ECE0",
-        gap: "6px",
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", minWidth: 0, flex: 1 }}>
-          {/* Badge numéro d'ordre */}
-          <span style={{
-            fontSize: "10px",
-            fontWeight: "900",
-            backgroundColor: "#1D4ED8",
-            color: "white",
-            padding: "3px 8px",
-            borderRadius: "10px",
-            flexShrink: 0,
-          }}>
-            #{numeroOrdre}
-          </span>
-          <p style={{
-            fontSize: "10.5px",
-            color: "#64748b",
-            fontWeight: "700",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}>
-            🏪 {data.nomBoutique || "Boutique"}
-          </p>
-        </div>
-        <span style={{
-          fontSize: "9.5px",
-          fontWeight: "800",
-          backgroundColor: conf.bg,
-          color: conf.color,
-          padding: "3px 8px",
-          borderRadius: "10px",
-          flexShrink: 0,
+      {/* En-tête */}
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <p style={{ fontSize: "48px", marginBottom: "10px" }}>🎉</p>
+        <h1 style={{
+          fontSize: "20px",
+          fontWeight: "900",
+          color: "#0F172A",
+          marginBottom: "4px",
         }}>
-          {conf.titre}
-        </span>
+          {estMulti ? "Commandes enregistrées !" : "Commande enregistrée !"}
+        </h1>
+        <p style={{ color: "#64748b", fontSize: "12px", fontWeight: "600" }}>
+          {estMulti
+            ? `Vos ${commandesIds.length} commandes ont été transmises aux vendeurs.`
+            : "Votre commande a été transmise au vendeur."}
+        </p>
       </div>
 
-      {/* Titre QR */}
-      {total > 1 && (
-        <p style={{
-          fontSize: "10px",
-          fontWeight: "800",
-          color: "#1E3A5F",
-          marginBottom: "8px",
-          textTransform: "uppercase",
-          letterSpacing: "0.5px",
+      {/* Info multi */}
+      {estMulti && (
+        <div style={{
+          backgroundColor: "#FEF3C7",
+          color: "#78350F",
+          padding: "10px 12px",
+          borderRadius: "10px",
+          marginBottom: "14px",
+          border: "1px solid #FDE68A",
         }}>
-          Commande {numeroOrdre} sur {total}
-        </p>
-      )}
-
-      {/* QR ou message retiré */}
-      {data.statut === "RETIRE" && data.retireAt ? (
-        <div style={{ padding: "16px 8px" }}>
-          <p style={{ fontSize: "32px", marginBottom: "6px" }}>✅</p>
-          <p style={{ fontSize: "12.5px", fontWeight: "800", color: "#15803D", marginBottom: "3px" }}>
-            Commande retirée
+          <p style={{ fontWeight: "800", fontSize: "11.5px", marginBottom: "3px" }}>
+            📦 {commandesIds.length} commandes à retirer
           </p>
-          <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "600" }}>
-            {new Date(data.retireAt).toLocaleDateString("fr-FR", {
-              day: "numeric",
-              month: "long",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+          <p style={{ fontSize: "10.5px", fontWeight: "500", lineHeight: 1.4 }}>
+            Chaque commande a son propre QR. Présentez-les au bon vendeur dans l&apos;ordre indiqué.
           </p>
         </div>
-      ) : data.qrImage ? (
-        <>
-          <img
-            src={data.qrImage}
-            alt="QR Code"
-            style={{
-              width: "190px",
-              height: "190px",
-              display: "block",
-              margin: "0 auto",
-              backgroundColor: "white",
-            }}
-          />
-          <p style={{
-            fontSize: "9.5px",
-            color: "#64748b",
-            marginTop: "8px",
-            fontWeight: "600",
-          }}>
-            Présentez ce QR au vendeur de {data.nomBoutique || "cette boutique"}.
+      )}
+
+      {/* Aucune commande */}
+      {commandesIds.length === 0 && (
+        <div style={{
+          backgroundColor: "white",
+          borderRadius: "12px",
+          padding: "30px 16px",
+          textAlign: "center",
+          border: "1px solid #E8DFC8",
+        }}>
+          <p style={{ fontSize: "40px", marginBottom: "12px" }}>⚠️</p>
+          <p style={{ fontSize: "14px", fontWeight: "800", color: "#0F172A" }}>
+            Aucune commande trouvée
           </p>
-        </>
-      ) : null}
+        </div>
+      )}
+
+      {/* Commandes (1 seule ou plusieurs) */}
+      {commandesIds.map((id, index) => (
+        <CarteQR
+          key={id}
+          commandeId={id}
+          index={index}
+          total={commandesIds.length}
+        />
+      ))}
+
+      {/* Boutons */}
+      <Link
+        href="/"
+        style={{
+          display: "block",
+          backgroundColor: "#1D4ED8",
+          color: "white",
+          padding: "12px",
+          borderRadius: "10px",
+          textAlign: "center",
+          textDecoration: "none",
+          fontWeight: "800",
+          fontSize: "12.5px",
+          marginBottom: "8px",
+          marginTop: "16px",
+        }}
+      >
+        🏪 Retour à l&apos;accueil
+      </Link>
+
+      <Link
+        href="/client/compte"
+        style={{
+          display: "block",
+          textAlign: "center",
+          color: "#1D4ED8",
+          fontSize: "11.5px",
+          fontWeight: "700",
+          textDecoration: "none",
+        }}
+      >
+        Voir mes commandes
+      </Link>
     </div>
   );
-            }
+}
+
+export default function PageConfirmation() {
+  return (
+    <Suspense
+      fallback={
+        <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
+          <p>Chargement...</p>
+        </div>
+      }
+    >
+      <ContenuConfirmation />
+    </Suspense>
+  );
+                     }
