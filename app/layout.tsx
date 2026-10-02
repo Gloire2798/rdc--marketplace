@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -14,6 +14,23 @@ const police = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "GK Sensei — Complexe Commercial en ligne",
   description: "Toutes vos boutiques préférées, en un seul endroit.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "GK Sensei",
+  },
+  icons: {
+    icon: "https://i.ibb.co/xKnVPmGg/logo-Gk.jpg",
+    apple: "https://i.ibb.co/xKnVPmGg/logo-Gk.jpg",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0F172A",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
