@@ -18,6 +18,7 @@ export async function POST(request: Request) {
       totalFC,
       totalUSD,
       devise,
+      groupeId,
     } = body;
 
     if (!vendeurId || !nom || !telephone || !articles || articles.length === 0) {
@@ -27,7 +28,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Vérifier que le vendeur existe
     const vendeur = await prisma.vendeur.findUnique({
       where: { id: vendeurId },
     });
@@ -39,7 +39,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Déterminer l'acheteur
     let acheteurId: string | null = null;
 
     if (session && session.role === "ACHETEUR") {
@@ -63,12 +62,11 @@ export async function POST(request: Request) {
       }
     }
 
-    // Total utilisé pour la table (on additionne, on garde le détail en base)
     const totalCombine = (totalFC || 0) + (totalUSD || 0);
 
-    // Créer la commande
     const commande = await prisma.commande.create({
       data: {
+        groupeId: groupeId || null,
         acheteurId,
         nomClient: nom,
         telephoneClient: telephone,
@@ -117,4 +115,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
+        }
