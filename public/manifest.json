@@ -13,27 +13,27 @@
   "categories": ["shopping", "business"],
   "icons": [
     {
-      "src": "https://i.ibb.co/xKnVPmGg/logo-Gk.jpg",
+      "src": "https://i.ibb.co/1fQjT00Q/Gloire.png",
       "sizes": "192x192",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://i.ibb.co/xKnVPmGg/logo-Gk.jpg",
+      "src": "https://i.ibb.co/1fQjT00Q/Gloire.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://i.ibb.co/xKnVPmGg/logo-Gk.jpg",
+      "src": "https://i.ibb.co/1fQjT00Q/Gloire.png",
       "sizes": "192x192",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "https://i.ibb.co/xKnVPmGg/logo-Gk.jpg",
+      "src": "https://i.ibb.co/1fQjT00Q/Gloire.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ]
