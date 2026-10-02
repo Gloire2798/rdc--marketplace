@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import {
+  creerNotificationVendeur,
+  creerNotificationAdmin,
+} from "@/lib/notifications";
 
 export async function POST(request: Request) {
   try {
@@ -103,6 +107,25 @@ export async function POST(request: Request) {
       },
     });
 
+    const numCommande = commande.id.slice(0, 8);
+
+    // 🔔 Notification au vendeur
+    await creerNotificationVendeur(
+      vendeurId,
+      "COMMANDE_RECUE",
+      "🛒 Nouvelle commande reçue",
+      `Commande #${numCommande} de ${nom}. Validez-la dans votre dashboard.`,
+      "/vendeur/commandes"
+    );
+
+    // 🔔 Notification aux admins
+    await creerNotificationAdmin(
+      "COMMANDE_PASSEE",
+      "📦 Nouvelle commande",
+      `${nom} a commandé chez ${vendeur.nomBoutique} (commande #${numCommande}).`,
+      "/admin/commandes"
+    );
+
     return NextResponse.json({
       succes: true,
       commandeId: commande.id,
@@ -115,4 +138,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-        }
+      }
