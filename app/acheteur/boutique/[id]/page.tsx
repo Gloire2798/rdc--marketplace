@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import LogoBoutique from "@/app/components/LogoBoutique";
+import BoutonSuivre from "@/app/components/BoutonSuivre";
 import { getSession } from "@/lib/auth";
 
 export default async function PageBoutique({
@@ -29,6 +30,23 @@ export default async function PageBoutique({
     orderBy: { createdAt: "desc" },
   });
 
+  // Vérifier si le client est déjà abonné
+  let suiviInitial = false;
+  if (session && session.role === "ACHETEUR") {
+    const abonnement = await prisma.abonnement.findUnique({
+      where: {
+        userId_vendeurId: {
+          userId: session.id,
+          vendeurId: vendeur.id,
+        },
+      },
+    });
+    suiviInitial = !!abonnement;
+  }
+
+  const estConnecte = !!session;
+  const estClient = session?.role === "ACHETEUR";
+
   const formaterPrix = (prix: number, devise: string) => {
     if (devise === "USD") {
       return `${prix.toFixed(2)} $`;
@@ -42,7 +60,6 @@ export default async function PageBoutique({
         ← Retour à l&apos;accueil
       </Link>
 
-      {/* Bloc description — pas de carte, juste du texte */}
       <div style={{
         display: "flex",
         alignItems: "flex-start",
@@ -77,10 +94,19 @@ export default async function PageBoutique({
               fontWeight: "500",
               lineHeight: 1.4,
               whiteSpace: "pre-wrap",
+              marginBottom: "4px",
             }}>
               {vendeur.description}
             </p>
           )}
+
+          {/* Bouton suivre */}
+          <BoutonSuivre
+            vendeurId={vendeur.id}
+            estConnecte={estConnecte}
+            estClient={estClient}
+            suiviInitial={suiviInitial}
+          />
         </div>
       </div>
 
