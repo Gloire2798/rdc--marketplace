@@ -48,6 +48,16 @@ export default function PageCommande() {
       return;
     }
 
+    // DÉTECTION MULTI-BOUTIQUES AU CHARGEMENT
+    const groupes = grouperParBoutique(p);
+
+    if (groupes.length > 1) {
+      // Redirection immédiate sans demander les infos
+      const groupeId = genererGroupeId();
+      router.push(`/acheteur/commande/multi?groupeId=${groupeId}`);
+      return;
+    }
+
     const vendeurId = p[0].vendeurId;
     fetch(`/api/vendeur/infos/${vendeurId}`)
       .then((res) => res.json())
@@ -105,24 +115,6 @@ export default function PageCommande() {
       return;
     }
 
-    // Détection multi-boutiques
-    const groupes = grouperParBoutique(panier);
-
-    if (groupes.length > 1) {
-      // Redirection vers le flux multi-boutiques
-      const groupeId = genererGroupeId();
-      const params = new URLSearchParams({
-        groupeId,
-        nom: form.nom,
-        telephone: form.telephone,
-        adresse: form.adresse,
-        mode: form.mode,
-      });
-      router.push(`/acheteur/commande/multi?${params.toString()}`);
-      return;
-    }
-
-    // Flux normal (1 seule boutique)
     setEnvoi(true);
 
     try {
@@ -370,9 +362,10 @@ export default function PageCommande() {
           )}
 
           <p style={{ fontSize: "10px", color: "#475569", marginTop: "10px", lineHeight: 1.4, fontWeight: "500" }}>
-            Envoyez l&apos;acompte à <strong>{vendeur?.nomBoutique}</strong> via l&apos;un des numéros ci-dessous. Vous vous arrangerez avec le vendeur pour le taux de change si vous payez dans une autre devise.
+            Envoyez l&apos;acompte à <strong>{vendeur?.nomBoutique}</strong> via l&apos;un des numéros ci-dessous.
           </p>
 
+          {/* M-Pesa */}
           {vendeur?.numMpesa && (
             <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center", marginTop: "10px" }}>
               <div style={logoBox}>
@@ -393,6 +386,7 @@ export default function PageCommande() {
             </div>
           )}
 
+          {/* Orange */}
           {vendeur?.numOrange && (
             <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center" }}>
               <div style={logoBox}>
@@ -413,6 +407,7 @@ export default function PageCommande() {
             </div>
           )}
 
+          {/* Airtel */}
           {vendeur?.numAirtel && (
             <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center" }}>
               <div style={logoBox}>
@@ -428,6 +423,32 @@ export default function PageCommande() {
                   style={copierBtnStyle(copie === "airtel")}
                 >
                   {copie === "airtel" ? "✅" : "📋"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* FALLBACK : numMobileMoney si aucun des 3 n'existe */}
+          {!vendeur?.numMpesa && !vendeur?.numOrange && !vendeur?.numAirtel && vendeur?.numMobileMoney && (
+            <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center", marginTop: "10px" }}>
+              <div style={logoBox}>
+                <span style={{ fontSize: "18px" }}>📱</span>
+              </div>
+              <div style={numeroBoxStyle}>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <p style={{ fontSize: "9px", color: "#64748b", fontWeight: "700", textTransform: "uppercase" }}>
+                    Mobile Money
+                  </p>
+                  <span style={{ fontSize: "12.5px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis", display: "block" }}>
+                    {vendeur.numMobileMoney}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => copier(vendeur.numMobileMoney!, "mobile")}
+                  style={copierBtnStyle(copie === "mobile")}
+                >
+                  {copie === "mobile" ? "✅" : "📋"}
                 </button>
               </div>
             </div>
@@ -518,4 +539,4 @@ export default function PageCommande() {
       </form>
     </div>
   );
-}
+    }
