@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import LogoBoutique from "@/app/components/LogoBoutique";
 import NavigationBas from "./NavigationBas";
-import MenuBurger from "./menu-burger";
+import MenuBurger from "./MenuBurger";
 import GraphiqueVendeur from "./GraphiqueVendeur";
 import TopProduits from "./TopProduits";
 import { Plus, Store, Camera, Package, ShoppingCart, CheckCircle, Clock } from "lucide-react";
@@ -372,4 +372,4 @@ export default async function DashboardVendeur() {
       <NavigationBas />
     </>
   );
-                   }
+                }
