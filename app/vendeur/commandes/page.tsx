@@ -36,7 +36,6 @@ export default async function MesCommandes() {
   });
 
   const formaterCommande = (c: typeof commandes[0]) => {
-    // Calculer les totaux séparés par devise
     let totalFC = 0;
     let totalUSD = 0;
 
@@ -168,4 +167,4 @@ export default async function MesCommandes() {
       )}
     </div>
   );
-        }
+                           }
