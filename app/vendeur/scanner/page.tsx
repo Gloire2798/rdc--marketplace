@@ -10,10 +10,12 @@ interface DetailsCommande {
   telephoneClient: string;
   adresse: string | null;
   mode: string;
-  total: number;
-  acompte: number;
-  reste: number;
-  devise: string;
+  totalFC: number;
+  totalUSD: number;
+  acompteFC: number;
+  acompteUSD: number;
+  resteFC: number;
+  resteUSD: number;
   statut: string;
   createdAt: string;
   nomBoutique: string;
@@ -343,18 +345,52 @@ export default function ScannerPage() {
               )}
             </div>
 
+            {/* Totaux séparés par devise */}
             <div style={{ backgroundColor: "#EFF6FF", borderRadius: "10px", padding: "10px", marginBottom: "12px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-                <span style={{ fontSize: "11px", color: "#475569", fontWeight: "700" }}>Total</span>
-                <span style={{ fontSize: "12px", color: "#0F172A", fontWeight: "900" }}>{formaterPrix(resultat.total, resultat.devise)}</span>
+              <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "700", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                Total
+              </p>
+              {resultat.totalUSD > 0 && (
+                <p style={{ fontSize: "13px", fontWeight: "900", color: "#0F172A", lineHeight: 1.3 }}>
+                  {formaterPrix(resultat.totalUSD, "USD")}
+                </p>
+              )}
+              {resultat.totalFC > 0 && (
+                <p style={{ fontSize: "13px", fontWeight: "900", color: "#0F172A", lineHeight: 1.3, marginBottom: resultat.totalUSD > 0 ? "10px" : "0" }}>
+                  {formaterPrix(resultat.totalFC, "FC")}
+                </p>
+              )}
+
+              <div style={{ marginTop: "10px", paddingTop: "8px", borderTop: "1px solid #BFDBFE" }}>
+                <p style={{ fontSize: "10px", color: "#16a34a", fontWeight: "700", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                  Acompte payé
+                </p>
+                {resultat.acompteUSD > 0 && (
+                  <p style={{ fontSize: "12px", fontWeight: "800", color: "#16a34a", lineHeight: 1.3 }}>
+                    {formaterPrix(resultat.acompteUSD, "USD")}
+                  </p>
+                )}
+                {resultat.acompteFC > 0 && (
+                  <p style={{ fontSize: "12px", fontWeight: "800", color: "#16a34a", lineHeight: 1.3 }}>
+                    {formaterPrix(resultat.acompteFC, "FC")}
+                  </p>
+                )}
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-                <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: "700" }}>Acompte payé</span>
-                <span style={{ fontSize: "12px", color: "#16a34a", fontWeight: "900" }}>{formaterPrix(resultat.acompte, resultat.devise)}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "6px", borderTop: "1px solid #BFDBFE" }}>
-                <span style={{ fontSize: "12px", color: "#1D4ED8", fontWeight: "900" }}>Reste à encaisser</span>
-                <span style={{ fontSize: "14px", color: "#1D4ED8", fontWeight: "900" }}>{formaterPrix(resultat.reste, resultat.devise)}</span>
+
+              <div style={{ marginTop: "10px", paddingTop: "8px", borderTop: "1px solid #BFDBFE" }}>
+                <p style={{ fontSize: "10px", color: "#1D4ED8", fontWeight: "800", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                  Reste à encaisser
+                </p>
+                {resultat.resteUSD > 0 && (
+                  <p style={{ fontSize: "15px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.3 }}>
+                    {formaterPrix(resultat.resteUSD, "USD")}
+                  </p>
+                )}
+                {resultat.resteFC > 0 && (
+                  <p style={{ fontSize: "15px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.3 }}>
+                    {formaterPrix(resultat.resteFC, "FC")}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -363,9 +399,13 @@ export default function ScannerPage() {
             </p>
             <div style={{ backgroundColor: "#F8FAFC", borderRadius: "8px", padding: "8px 10px", marginBottom: "4px" }}>
               {resultat.items.map((item, idx) => (
-                <div key={idx} style={{ display: "flex", justifyContent: "space-between", fontSize: "11.5px", marginBottom: idx < resultat.items.length - 1 ? "4px" : "0" }}>
-                  <span style={{ color: "#334155", fontWeight: "600" }}>{item.nom} × {item.quantite}</span>
-                  <span style={{ color: "#64748b", fontWeight: "700" }}>{formaterPrix(item.prixUnitaire * item.quantite, item.devise)}</span>
+                <div key={idx} style={{ display: "flex", justifyContent: "space-between", fontSize: "11.5px", marginBottom: idx < resultat.items.length - 1 ? "4px" : "0", gap: "8px" }}>
+                  <span style={{ color: "#334155", fontWeight: "600", minWidth: 0, flex: 1 }}>
+                    {item.nom} × {item.quantite}
+                  </span>
+                  <span style={{ color: "#64748b", fontWeight: "700", flexShrink: 0 }}>
+                    {formaterPrix(item.prixUnitaire * item.quantite, item.devise)}
+                  </span>
                 </div>
               ))}
             </div>
@@ -445,4 +485,4 @@ export default function ScannerPage() {
       )}
     </div>
   );
-          }
+            }
