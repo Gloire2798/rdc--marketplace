@@ -36,24 +36,38 @@ export default async function MesCommandes() {
   });
 
   const formaterCommande = (c: typeof commandes[0]) => {
-    const devise = c.items[0]?.produit?.devise || "FC";
+    // Calculer les totaux séparés par devise
+    let totalFC = 0;
+    let totalUSD = 0;
+
+    const itemsFormates = c.items.map((i) => {
+      const montant = i.prixUnitaire * i.quantite;
+
+      if (i.produit.devise === "USD") {
+        totalUSD += montant;
+      } else {
+        totalFC += montant;
+      }
+
+      return {
+        nom: i.produit.nom,
+        quantite: i.quantite,
+        prixUnitaire: i.prixUnitaire,
+        devise: i.produit.devise,
+      };
+    });
 
     return {
       id: c.id,
       statut: c.statut,
-      total: c.total,
-      devise,
+      totalFC,
+      totalUSD,
       mode: c.mode,
       adresse: c.adresse,
       createdAt: c.createdAt.toISOString(),
       nomClient: c.nomClient || c.acheteur?.nom || "Client",
       telephoneClient: c.telephoneClient || c.acheteur?.telephone || "—",
-      items: c.items.map((i) => ({
-        nom: i.produit.nom,
-        quantite: i.quantite,
-        prixUnitaire: i.prixUnitaire,
-        devise: i.produit.devise,
-      })),
+      items: itemsFormates,
     };
   };
 
@@ -154,4 +168,4 @@ export default async function MesCommandes() {
       )}
     </div>
   );
-                            }
+        }
