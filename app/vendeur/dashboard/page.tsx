@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import LogoBoutique from "@/app/components/LogoBoutique";
 import NavigationBas from "./NavigationBas";
+import MenuBurger from "./menu-burger";
 import GraphiqueVendeur from "./GraphiqueVendeur";
 import TopProduits from "./TopProduits";
 import { Plus, Store, Camera, Package, ShoppingCart, CheckCircle, Clock } from "lucide-react";
@@ -110,10 +111,24 @@ export default async function DashboardVendeur() {
 
   return (
     <>
+      {/* Barre supérieure avec le menu burger */}
+      <div style={{
+        backgroundColor: "#F3F4F6",
+        padding: "12px 14px 0 14px",
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+      }}>
+        <MenuBurger />
+        <p style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A" }}>
+          Espace vendeur
+        </p>
+      </div>
+
       <div style={{
         backgroundColor: "#F3F4F6",
         minHeight: "100vh",
-        padding: "16px 14px 100px 14px",
+        padding: "12px 14px 100px 14px",
       }}>
         {/* Header vendeur */}
         <div style={{
@@ -157,7 +172,7 @@ export default async function DashboardVendeur() {
           </div>
         )}
 
-        {/* 4 cartes stats (format admin : 2x2, icônes 18px) */}
+        {/* 4 cartes stats */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
@@ -357,4 +372,4 @@ export default async function DashboardVendeur() {
       <NavigationBas />
     </>
   );
-      }
+                   }
