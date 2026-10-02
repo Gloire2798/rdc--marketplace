@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import { compterArticles } from "@/lib/panier";
 import MenuBurgerAdmin from "./admin/dashboard/MenuBurger";
 import MenuBurgerVendeur from "./vendeur/dashboard/MenuBurger";
-import { Search, Bell, ShoppingCart } from "lucide-react";
+import NotificationBell from "./components/NotificationBell";
+import { Search, ShoppingCart } from "lucide-react";
 
 interface InfosUser {
   id: string;
@@ -73,7 +74,7 @@ export default function Header() {
         </Link>
         <div style={{ display: "flex", gap: "16px", alignItems: "center", color: "#0F172A" }}>
           <Search size={22} strokeWidth={2.8} />
-          <Bell size={22} strokeWidth={2.8} />
+          <NotificationBell />
         </div>
       </header>
     );
@@ -106,7 +107,7 @@ export default function Header() {
           </div>
         </Link>
         <div style={{ display: "flex", gap: "16px", alignItems: "center", color: "#0F172A" }}>
-          <Bell size={22} strokeWidth={2.8} />
+          <NotificationBell />
         </div>
       </header>
     );
@@ -137,28 +138,31 @@ export default function Header() {
             <span style={{ fontSize: "10.5px", color: "#64748b", fontWeight: "700" }}>Mon compte</span>
           </div>
         </Link>
-        <Link href="/acheteur/panier" style={{ position: "relative", color: "#0F172A" }}>
-          <ShoppingCart size={24} strokeWidth={2.8} />
-          {nbPanier > 0 && (
-            <span style={{
-              position: "absolute",
-              top: "-6px",
-              right: "-8px",
-              backgroundColor: "#dc2626",
-              color: "white",
-              fontSize: "10px",
-              fontWeight: "800",
-              width: "18px",
-              height: "18px",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-              {nbPanier}
-            </span>
-          )}
-        </Link>
+        <div style={{ display: "flex", gap: "16px", alignItems: "center", color: "#0F172A" }}>
+          <NotificationBell />
+          <Link href="/acheteur/panier" style={{ position: "relative", color: "#0F172A" }}>
+            <ShoppingCart size={24} strokeWidth={2.8} />
+            {nbPanier > 0 && (
+              <span style={{
+                position: "absolute",
+                top: "-6px",
+                right: "-8px",
+                backgroundColor: "#dc2626",
+                color: "white",
+                fontSize: "10px",
+                fontWeight: "800",
+                width: "18px",
+                height: "18px",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+                {nbPanier}
+              </span>
+            )}
+          </Link>
+        </div>
       </header>
     );
   }
@@ -232,4 +236,4 @@ export default function Header() {
       </div>
     </header>
   );
-}
+        }
