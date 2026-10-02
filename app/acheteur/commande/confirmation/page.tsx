@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import QRCode from "qrcode";
 
-const INTERVALLE_POLLING = 5000; // 5 secondes
+const INTERVALLE_POLLING = 5000;
 
 function ContenuConfirmation() {
   const searchParams = useSearchParams();
@@ -18,9 +18,6 @@ function ContenuConfirmation() {
   const [nomBoutique, setNomBoutique] = useState<string>("");
   const [chargement, setChargement] = useState(true);
 
-  // ----------------------------------------------------------
-  // Fonction pour charger les données du QR
-  // ----------------------------------------------------------
   const chargerQR = async () => {
     if (!commandeId) return;
 
@@ -37,14 +34,12 @@ function ContenuConfirmation() {
       setRetireAt(data.retireAt || null);
       setNomBoutique(data.nomBoutique || "");
 
-      // Si la commande est retirée → on n'affiche plus le QR
       if (data.statut === "RETIRE" || !data.qrToken) {
         setQrImage("");
         setChargement(false);
         return;
       }
 
-      // Générer le QR code image
       const url = await QRCode.toDataURL(data.qrToken, {
         width: 300,
         margin: 2,
@@ -60,9 +55,6 @@ function ContenuConfirmation() {
     }
   };
 
-  // ----------------------------------------------------------
-  // Chargement initial + polling toutes les 5 secondes
-  // ----------------------------------------------------------
   useEffect(() => {
     chargerQR();
 
@@ -74,9 +66,6 @@ function ContenuConfirmation() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [commandeId]);
 
-  // ----------------------------------------------------------
-  // Copier l'ID de commande
-  // ----------------------------------------------------------
   const copierId = () => {
     if (commandeId) {
       navigator.clipboard.writeText(commandeId);
@@ -85,9 +74,6 @@ function ContenuConfirmation() {
     }
   };
 
-  // ----------------------------------------------------------
-  // Config selon le statut
-  // ----------------------------------------------------------
   const configStatut = {
     EN_ATTENTE: {
       titre: "⏳ En attente de validation",
@@ -102,8 +88,7 @@ function ContenuConfirmation() {
     },
     PAYE: {
       titre: "✅ Paiement validé",
-      texte:
-        "Votre paiement a été confirmé. Le vendeur prépare votre commande.",
+      texte: "Votre paiement a été confirmé. Le vendeur prépare votre commande.",
       bg: "#DBEAFE",
       color: "#1E40AF",
       border: "#BFDBFE",
@@ -139,9 +124,6 @@ function ContenuConfirmation() {
     configStatut[statut as keyof typeof configStatut] ||
     configStatut.EN_ATTENTE;
 
-  // ----------------------------------------------------------
-  // RENDU
-  // ----------------------------------------------------------
   return (
     <div
       style={{
@@ -227,7 +209,6 @@ function ContenuConfirmation() {
         </div>
       )}
 
-      {/* QR CODE — Affiché uniquement si la commande n'est PAS retirée */}
       {qrImage && statut !== "RETIRE" && (
         <div
           style={{
@@ -281,7 +262,6 @@ function ContenuConfirmation() {
         </div>
       )}
 
-      {/* Message de confirmation de retrait */}
       {statut === "RETIRE" && retireAt && (
         <div
           style={{
@@ -329,7 +309,6 @@ function ContenuConfirmation() {
         </div>
       )}
 
-      {/* Message de chargement */}
       {chargement && (
         <div
           style={{
@@ -347,7 +326,6 @@ function ContenuConfirmation() {
         </div>
       )}
 
-      {/* Bandeau statut dynamique */}
       <div
         style={{
           backgroundColor: config.bg,
@@ -420,4 +398,4 @@ export default function PageConfirmation() {
       <ContenuConfirmation />
     </Suspense>
   );
-    }
+      }
