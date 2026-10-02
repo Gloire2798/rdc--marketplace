@@ -26,6 +26,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ erreur: "QR invalide" }, { status: 400 });
     }
 
+    // Format attendu : CMD:commandeId:token
     const parts = qrToken.split(":");
     if (parts.length !== 3 || parts[0] !== "CMD") {
       return NextResponse.json({ erreur: "QR non reconnu" }, { status: 400 });
@@ -50,12 +51,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ erreur: "Commande introuvable" }, { status: 404 });
     }
 
+    // Vérifier que le token correspond
     if (commande.qrToken !== token) {
       return NextResponse.json({ erreur: "QR falsifié" }, { status: 400 });
     }
 
-    // ⚠️ Mauvaise boutique
+    // ⚠️ Vérifier que la commande appartient à ce vendeur
     if (commande.vendeurId !== vendeur.id) {
+      // Récupérer le numéro de l'admin
       const admin = await prisma.user.findFirst({
         where: { role: "ADMIN" },
         select: { telephone: true },
@@ -74,6 +77,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // Vérifier que la commande n'a pas déjà été retirée
     if (commande.statut === "RETIRE") {
       return NextResponse.json(
         { erreur: "Cette commande a déjà été retirée" },
@@ -81,6 +85,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // Vérifier que la commande est prête
     if (commande.statut !== "PRET") {
       return NextResponse.json(
         {
@@ -93,6 +98,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // Vérifier que le QR n'a pas expiré
     if (commande.qrExpireAt && commande.qrExpireAt < new Date()) {
       return NextResponse.json(
         { erreur: "Ce QR a expiré" },
@@ -100,6 +106,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // Récupérer la devise depuis le premier article
     const devise = commande.items[0]?.produit.devise || "FC";
     const acompte = Math.round(commande.total * 0.1 * 100) / 100;
     const reste = commande.total - acompte;
@@ -133,7 +140,7 @@ export async function POST(request: Request) {
   }
 }
 
-// PUT : Confirmer le retrait
+// PUT : Confirmer le retrait (marquer comme RETIRE + invalider le QR)
 export async function PUT(request: Request) {
   try {
     const session = await getSession();
@@ -176,12 +183,13 @@ export async function PUT(request: Request) {
       );
     }
 
+    // Marquer la commande comme retirée + invalider le QR
     await prisma.commande.update({
       where: { id: commandeId },
       data: {
         statut: "RETIRE",
         retireAt: new Date(),
-        qrToken: `USED_${commande.qrToken}`,
+        qrToken: `USED_${commande.qrToken}`, // invalider le token
       },
     });
 
@@ -190,4 +198,4 @@ export async function PUT(request: Request) {
     console.error("Erreur validation retrait:", error);
     return NextResponse.json({ erreur: "Erreur serveur" }, { status: 500 });
   }
-                              }
+      }
