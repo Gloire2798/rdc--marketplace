@@ -29,6 +29,10 @@ export default async function CompteClient() {
     orderBy: { createdAt: "desc" },
   });
 
+  const nombreAbonnements = await prisma.abonnement.count({
+    where: { userId: session.id },
+  });
+
   const formaterPrix = (prix: number, devise: string) => {
     if (devise === "USD") return `${prix.toFixed(2)} $`;
     return `${prix.toLocaleString("fr-FR")} FC`;
@@ -73,7 +77,7 @@ export default async function CompteClient() {
         borderRadius: "12px",
         padding: "12px 14px",
         border: "1px solid #E8DFC8",
-        marginBottom: "18px",
+        marginBottom: "12px",
       }}>
         <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "700", marginBottom: "3px", textTransform: "uppercase" }}>
           Téléphone
@@ -82,6 +86,64 @@ export default async function CompteClient() {
           📞 {session.telephone}
         </p>
       </div>
+
+      {/* Carte "Mes abonnements" */}
+      <Link
+        href="/client/abonnements"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+          backgroundColor: "white",
+          borderRadius: "12px",
+          padding: "14px",
+          border: "1px solid #E8DFC8",
+          marginBottom: "18px",
+          textDecoration: "none",
+          color: "inherit",
+        }}
+      >
+        <div style={{
+          width: "42px",
+          height: "42px",
+          borderRadius: "10px",
+          backgroundColor: "#EFF6FF",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "20px",
+          flexShrink: 0,
+        }}>
+          💙
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{
+            fontSize: "13px",
+            fontWeight: "800",
+            color: "#0F172A",
+            marginBottom: "2px",
+          }}>
+            Mes boutiques suivies
+          </p>
+          <p style={{
+            fontSize: "10.5px",
+            color: "#64748b",
+            fontWeight: "600",
+          }}>
+            {nombreAbonnements === 0
+              ? "Aucune boutique suivie"
+              : `${nombreAbonnements} boutique${nombreAbonnements > 1 ? "s" : ""} suivie${nombreAbonnements > 1 ? "s" : ""}`}
+          </p>
+        </div>
+        <span style={{
+          fontSize: "16px",
+          color: "#1D4ED8",
+          fontWeight: "800",
+          flexShrink: 0,
+        }}>
+          →
+        </span>
+      </Link>
 
       <h2 style={{
         fontSize: "15px",
@@ -252,4 +314,4 @@ export default async function CompteClient() {
       )}
     </div>
   );
-        }
+                    }
