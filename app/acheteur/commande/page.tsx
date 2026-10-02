@@ -7,6 +7,8 @@ import {
   getPanier,
   viderPanier,
   formaterPrix,
+  grouperParBoutique,
+  genererGroupeId,
   ArticlePanier,
 } from "@/lib/panier";
 
@@ -66,7 +68,6 @@ export default function PageCommande() {
     setTimeout(() => setCopie(null), 2000);
   };
 
-  // Totaux séparés par devise
   let totalFC = 0;
   let totalUSD = 0;
 
@@ -104,6 +105,24 @@ export default function PageCommande() {
       return;
     }
 
+    // Détection multi-boutiques
+    const groupes = grouperParBoutique(panier);
+
+    if (groupes.length > 1) {
+      // Redirection vers le flux multi-boutiques
+      const groupeId = genererGroupeId();
+      const params = new URLSearchParams({
+        groupeId,
+        nom: form.nom,
+        telephone: form.telephone,
+        adresse: form.adresse,
+        mode: form.mode,
+      });
+      router.push(`/acheteur/commande/multi?${params.toString()}`);
+      return;
+    }
+
+    // Flux normal (1 seule boutique)
     setEnvoi(true);
 
     try {
@@ -499,4 +518,4 @@ export default function PageCommande() {
       </form>
     </div>
   );
-  }
+}
