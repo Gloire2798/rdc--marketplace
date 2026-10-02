@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import CarteQR from "./CarteQR";
@@ -9,10 +9,8 @@ function ContenuConfirmation() {
   const searchParams = useSearchParams();
 
   const commandeUnique = searchParams.get("commande");
-  const groupeId = searchParams.get("groupe");
   const commandesParam = searchParams.get("commandes");
 
-  // Construire la liste des IDs de commandes
   const commandesIds = commandeUnique
     ? [commandeUnique]
     : commandesParam
@@ -29,7 +27,6 @@ function ContenuConfirmation() {
       backgroundColor: "#FAF5E8",
       minHeight: "100vh",
     }}>
-      {/* En-tête */}
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <p style={{ fontSize: "48px", marginBottom: "10px" }}>🎉</p>
         <h1 style={{
@@ -47,7 +44,6 @@ function ContenuConfirmation() {
         </p>
       </div>
 
-      {/* Info multi */}
       {estMulti && (
         <div style={{
           backgroundColor: "#FEF3C7",
@@ -66,7 +62,6 @@ function ContenuConfirmation() {
         </div>
       )}
 
-      {/* Aucune commande */}
       {commandesIds.length === 0 && (
         <div style={{
           backgroundColor: "white",
@@ -82,7 +77,6 @@ function ContenuConfirmation() {
         </div>
       )}
 
-      {/* Commandes (1 seule ou plusieurs) */}
       {commandesIds.map((id, index) => (
         <CarteQR
           key={id}
@@ -92,7 +86,6 @@ function ContenuConfirmation() {
         />
       ))}
 
-      {/* Boutons */}
       <Link
         href="/"
         style={{
@@ -141,4 +134,4 @@ export default function PageConfirmation() {
       <ContenuConfirmation />
     </Suspense>
   );
-                     }
+        }
