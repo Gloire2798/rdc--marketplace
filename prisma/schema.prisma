@@ -142,7 +142,6 @@ model QrScan {
 }
 
 // FINANCES ADMINISTRATIVES
-// Paiements effectués hors système par les vendeurs
 model PaiementFinance {
   id           String   @id @default(cuid())
   vendeurId    String
@@ -160,4 +159,18 @@ model PaiementFinance {
   @@index([vendeurId])
   @@index([type])
   @@index([statut])
+}
+
+// PARAMÈTRES DU COMPLEXE (singleton - 1 seule ligne)
+model Parametre {
+  id                String   @id @default("singleton")
+  nomComplexe       String   @default("GK Sensei")
+  adresse           String?
+  telephone         String?
+  fraisInscription  Int      @default(25000)
+  loyerMensuel      Int      @default(15000)
+  jourEcheance      Int      @default(15)
+  numMobileMoney    String?
+  lienAnalytics     String?
+  updatedAt         DateTime @updatedAt
 }
