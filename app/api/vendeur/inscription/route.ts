@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { creerNotificationAdmin } from "@/lib/notifications";
 import bcrypt from "bcryptjs";
 
 export async function POST(request: Request) {
@@ -75,6 +76,14 @@ export async function POST(request: Request) {
       },
     });
 
+    // 🔔 Notification aux admins
+    await creerNotificationAdmin(
+      "NOUVEAU_VENDEUR",
+      "🏪 Nouvelle boutique à valider",
+      `${nom} vient d'inscrire la boutique "${nomBoutique}". Validez-la dans le dashboard.`,
+      "/admin/dashboard"
+    );
+
     return NextResponse.json({
       succes: true,
       message:
@@ -88,4 +97,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-      }
+        }
