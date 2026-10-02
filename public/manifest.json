@@ -1,0 +1,25 @@
+{
+  "name": "GK Sensei — Complexe Commercial",
+  "short_name": "GK Sensei",
+  "description": "Toutes vos boutiques préférées, en un seul endroit.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF5E8",
+  "theme_color": "#0F172A",
+  "orientation": "portrait",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/xKnVPmGg/logo-Gk.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://i.ibb.co/xKnVPmGg/logo-Gk.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
