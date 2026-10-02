@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { creerNotificationAbonnes } from "@/lib/notifications";
 
 export async function POST(request: Request) {
   try {
@@ -83,6 +84,15 @@ export async function POST(request: Request) {
       },
     });
 
+    // 🔔 Notifier tous les abonnés de la boutique
+    await creerNotificationAbonnes(
+      vendeur.id,
+      "NOUVEAU_PRODUIT",
+      `🆕 Nouveau chez ${vendeur.nomBoutique}`,
+      `Découvrez "${nom}" — disponible dès maintenant !`,
+      `/acheteur/produit/${produit.id}`
+    );
+
     return NextResponse.json({ succes: true, produit });
   } catch (error) {
     console.error("Erreur création produit:", error);
@@ -91,4 +101,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
+      }
