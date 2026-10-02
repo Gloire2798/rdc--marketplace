@@ -72,10 +72,6 @@ export function compterArticles(): number {
   return panier.reduce((total, a) => total + a.quantite, 0);
 }
 
-/**
- * Calcule les totaux séparés par devise
- * Retourne { FC: number, USD: number }
- */
 export function calculerTotauxParDevise(): { FC: number; USD: number } {
   const panier = getPanier();
   let totalFC = 0;
@@ -94,9 +90,6 @@ export function calculerTotauxParDevise(): { FC: number; USD: number } {
   return { FC: totalFC, USD: totalUSD };
 }
 
-/**
- * Calcule les totaux originaux (avant réductions) par devise
- */
 export function calculerTotauxOriginaux(): { FC: number; USD: number } {
   const panier = getPanier();
   let totalFC = 0;
@@ -125,3 +118,55 @@ export function formaterPrix(prix: number, devise: string): string {
   }
   return `${prix.toLocaleString("fr-FR")} FC`;
 }
+
+export function genererGroupeId(): string {
+  return `GRP_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+}
+
+export interface GroupeBoutique {
+  vendeurId: string;
+  nomBoutique: string;
+  articles: ArticlePanier[];
+  totalFC: number;
+  totalUSD: number;
+  acompteFC: number;
+  acompteUSD: number;
+}
+
+export function grouperParBoutique(panier: ArticlePanier[]): GroupeBoutique[] {
+  const groupes = new Map<string, GroupeBoutique>();
+
+  panier.forEach((article) => {
+    if (!groupes.has(article.vendeurId)) {
+      groupes.set(article.vendeurId, {
+        vendeurId: article.vendeurId,
+        nomBoutique: article.nomBoutique,
+        articles: [],
+        totalFC: 0,
+        totalUSD: 0,
+        acompteFC: 0,
+        acompteUSD: 0,
+      });
+    }
+
+    const groupe = groupes.get(article.vendeurId)!;
+    const prixFinal = article.prixPromo !== null ? article.prixPromo : article.prix;
+    const montant = prixFinal * article.quantite;
+
+    groupe.articles.push(article);
+
+    if (article.devise === "USD") {
+      groupe.totalUSD += montant;
+    } else {
+      groupe.totalFC += montant;
+    }
+  });
+
+  const resultat = Array.from(groupes.values());
+  resultat.forEach((g) => {
+    g.acompteFC = Math.round(g.totalFC * 0.1);
+    g.acompteUSD = Math.round(g.totalUSD * 0.1 * 100) / 100;
+  });
+
+  return resultat;
+                             }
