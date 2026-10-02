@@ -11,11 +11,9 @@ import {
   Package,
   Users,
   Wallet,
-  TrendingUp,
   Megaphone,
   Settings,
   MessageCircle,
-  LogOut,
 } from "lucide-react";
 
 const liensMenu = [
@@ -24,7 +22,6 @@ const liensMenu = [
   { href: "/admin/commandes", label: "Commandes", Icon: Package },
   { href: "/admin/utilisateurs", label: "Utilisateurs", Icon: Users },
   { href: "/admin/finance", label: "Finance", Icon: Wallet },
-  { href: "/admin/analyses", label: "Analyses", Icon: TrendingUp },
   { href: "/admin/marketing", label: "Marketing", Icon: Megaphone },
   { href: "/admin/parametres", label: "Paramètres", Icon: Settings },
   { href: "/admin/support", label: "Support", Icon: MessageCircle },
@@ -142,27 +139,7 @@ export default function MenuBurger() {
             );
           })}
         </nav>
-
-        <div style={{ padding: "10px 0", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-          <Link
-            href="/api/auth/deconnexion"
-            onClick={() => setOuvert(false)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "13px 18px",
-              color: "#f87171",
-              textDecoration: "none",
-              fontSize: "14px",
-              fontWeight: "700",
-            }}
-          >
-            <LogOut size={18} strokeWidth={2.5} />
-            <span>Déconnexion</span>
-          </Link>
-        </div>
       </div>
     </>
   );
-          }
+            }
