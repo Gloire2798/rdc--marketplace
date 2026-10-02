@@ -21,7 +21,7 @@ export default function BoutonRestaurer({ vendeurId, nomBoutique }: Props) {
 
     try {
       if (type === "restaurer") {
-        const res = await fetch(`/api/admin/boutiques/${vendeurId}`, {
+        const res = await fetch(`/api/admin/vendeurs/${vendeurId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ actif: true }),
@@ -33,7 +33,7 @@ export default function BoutonRestaurer({ vendeurId, nomBoutique }: Props) {
           alert("Erreur lors de la restauration");
         }
       } else if (type === "supprimer") {
-        const res = await fetch(`/api/admin/boutiques/${vendeurId}`, {
+        const res = await fetch(`/api/admin/vendeurs/${vendeurId}`, {
           method: "DELETE",
         });
 
@@ -223,4 +223,4 @@ export default function BoutonRestaurer({ vendeurId, nomBoutique }: Props) {
       </div>
     </div>
   );
-              }
+}
