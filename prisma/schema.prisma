@@ -81,6 +81,7 @@ model Story {
 // COMMANDES
 model Commande {
   id              String        @id @default(cuid())
+  groupeId        String?
   acheteurId      String?
   acheteur        User?         @relation(fields: [acheteurId], references: [id])
   nomClient       String?
@@ -100,6 +101,8 @@ model Commande {
   items           CommandeItem[]
   paiement        Paiement?
   scans           QrScan[]
+
+  @@index([groupeId])
 }
 
 // LIGNES DE COMMANDE
@@ -145,10 +148,10 @@ model PaiementFinance {
   vendeurId    String
   vendeur      Vendeur  @relation(fields: [vendeurId], references: [id])
 
-  type         String   // INSCRIPTION ou LOYER
-  periode      String   // "INSCRIPTION" ou "2026-10"
+  type         String
+  periode      String
   montant      Float
-  statut       String   @default("IMPAYE") // PAYE ou IMPAYE
+  statut       String   @default("IMPAYE")
 
   datePaiement DateTime?
   createdAt    DateTime @default(now())
