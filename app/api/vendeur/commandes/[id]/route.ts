@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { creerNotification } from "@/lib/notifications";
 
 export async function PATCH(
   request: Request,
@@ -43,6 +44,35 @@ export async function PATCH(
       where: { id },
       data: { statut },
     });
+
+    // 🔔 Notification au client (si connu)
+    if (commande.acheteurId) {
+      const numCommande = commande.id.slice(0, 8);
+
+      let titre = "";
+      let message = "";
+
+      if (statut === "PAYE") {
+        titre = "✅ Paiement validé";
+        message = `Votre commande #${numCommande} chez ${vendeur.nomBoutique} a été validée.`;
+      } else if (statut === "PRET") {
+        titre = "🟢 Commande prête";
+        message = `Votre commande #${numCommande} chez ${vendeur.nomBoutique} est prête à être retirée.`;
+      } else if (statut === "ANNULE") {
+        titre = "❌ Commande annulée";
+        message = `Votre commande #${numCommande} chez ${vendeur.nomBoutique} a été annulée.`;
+      }
+
+      if (titre && message) {
+        await creerNotification(
+          commande.acheteurId,
+          `COMMANDE_${statut}`,
+          titre,
+          message,
+          `/client/compte`
+        );
+      }
+    }
 
     return NextResponse.json({ succes: true, commande: commandeModifiee });
   } catch (error) {
