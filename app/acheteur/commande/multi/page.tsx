@@ -38,7 +38,6 @@ function ContenuMulti() {
   const [copie, setCopie] = useState<string | null>(null);
   const [commandesCreees, setCommandesCreees] = useState<string[]>([]);
 
-  // Infos saisies (partagées entre boutiques)
   const [infos, setInfos] = useState({
     nom: "",
     telephone: "",
@@ -46,7 +45,6 @@ function ContenuMulti() {
     mode: "RETRAIT",
   });
 
-  // Référence propre à chaque boutique
   const [reference, setReference] = useState("");
 
   useEffect(() => {
@@ -249,7 +247,6 @@ function ContenuMulti() {
         ← Retour au panier
       </Link>
 
-      {/* Barre de progression */}
       <div style={{
         display: "flex",
         gap: "6px",
@@ -312,7 +309,6 @@ function ContenuMulti() {
       )}
 
       <form onSubmit={soumettre}>
-        {/* Infos : seulement pour la 1ère boutique */}
         {indexActuel === 0 && (
           <>
             <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px" }}>
@@ -409,7 +405,6 @@ function ContenuMulti() {
             </p>
           </div>
         )}
-
         <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px", marginTop: "14px" }}>
           Paiement de l&apos;acompte
         </h2>
@@ -455,7 +450,6 @@ function ContenuMulti() {
             Envoyez l&apos;acompte à <strong>{vendeur?.nomBoutique}</strong> via l&apos;un des numéros ci-dessous.
           </p>
 
-          {/* M-Pesa */}
           {vendeur?.numMpesa && (
             <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center", marginTop: "10px" }}>
               <div style={logoBox}>
@@ -472,7 +466,6 @@ function ContenuMulti() {
             </div>
           )}
 
-          {/* Orange */}
           {vendeur?.numOrange && (
             <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center" }}>
               <div style={logoBox}>
@@ -489,7 +482,6 @@ function ContenuMulti() {
             </div>
           )}
 
-          {/* Airtel */}
           {vendeur?.numAirtel && (
             <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center" }}>
               <div style={logoBox}>
@@ -506,7 +498,6 @@ function ContenuMulti() {
             </div>
           )}
 
-          {/* FALLBACK : numMobileMoney */}
           {aucunNumeroSpecifique && vendeur?.numMobileMoney && (
             <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center", marginTop: "10px" }}>
               <div style={logoBox}>
@@ -587,4 +578,48 @@ function ContenuMulti() {
                 <p style={{ fontSize: "14px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.2 }}>
                   {formaterPrix(groupeActuel.totalFC, "FC")}
                 </p>
-              )
+              )}
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          disabled={envoi}
+          style={{
+            width: "100%",
+            backgroundColor: estDernier ? "#16a34a" : "#1D4ED8",
+            color: "white",
+            padding: "13px",
+            borderRadius: "12px",
+            border: "none",
+            fontWeight: "800",
+            fontSize: "13px",
+            cursor: "pointer",
+            opacity: envoi ? 0.6 : 1,
+          }}
+        >
+          {envoi
+            ? "Envoi..."
+            : estDernier
+            ? "✅ Valider la dernière commande"
+            : "➡️ Valider et passer à la boutique suivante"}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export default function PageMulti() {
+  return (
+    <Suspense
+      fallback={
+        <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
+          <p>Chargement...</p>
+        </div>
+      }
+    >
+      <ContenuMulti />
+    </Suspense>
+  );
+            }
