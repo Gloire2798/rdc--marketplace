@@ -20,6 +20,7 @@ model User {
   commandes      Commande[]
   notifications  Notification[]
   abonnements    Abonnement[]
+  tokensReset    TokenReset[]
 }
 
 // VENDEURS / BOUTIQUES
@@ -184,10 +185,10 @@ model Notification {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  type      String   // COMMANDE_RECUE, COMMANDE_PAYEE, NOUVEAU_PRODUIT...
+  type      String
   titre     String
   message   String
-  lien      String?  // URL à ouvrir au clic
+  lien      String?
   lu        Boolean  @default(false)
 
   createdAt DateTime @default(now())
@@ -196,7 +197,7 @@ model Notification {
   @@index([createdAt])
 }
 
-// ABONNEMENTS (client suit une boutique)
+// ABONNEMENTS
 model Abonnement {
   id        String   @id @default(cuid())
   userId    String
@@ -209,4 +210,21 @@ model Abonnement {
   @@unique([userId, vendeurId])
   @@index([userId])
   @@index([vendeurId])
+}
+
+// TOKENS DE RÉINITIALISATION MOT DE PASSE
+model TokenReset {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  code      String   // Code à 6 chiffres
+  expireAt  DateTime // Expire après 15 minutes
+  utilise   Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([code])
+  @@index([expireAt])
 }
