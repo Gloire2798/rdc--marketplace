@@ -5,11 +5,11 @@ import bcrypt from "bcryptjs";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { nom, telephone, motDePasse } = body;
+    const { nom, telephone, email, motDePasse } = body;
 
     if (!nom || !telephone || !motDePasse) {
       return NextResponse.json(
-        { erreur: "Tous les champs sont obligatoires" },
+        { erreur: "Nom, téléphone et mot de passe sont obligatoires" },
         { status: 400 }
       );
     }
@@ -21,15 +21,32 @@ export async function POST(request: Request) {
       );
     }
 
-    const existant = await prisma.user.findUnique({
+    // Vérifier que le téléphone n'est pas déjà utilisé
+    const existantTel = await prisma.user.findUnique({
       where: { telephone },
     });
 
-    if (existant) {
+    if (existantTel) {
       return NextResponse.json(
-        { erreur: "Ce numéro de téléphone est déjà utilisé" },
+        { erreur: "Ce numéro de téléphone a déjà un compte" },
         { status: 400 }
       );
+    }
+
+    // Vérifier que l'email n'est pas déjà utilisé (si fourni)
+    const emailNettoye = email ? email.trim().toLowerCase() : null;
+
+    if (emailNettoye) {
+      const existantEmail = await prisma.user.findUnique({
+        where: { email: emailNettoye },
+      });
+
+      if (existantEmail) {
+        return NextResponse.json(
+          { erreur: "Cet email a déjà un compte" },
+          { status: 400 }
+        );
+      }
     }
 
     const motDePasseChiffre = await bcrypt.hash(motDePasse, 10);
@@ -38,6 +55,7 @@ export async function POST(request: Request) {
       data: {
         telephone,
         nom,
+        email: emailNettoye,
         role: "ACHETEUR",
         motDePasse: motDePasseChiffre,
       },
