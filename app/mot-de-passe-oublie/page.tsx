@@ -28,7 +28,6 @@ export default function MotDePasseOublie() {
     };
   }, []);
 
-  // ---------- Étape 1 : envoyer le téléphone ----------
   const envoyerTelephone = async (e: React.FormEvent) => {
     e.preventDefault();
     setErreur("");
@@ -64,7 +63,6 @@ export default function MotDePasseOublie() {
     }
   };
 
-  // ---------- Étape 2 : vérifier le code ----------
   const verifierCode = (e: React.FormEvent) => {
     e.preventDefault();
     setErreur("");
@@ -77,7 +75,6 @@ export default function MotDePasseOublie() {
     setEtape("nouveauMdp");
   };
 
-  // ---------- Étape 3 : changer le mot de passe ----------
   const changerMdp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErreur("");
@@ -165,7 +162,6 @@ export default function MotDePasseOublie() {
       flexDirection: "column",
       overflow: "hidden",
     }}>
-      {/* Skyline */}
       <div style={{
         position: "absolute",
         top: 0,
@@ -195,7 +191,6 @@ export default function MotDePasseOublie() {
         </svg>
       </div>
 
-      {/* Header */}
       <div style={{
         display: "flex",
         justifyContent: "space-between",
@@ -217,7 +212,6 @@ export default function MotDePasseOublie() {
         </div>
       </div>
 
-      {/* Carte */}
       <div style={{
         backgroundColor: "white",
         borderTopLeftRadius: "40px",
@@ -285,7 +279,6 @@ export default function MotDePasseOublie() {
           </div>
         )}
 
-        {/* ÉTAPE 1 */}
         {etape === "telephone" && (
           <form onSubmit={envoyerTelephone}>
             <div style={champStyle}>
@@ -309,7 +302,6 @@ export default function MotDePasseOublie() {
           </form>
         )}
 
-        {/* ÉTAPE 2 */}
         {etape === "code" && (
           <form onSubmit={verifierCode}>
             {methode === "email" && (
@@ -381,7 +373,6 @@ export default function MotDePasseOublie() {
           </form>
         )}
 
-        {/* ÉTAPE 3 */}
         {etape === "nouveauMdp" && (
           <form onSubmit={changerMdp}>
             <div style={champStyle}>
@@ -423,7 +414,6 @@ export default function MotDePasseOublie() {
           </form>
         )}
 
-        {/* ÉTAPE 4 */}
         {etape === "succes" && (
           <div style={{ textAlign: "center" }}>
             <div style={{
@@ -445,12 +435,19 @@ export default function MotDePasseOublie() {
               href="/vendeur/connexion"
               style={{
                 display: "block",
-                ...btnStyle,
+                width: "100%",
+                background: "linear-gradient(135deg, #1E3A5F 0%, #0F172A 100%)",
+                color: "white",
+                padding: "10px",
+                borderRadius: "10px",
                 textDecoration: "none",
+                fontWeight: "800",
+                fontSize: "12px",
                 textAlign: "center",
+                boxSizing: "border-box",
               }}
             >
-              Se connecter <ArrowRight size={13} strokeWidth={2.8} />
+              Se connecter
             </Link>
           </div>
         )}
@@ -489,4 +486,4 @@ export default function MotDePasseOublie() {
       </div>
     </div>
   );
-    }
+      }
