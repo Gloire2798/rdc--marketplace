@@ -8,6 +8,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const {
       telephone,
+      email,
       motDePasse,
       nom,
       nomBoutique,
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
       numAirtel,
     } = body;
 
-    if (!telephone || !motDePasse || !nom || !nomBoutique) {
+    if (!telephone || !email || !motDePasse || !nom || !nomBoutique) {
       return NextResponse.json(
         { erreur: "Champs obligatoires manquants" },
         { status: 400 }
@@ -40,13 +41,28 @@ export async function POST(request: Request) {
       );
     }
 
-    const existant = await prisma.user.findUnique({
+    // Vérifier le téléphone
+    const existantTel = await prisma.user.findUnique({
       where: { telephone },
     });
 
-    if (existant) {
+    if (existantTel) {
       return NextResponse.json(
-        { erreur: "Ce numéro de téléphone est déjà utilisé" },
+        { erreur: "Ce numéro de téléphone a déjà un compte" },
+        { status: 400 }
+      );
+    }
+
+    // Vérifier l'email
+    const emailNettoye = email.trim().toLowerCase();
+
+    const existantEmail = await prisma.user.findUnique({
+      where: { email: emailNettoye },
+    });
+
+    if (existantEmail) {
+      return NextResponse.json(
+        { erreur: "Cet email a déjà un compte" },
         { status: 400 }
       );
     }
@@ -56,6 +72,7 @@ export async function POST(request: Request) {
     const user = await prisma.user.create({
       data: {
         telephone,
+        email: emailNettoye,
         nom,
         role: "VENDEUR",
         motDePasse: motDePasseChiffre,
@@ -76,7 +93,7 @@ export async function POST(request: Request) {
       },
     });
 
-    // 🔔 Notification aux admins
+    // Notification aux admins
     await creerNotificationAdmin(
       "NOUVEAU_VENDEUR",
       "🏪 Nouvelle boutique à valider",
@@ -97,4 +114,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-        }
+}
