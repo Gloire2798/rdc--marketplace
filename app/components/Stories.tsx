@@ -19,9 +19,19 @@ export default function Stories({ stories }: { stories: StoryItem[] }) {
         fontWeight: "900",
         color: "#0F172A",
         marginBottom: "10px",
-        letterSpacing: "0.8px",
+        letterSpacing: "1px",
         textTransform: "uppercase",
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
       }}>
+        <span style={{
+          display: "inline-block",
+          width: "3px",
+          height: "14px",
+          backgroundColor: "#EA580C",
+          borderRadius: "2px",
+        }} />
         Stories
       </h2>
 
@@ -52,7 +62,7 @@ export default function Stories({ stories }: { stories: StoryItem[] }) {
               height: "64px",
               borderRadius: "50%",
               padding: "3px",
-              background: "linear-gradient(135deg, #F97316 0%, #EC4899 50%, #8B5CF6 100%)",
+              background: "linear-gradient(135deg, #EA580C 0%, #F59E0B 50%, #0F172A 100%)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -82,8 +92,8 @@ export default function Stories({ stories }: { stories: StoryItem[] }) {
 
             <span style={{
               fontSize: "10px",
-              fontWeight: "700",
-              color: "#334155",
+              fontWeight: "800",
+              color: "#0F172A",
               textAlign: "center",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -97,4 +107,4 @@ export default function Stories({ stories }: { stories: StoryItem[] }) {
       </div>
     </div>
   );
-            }
+}
