@@ -1,28 +1,48 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import CarteBoutique from "@/app/components/CarteBoutique";
 
-export const dynamic = "force-dynamic";
+// ============================================================
+// RÉCUPÉRATION DES BOUTIQUES (avec cache 30 sec)
+// ============================================================
+const getBoutiques = unstable_cache(
+  async () => {
+    const vendeurs = await prisma.vendeur.findMany({
+      where: { actif: true },
+      select: {
+        id: true,
+        nomBoutique: true,
+        description: true,
+        adresse: true,
+        photoCouverture: true,
+        photo2: true,
+        photo3: true,
+        _count: { select: { produits: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return vendeurs.map((v) => ({
+      id: v.id,
+      nomBoutique: v.nomBoutique,
+      description: v.description,
+      adresse: v.adresse,
+      photoCouverture: v.photoCouverture,
+      photo2: v.photo2,
+      photo3: v.photo3,
+      nombreProduits: v._count.produits,
+    }));
+  },
+  ["boutiques-liste"],
+  {
+    revalidate: 30,
+    tags: ["boutiques"],
+  }
+);
 
 export default async function PageBoutiques() {
-  const vendeurs = await prisma.vendeur.findMany({
-    where: { actif: true },
-    include: {
-      _count: { select: { produits: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
-
-  const boutiques = vendeurs.map((v) => ({
-    id: v.id,
-    nomBoutique: v.nomBoutique,
-    description: v.description,
-    adresse: v.adresse,
-    photoCouverture: v.photoCouverture,
-    photo2: v.photo2,
-    photo3: v.photo3,
-    nombreProduits: v._count.produits,
-  }));
+  const boutiques = await getBoutiques();
 
   return (
     <div style={{ backgroundColor: "#FAF5E8", minHeight: "100vh", padding: "18px 14px 20px 14px" }}>
