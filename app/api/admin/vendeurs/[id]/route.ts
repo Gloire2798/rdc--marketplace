@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { revalidateTag } from "next/cache"; // ✅ AJOUT
 
 // PATCH : Modifier une boutique (ex: valider / désactiver)
 export async function PATCH(
@@ -18,7 +19,6 @@ export async function PATCH(
     const body = await request.json();
     const { actif } = body;
 
-    // Récupérer l'état actuel du vendeur
     const vendeurActuel = await prisma.vendeur.findUnique({
       where: { id },
       select: { actif: true, prochaineEcheance: true },
@@ -31,10 +31,8 @@ export async function PATCH(
       );
     }
 
-    // Préparer les données à mettre à jour
     const data: { actif: boolean; prochaineEcheance?: Date } = { actif };
 
-    // Si on valide une boutique qui était inactive → calculer l'échéance
     if (actif === true && vendeurActuel.actif === false) {
       const nouvelleEcheance = new Date();
       nouvelleEcheance.setDate(nouvelleEcheance.getDate() + 30);
@@ -45,6 +43,9 @@ export async function PATCH(
       where: { id },
       data,
     });
+
+    // ✅ AJOUT : Vider le cache de la page d'accueil
+    revalidateTag("accueil");
 
     return NextResponse.json({ succes: true, vendeur });
   } catch (error) {
@@ -141,6 +142,9 @@ export async function DELETE(
       });
     });
 
+    // ✅ AJOUT : Vider le cache de la page d'accueil
+    revalidateTag("accueil");
+
     return NextResponse.json({
       succes: true,
       message: `Boutique "${vendeur.nomBoutique}" supprimée définitivement`,
@@ -152,4 +156,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-}
+                }
