@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Heart } from "lucide-react";
 
@@ -56,25 +56,29 @@ export default function BoutonSuivre({
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: "5px",
-        padding: "6px 12px",
-        borderRadius: "20px",
-        fontSize: "11px",
-        fontWeight: "800",
-        border: suivi ? "1px solid #dc2626" : "1px solid #1D4ED8",
-        backgroundColor: suivi ? "#FEE2E2" : "#EFF6FF",
-        color: suivi ? "#dc2626" : "#1D4ED8",
+        justifyContent: "center",
+        gap: "6px",
+        padding: "10px 18px",
+        borderRadius: "24px",
+        fontSize: "12.5px",
+        fontWeight: "900",
+        border: "none",
+        backgroundColor: suivi ? "#FFFFFF" : "#0F172A",
+        color: suivi ? "#0F172A" : "#FFFFFF",
         cursor: "pointer",
         opacity: chargement ? 0.6 : 1,
-        marginTop: "6px",
+        transition: "transform 0.15s ease, opacity 0.15s ease",
+        boxShadow: suivi ? "inset 0 0 0 2px #0F172A" : "none",
+        fontFamily: "inherit",
       }}
     >
       <Heart
-        size={12}
-        strokeWidth={2.5}
-        fill={suivi ? "#dc2626" : "transparent"}
+        size={14}
+        strokeWidth={2.8}
+        fill={suivi ? "#0F172A" : "white"}
+        color={suivi ? "#0F172A" : "white"}
       />
-      {suivi ? "Suivi ✓" : "Suivre"}
+      {suivi ? "Suivi" : "Suivre"}
     </button>
   );
 }
