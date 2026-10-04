@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
-// PATCH : Modifier une boutique (ex: restaurer / désactiver)
+// PATCH : Modifier une boutique (ex: valider / désactiver)
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -18,9 +18,32 @@ export async function PATCH(
     const body = await request.json();
     const { actif } = body;
 
+    // Récupérer l'état actuel du vendeur
+    const vendeurActuel = await prisma.vendeur.findUnique({
+      where: { id },
+      select: { actif: true, prochaineEcheance: true },
+    });
+
+    if (!vendeurActuel) {
+      return NextResponse.json(
+        { erreur: "Boutique introuvable" },
+        { status: 404 }
+      );
+    }
+
+    // Préparer les données à mettre à jour
+    const data: { actif: boolean; prochaineEcheance?: Date } = { actif };
+
+    // Si on valide une boutique qui était inactive → calculer l'échéance
+    if (actif === true && vendeurActuel.actif === false) {
+      const nouvelleEcheance = new Date();
+      nouvelleEcheance.setDate(nouvelleEcheance.getDate() + 30);
+      data.prochaineEcheance = nouvelleEcheance;
+    }
+
     const vendeur = await prisma.vendeur.update({
       where: { id },
-      data: { actif },
+      data,
     });
 
     return NextResponse.json({ succes: true, vendeur });
@@ -47,7 +70,6 @@ export async function DELETE(
 
     const { id } = await params;
 
-    // Vérifier que la boutique existe
     const vendeur = await prisma.vendeur.findUnique({
       where: { id },
       select: { id: true, nomBoutique: true },
@@ -60,7 +82,6 @@ export async function DELETE(
       );
     }
 
-    // Récupérer les IDs des commandes et produits liés
     const commandes = await prisma.commande.findMany({
       where: { vendeurId: id },
       select: { id: true },
@@ -74,57 +95,47 @@ export async function DELETE(
     const commandeIds = commandes.map((c) => c.id);
     const produitIds = produits.map((p) => p.id);
 
-    // Suppression en cascade manuelle (ordre important)
     await prisma.$transaction(async (tx) => {
-      // 1. Scans QR des commandes
       if (commandeIds.length > 0) {
         await tx.qrScan.deleteMany({
           where: { commandeId: { in: commandeIds } },
         });
       }
 
-      // 2. Paiements des commandes
       if (commandeIds.length > 0) {
         await tx.paiement.deleteMany({
           where: { commandeId: { in: commandeIds } },
         });
       }
 
-      // 3. Lignes de commande
       if (commandeIds.length > 0) {
         await tx.commandeItem.deleteMany({
           where: { commandeId: { in: commandeIds } },
         });
       }
 
-      // 4. Commandes
       await tx.commande.deleteMany({
         where: { vendeurId: id },
       });
 
-      // 5. Paiements finance (loyers, inscriptions)
       await tx.paiementFinance.deleteMany({
         where: { vendeurId: id },
       });
 
-      // 6. Stories
       await tx.story.deleteMany({
         where: { vendeurId: id },
       });
 
-      // 7. Items de commande liés aux produits du vendeur (sécurité)
       if (produitIds.length > 0) {
         await tx.commandeItem.deleteMany({
           where: { produitId: { in: produitIds } },
         });
       }
 
-      // 8. Produits
       await tx.produit.deleteMany({
         where: { vendeurId: id },
       });
 
-      // 9. Vendeur
       await tx.vendeur.delete({
         where: { id },
       });
@@ -141,4 +152,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-        }
+}
