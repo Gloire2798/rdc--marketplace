@@ -1,10 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import LogoBoutique from "@/app/components/LogoBoutique";
 import BoutonSuivre from "@/app/components/BoutonSuivre";
 import { getSession } from "@/lib/auth";
-import { MapPin, ArrowLeft, Package } from "lucide-react";
+import { MapPin, ArrowLeft, Package, Search, ShoppingCart } from "lucide-react";
 
 export default async function PageBoutique({
   params,
@@ -31,7 +30,6 @@ export default async function PageBoutique({
     orderBy: { createdAt: "desc" },
   });
 
-  // Vérifier si le client est déjà abonné
   let suiviInitial = false;
   if (session && session.role === "ACHETEUR") {
     const abonnement = await prisma.abonnement.findUnique({
@@ -55,24 +53,94 @@ export default async function PageBoutique({
     return `${prix.toLocaleString("fr-FR")} FC`;
   };
 
+  // Protection : URL valide uniquement
+  const aUneCouverture =
+    vendeur.photoCouverture &&
+    typeof vendeur.photoCouverture === "string" &&
+    vendeur.photoCouverture.startsWith("http");
+
+  // Initiale de la boutique pour le logo carré
+  const initiale = (vendeur.nomBoutique || "?").trim().charAt(0).toUpperCase();
+
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(180deg, #FFFFFF 0%, #FDF6EC 100%)",
+      backgroundColor: "#FFFFFF",
       paddingBottom: "30px",
     }}>
+      {/* HEADER NAVY */}
+      <div style={{
+        backgroundColor: "#0F172A",
+        padding: "12px 14px",
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
+      }}>
+        <Link
+          href="/"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textDecoration: "none",
+          }}
+        >
+          <ArrowLeft size={20} color="white" strokeWidth={2.5} />
+        </Link>
+
+        <h1 style={{
+          flex: 1,
+          fontSize: "18px",
+          fontWeight: "900",
+          color: "white",
+          letterSpacing: "-0.3px",
+        }}>
+          Boutique
+        </h1>
+
+        <Link
+          href="/recherche"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textDecoration: "none",
+          }}
+        >
+          <Search size={20} color="white" strokeWidth={2.5} />
+        </Link>
+
+        <Link
+          href="/acheteur/panier"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textDecoration: "none",
+          }}
+        >
+          <ShoppingCart size={20} color="white" strokeWidth={2.5} />
+        </Link>
+      </div>
+
       {/* BANNIÈRE COUVERTURE */}
       <div style={{
         position: "relative",
         width: "100%",
-        height: "160px",
+        height: "200px",
         backgroundColor: "#0F172A",
         overflow: "hidden",
       }}>
-        {vendeur.photoCouverture ? (
+        {aUneCouverture ? (
           <img
-            src={vendeur.photoCouverture}
+            src={vendeur.photoCouverture!}
             alt={vendeur.nomBoutique}
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
             style={{
               width: "100%",
               height: "100%",
@@ -83,7 +151,6 @@ export default async function PageBoutique({
           />
         ) : (
           <>
-            {/* Skyline fallback si pas de couverture */}
             <div style={{
               position: "absolute",
               top: "20px",
@@ -98,130 +165,121 @@ export default async function PageBoutique({
             </svg>
           </>
         )}
-
-        {/* Bouton retour par-dessus */}
-        <Link
-          href="/"
-          style={{
-            position: "absolute",
-            top: "12px",
-            left: "12px",
-            backgroundColor: "white",
-            border: "1.5px solid #0F172A",
-            borderRadius: "20px",
-            padding: "6px 10px",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "4px",
-            textDecoration: "none",
-            color: "#0F172A",
-            fontSize: "10.5px",
-            fontWeight: "900",
-            boxShadow: "2px 2px 0 #F59E0B",
-          }}
-        >
-          <ArrowLeft size={12} strokeWidth={3} />
-          Retour
-        </Link>
       </div>
 
-      {/* CARTE IDENTITÉ BOUTIQUE */}
+      {/* CARTE IDENTITÉ — chevauche la bannière */}
       <div style={{
         padding: "0 14px",
-        marginTop: "-40px",
+        marginTop: "-70px",
         position: "relative",
         zIndex: 2,
       }}>
         <div style={{
           backgroundColor: "white",
-          borderTopLeftRadius: "24px",
-          borderTopRightRadius: "10px",
-          borderBottomLeftRadius: "10px",
-          borderBottomRightRadius: "24px",
-          border: "1.5px solid #0F172A",
-          boxShadow: "4px 4px 0 #F59E0B, 0 6px 24px rgba(15, 23, 42, 0.10)",
-          padding: "16px 14px 14px 14px",
+          borderRadius: "24px",
+          boxShadow: "0 8px 24px rgba(15, 23, 42, 0.10)",
+          padding: "18px 16px 16px 16px",
         }}>
-          {/* Logo + nom */}
+          {/* Ligne : Logo carré noir + Nom + Suivre */}
           <div style={{
             display: "flex",
-            alignItems: "flex-start",
+            alignItems: "center",
             gap: "12px",
           }}>
+            {/* Logo carré noir avec initiale */}
             <div style={{
               flexShrink: 0,
-              backgroundColor: "white",
-              borderRadius: "50%",
-              border: "2px solid #0F172A",
-              padding: "3px",
+              width: "52px",
+              height: "52px",
+              backgroundColor: "#0F172A",
+              borderRadius: "14px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}>
-              <LogoBoutique nom={vendeur.nomBoutique} taille={54} />
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <h1 style={{
-                fontSize: "17px",
+              <span style={{
+                fontSize: "26px",
                 fontWeight: "900",
-                color: "#0F172A",
-                marginBottom: "4px",
-                letterSpacing: "-0.4px",
-                lineHeight: 1.15,
+                color: "white",
+                letterSpacing: "-1px",
+                lineHeight: 1,
               }}>
-                {vendeur.nomBoutique}
-              </h1>
+                {initiale}
+              </span>
+            </div>
 
+            <h1 style={{
+              flex: 1,
+              fontSize: "20px",
+              fontWeight: "900",
+              color: "#0F172A",
+              letterSpacing: "-0.5px",
+              lineHeight: 1.1,
+              textTransform: "uppercase",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}>
+              {vendeur.nomBoutique}
+            </h1>
+          </div>
+
+          {/* Bouton Suivre en pill noir plein */}
+          <div style={{ marginTop: "12px" }}>
+            <BoutonSuivre
+              vendeurId={vendeur.id}
+              estConnecte={estConnecte}
+              estClient={estClient}
+              suiviInitial={suiviInitial}
+            />
+          </div>
+
+          {/* Description + adresse */}
+          {(vendeur.adresse || vendeur.description) && (
+            <div style={{
+              marginTop: "14px",
+              paddingTop: "14px",
+              borderTop: "1px solid #F1F5F9",
+            }}>
               {vendeur.adresse && (
                 <p style={{
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "4px",
                   color: "#64748B",
-                  fontSize: "10.5px",
+                  fontSize: "11px",
                   fontWeight: "700",
                   marginBottom: "6px",
                 }}>
-                  <MapPin size={11} strokeWidth={2.5} />
+                  <MapPin size={12} strokeWidth={2.5} />
                   {vendeur.adresse}
                 </p>
               )}
 
-              {/* Bouton suivre */}
-              <div style={{ marginTop: "2px" }}>
-                <BoutonSuivre
-                  vendeurId={vendeur.id}
-                  estConnecte={estConnecte}
-                  estClient={estClient}
-                  suiviInitial={suiviInitial}
-                />
-              </div>
+              {vendeur.description && (
+                <p style={{
+                  color: "#334155",
+                  fontSize: "12.5px",
+                  fontWeight: "500",
+                  lineHeight: 1.55,
+                  whiteSpace: "pre-wrap",
+                }}>
+                  {vendeur.description}
+                </p>
+              )}
             </div>
-          </div>
-
-          {/* Description */}
-          {vendeur.description && (
-            <p style={{
-              color: "#334155",
-              fontSize: "11.5px",
-              fontWeight: "500",
-              lineHeight: 1.5,
-              whiteSpace: "pre-wrap",
-              marginTop: "12px",
-              paddingTop: "12px",
-              borderTop: "1px dashed #E2E8F0",
-            }}>
-              {vendeur.description}
-            </p>
           )}
         </div>
       </div>
 
       {/* SECTION PRODUITS */}
-      <div style={{ padding: "20px 14px 0 14px" }}>
+      <div style={{ padding: "22px 14px 0 14px" }}>
         <h2 style={{
-          fontSize: "12px",
+          fontSize: "14px",
           fontWeight: "900",
           color: "#0F172A",
-          marginBottom: "10px",
-          letterSpacing: "1px",
+          marginBottom: "12px",
+          letterSpacing: "0.8px",
           textTransform: "uppercase",
           display: "flex",
           alignItems: "center",
@@ -230,13 +288,13 @@ export default async function PageBoutique({
           <span style={{
             display: "inline-block",
             width: "3px",
-            height: "14px",
+            height: "16px",
             backgroundColor: "#EA580C",
             borderRadius: "2px",
           }} />
           Nos articles
           <span style={{
-            fontSize: "10px",
+            fontSize: "12px",
             color: "#64748B",
             fontWeight: "700",
             letterSpacing: "0",
@@ -251,9 +309,8 @@ export default async function PageBoutique({
             backgroundColor: "white",
             textAlign: "center",
             padding: "40px 20px",
-            borderRadius: "14px",
-            border: "1.5px solid #0F172A",
-            boxShadow: "3px 3px 0 #F59E0B",
+            borderRadius: "18px",
+            border: "1px solid #E2E8F0",
           }}>
             <Package size={28} color="#94A3B8" strokeWidth={2} style={{ margin: "0 auto 8px" }} />
             <p style={{ fontSize: "13px", fontWeight: "800", marginBottom: "4px", color: "#0F172A" }}>
@@ -281,13 +338,12 @@ export default async function PageBoutique({
                   href={`/acheteur/produit/${p.id}`}
                   style={{
                     backgroundColor: "white",
-                    borderRadius: "10px",
+                    borderRadius: "14px",
                     overflow: "hidden",
                     textDecoration: "none",
                     color: "inherit",
                     position: "relative",
-                    border: "1.5px solid #0F172A",
-                    boxShadow: "2px 2px 0 #F59E0B",
+                    border: "2px solid #0F172A",
                     display: "flex",
                     flexDirection: "column",
                   }}
@@ -295,14 +351,14 @@ export default async function PageBoutique({
                   {enPromo && (
                     <span style={{
                       position: "absolute",
-                      top: "5px",
-                      left: "5px",
-                      backgroundColor: "#DC2626",
+                      top: "6px",
+                      right: "6px",
+                      backgroundColor: "#0F172A",
                       color: "white",
-                      fontSize: "8.5px",
+                      fontSize: "9.5px",
                       fontWeight: "900",
-                      padding: "2px 5px",
-                      borderRadius: "4px",
+                      padding: "3px 8px",
+                      borderRadius: "10px",
                       zIndex: 2,
                       letterSpacing: "0.2px",
                     }}>
@@ -310,24 +366,26 @@ export default async function PageBoutique({
                     </span>
                   )}
 
-                  {p.photo1 ? (
+                  {p.photo1 && p.photo1.startsWith("http") ? (
                     <div style={{
                       width: "100%",
                       aspectRatio: "1 / 1",
-                      backgroundColor: "#FEFCF8",
+                      backgroundColor: "#F8FAFC",
                       overflow: "hidden",
-                      borderBottom: "1px solid #F1ECE0",
                     }}>
                       <img
                         src={p.photo1}
                         alt={p.nom}
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
                         style={{
                           width: "100%",
                           height: "100%",
                           objectFit: "contain",
                           objectPosition: "center",
                           display: "block",
-                          padding: "4px",
+                          padding: "6px",
                           boxSizing: "border-box",
                         }}
                       />
@@ -340,17 +398,22 @@ export default async function PageBoutique({
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      borderBottom: "1px solid #F1ECE0",
                     }}>
                       <Package size={24} color="#CBD5E1" strokeWidth={2} />
                     </div>
                   )}
 
-                  <div style={{ padding: "6px 7px 8px 7px", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  <div style={{
+                    padding: "8px 9px 10px 9px",
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}>
                     <h3 style={{
-                      fontSize: "10.5px",
+                      fontSize: "11.5px",
                       fontWeight: "800",
-                      marginBottom: "4px",
+                      marginBottom: "5px",
                       color: "#0F172A",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -362,15 +425,15 @@ export default async function PageBoutique({
 
                     {enPromo ? (
                       <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
-                        <span style={{ fontSize: "11px", fontWeight: "900", color: "#16A34A", lineHeight: 1.1 }}>
+                        <span style={{ fontSize: "13px", fontWeight: "900", color: "#EA580C", lineHeight: 1.1 }}>
                           {formaterPrix(p.prixPromo!, p.devise)}
                         </span>
-                        <span style={{ fontSize: "8.5px", color: "#94A3B8", textDecoration: "line-through", fontWeight: "700", lineHeight: 1.1 }}>
+                        <span style={{ fontSize: "10px", color: "#94A3B8", textDecoration: "line-through", fontWeight: "700", lineHeight: 1.1 }}>
                           {formaterPrix(p.prix, p.devise)}
                         </span>
                       </div>
                     ) : (
-                      <p style={{ fontSize: "11px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.1 }}>
+                      <p style={{ fontSize: "13px", fontWeight: "900", color: "#EA580C", lineHeight: 1.1 }}>
                         {formaterPrix(p.prix, p.devise)}
                       </p>
                     )}
@@ -383,4 +446,4 @@ export default async function PageBoutique({
       </div>
     </div>
   );
-              }
+      }
