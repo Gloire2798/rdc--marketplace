@@ -8,9 +8,19 @@ export interface ArticlePanier {
   photo: string | null;
   quantite: number;
   nomBoutique: string;
+  // Support des variantes
+  varianteId?: string | null;
+  varianteInfo?: Record<string, string> | null;
 }
 
 const CLE_PANIER = "gk_sensei_panier";
+
+// Clé unique d'un article dans le panier
+// = produitId + varianteId (si existe)
+// → 2 variantes du même produit = 2 lignes différentes
+function cleArticle(a: { produitId: string; varianteId?: string | null }): string {
+  return `${a.produitId}::${a.varianteId || "sans-variante"}`;
+}
 
 export function getPanier(): ArticlePanier[] {
   if (typeof window === "undefined") return [];
@@ -31,24 +41,32 @@ export function sauvegarderPanier(panier: ArticlePanier[]) {
 
 export function ajouterAuPanier(article: Omit<ArticlePanier, "quantite">) {
   const panier = getPanier();
-  const existant = panier.find((a) => a.produitId === article.produitId);
+  const cle = cleArticle(article);
+
+  const existant = panier.find((a) => cleArticle(a) === cle);
 
   if (existant) {
     existant.quantite += 1;
   } else {
-    panier.push({ ...article, quantite: 1 });
+    panier.push({
+      ...article,
+      varianteId: article.varianteId || null,
+      varianteInfo: article.varianteInfo || null,
+      quantite: 1,
+    });
   }
 
   sauvegarderPanier(panier);
 }
 
-export function changerQuantite(produitId: string, quantite: number) {
+export function changerQuantite(produitId: string, quantite: number, varianteId?: string | null) {
   const panier = getPanier();
-  const article = panier.find((a) => a.produitId === produitId);
+  const cle = `${produitId}::${varianteId || "sans-variante"}`;
+  const article = panier.find((a) => cleArticle(a) === cle);
 
   if (article) {
     if (quantite <= 0) {
-      retirerDuPanier(produitId);
+      retirerDuPanier(produitId, varianteId);
       return;
     }
     article.quantite = quantite;
@@ -56,8 +74,9 @@ export function changerQuantite(produitId: string, quantite: number) {
   }
 }
 
-export function retirerDuPanier(produitId: string) {
-  const panier = getPanier().filter((a) => a.produitId !== produitId);
+export function retirerDuPanier(produitId: string, varianteId?: string | null) {
+  const cle = `${produitId}::${varianteId || "sans-variante"}`;
+  const panier = getPanier().filter((a) => cleArticle(a) !== cle);
   sauvegarderPanier(panier);
 }
 
@@ -169,4 +188,12 @@ export function grouperParBoutique(panier: ArticlePanier[]): GroupeBoutique[] {
   });
 
   return resultat;
-                             }
+}
+
+// Afficher le libellé d'une variante (ex: "Noir · M")
+export function formaterVariante(varianteInfo?: Record<string, string> | null): string {
+  if (!varianteInfo) return "";
+  return Object.entries(varianteInfo)
+    .map(([k, v]) => `${v}`)
+    .join(" · ");
+  }
