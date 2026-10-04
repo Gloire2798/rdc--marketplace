@@ -6,39 +6,49 @@ const LOYER_MENSUEL = 15000;
 
 export async function GET(request: Request) {
   try {
-    // Sécurité : vérifier que c'est Vercel Cron (ou toi en test)
+    const { searchParams } = new URL(request.url);
+
+    // ---------- SÉCURITÉ ----------
     const authHeader = request.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
+    const modeTest = searchParams.get("test") === "1";
 
-    // Si un secret est défini en env, on vérifie
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+    if (cronSecret && !modeTest && authHeader !== `Bearer ${cronSecret}`) {
       return NextResponse.json({ erreur: "Non autorisé" }, { status: 401 });
     }
 
-    // Mois actuel au format "2026-10"
-    const maintenant = new Date();
-    const moisActuel = `${maintenant.getFullYear()}-${String(maintenant.getMonth() + 1).padStart(2, "0")}`;
+    // ---------- MOIS À TRAITER ----------
+    let moisActuel: string;
+    const moisParam = searchParams.get("mois");
 
-    // Mois précédent (pour compter les retards)
-    const datePrecedente = new Date(maintenant.getFullYear(), maintenant.getMonth() - 1, 1);
-    const moisPrecedent = `${datePrecedente.getFullYear()}-${String(datePrecedente.getMonth() + 1).padStart(2, "0")}`;
+    if (moisParam && /^\d{4}-\d{2}$/.test(moisParam)) {
+      // Format "2026-09" fourni → utilisé pour test
+      moisActuel = moisParam;
+    } else {
+      // Par défaut : mois précédent (car on paie le 5 pour le mois précédent)
+      const maintenant = new Date();
+      const datePrecedente = new Date(maintenant.getFullYear(), maintenant.getMonth() - 1, 1);
+      moisActuel = `${datePrecedente.getFullYear()}-${String(datePrecedente.getMonth() + 1).padStart(2, "0")}`;
+    }
 
-    // Récupérer tous les vendeurs actifs
+    // Calculer le mois encore avant (pour détecter les 2 mois de retard)
+    const [annee, mois] = moisActuel.split("-").map(Number);
+    const dateAvant = new Date(annee, mois - 2, 1);
+    const moisAvant = `${dateAvant.getFullYear()}-${String(dateAvant.getMonth() + 1).padStart(2, "0")}`;
+
+    // ---------- VENDEURS ----------
     const vendeurs = await prisma.vendeur.findMany({
       where: { actif: true },
-      select: {
-        id: true,
-        nomBoutique: true,
-        userId: true,
-      },
+      select: { id: true, nomBoutique: true, userId: true },
     });
 
     let loyersCrees = 0;
     let notifsEnvoyees = 0;
     let alertesRetard = 0;
+    let vendeursEnRetard: string[] = [];
 
     for (const vendeur of vendeurs) {
-      // 1. Vérifier si la ligne de loyer du mois existe déjà
+      // 1. Vérifier si la ligne existe
       const loyerExistant = await prisma.paiementFinance.findUnique({
         where: {
           vendeurId_type_periode: {
@@ -49,7 +59,7 @@ export async function GET(request: Request) {
         },
       });
 
-      // 2. Si elle n'existe pas, la créer
+      // 2. Créer si manquant
       if (!loyerExistant) {
         await prisma.paiementFinance.create({
           data: {
@@ -62,47 +72,52 @@ export async function GET(request: Request) {
         });
         loyersCrees++;
 
-        // Notifier le vendeur
+        // Notif vendeur
         await creerNotification(
           vendeur.userId,
           "LOYER_A_PAYER",
-          "💰 Loyer du mois à payer",
-          `Votre loyer de ${LOYER_MENSUEL.toLocaleString("fr-FR")} FC pour ${moisActuel} est à régler avant le 15.`,
+          "💰 Loyer à payer",
+          `Votre loyer de ${LOYER_MENSUEL.toLocaleString("fr-FR")} FC (période ${moisActuel}) est à régler avant le 5.`,
           "/vendeur/dashboard"
         );
         notifsEnvoyees++;
       }
 
-      // 3. Vérifier les impayés (mois actuel + mois précédent)
-      const loyerPrecedent = await prisma.paiementFinance.findUnique({
+      // 3. Vérifier 2 mois de retard
+      const loyerAvant = await prisma.paiementFinance.findUnique({
         where: {
           vendeurId_type_periode: {
             vendeurId: vendeur.id,
             type: "LOYER",
-            periode: moisPrecedent,
+            periode: moisAvant,
           },
         },
       });
 
-      const retardActuel = loyerExistant?.statut === "IMPAYE" || !loyerExistant;
-      const retardPrecedent = loyerPrecedent?.statut === "IMPAYE";
+      const loyerActuelImpaye = !loyerExistant || loyerExistant.statut === "IMPAYE";
+      const loyerAvantImpaye = loyerAvant?.statut === "IMPAYE";
 
-      // 4. Si 2 mois impayés → alerte admin
-      if (retardActuel && retardPrecedent) {
-        await creerNotificationAdmin(
-          "LOYER_RETARD_CRITIQUE",
-          "⚠️ Vendeur en retard de 2 mois",
-          `La boutique "${vendeur.nomBoutique}" a 2 loyers impayés (${moisPrecedent} et ${moisActuel}). Suspension à prévoir.`,
-          "/admin/finance"
-        );
+      if (loyerActuelImpaye && loyerAvantImpaye) {
+        vendeursEnRetard.push(vendeur.nomBoutique);
         alertesRetard++;
       }
+    }
+
+    // 4. Alerte globale admin (1 seul message)
+    if (vendeursEnRetard.length > 0) {
+      await creerNotificationAdmin(
+        "LOYER_RETARD_CRITIQUE",
+        "⚠️ Vendeurs en retard de 2 mois",
+        `${vendeursEnRetard.length} boutique(s) ont 2 loyers impayés : ${vendeursEnRetard.join(", ")}. Suspension à prévoir.`,
+        "/admin/finance"
+      );
     }
 
     return NextResponse.json({
       succes: true,
       message: "Cron loyers exécuté",
-      moisActuel,
+      moisTraite: moisActuel,
+      moisPourRetard: moisAvant,
       vendeurs: vendeurs.length,
       loyersCrees,
       notifsEnvoyees,
