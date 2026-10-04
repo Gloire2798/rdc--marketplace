@@ -10,14 +10,14 @@ html, body {
   overflow-x: hidden;
   background-color: #FAF5E8;
   font-family: var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   background-color: #FAF5E8;
   color: #0F172A;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
 }
 
 a {
@@ -66,8 +66,205 @@ input, textarea, select {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+/* ============================================ */
+/* TYPOGRAPHIE GK SENSEI — HIÉRARCHIE CLAIRE    */
+/* ============================================ */
+
+/* Titre principal de page (ex: "Finance", "Mes produits") */
+.gk-titre-page {
+  font-size: 22px;
+  font-weight: 900;
+  color: #0F172A;
+  letter-spacing: -0.4px;
+  line-height: 1.15;
+}
+
+/* Sous-titre de page (ex: "Gérez vos commandes") */
+.gk-sous-titre {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748B;
+  line-height: 1.4;
+}
+
+/* Titre de section (ex: "Nos boutiques", "En attente") */
+.gk-titre-section {
+  font-size: 12px;
+  font-weight: 800;
+  color: #0F172A;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* Titre de carte (ex: "DoDo business", "Lisa Mode") */
+.gk-titre-carte {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.2;
+}
+
+/* Corps de texte */
+.gk-texte {
+  font-size: 12px;
+  font-weight: 500;
+  color: #334155;
+  line-height: 1.5;
+}
+
+/* Texte secondaire (infos) */
+.gk-texte-secondaire {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #64748B;
+  line-height: 1.4;
+}
+
+/* Mention (petit texte gris) */
+.gk-mention {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #94A3B8;
+  line-height: 1.3;
+}
+
+/* Prix principal */
+.gk-prix {
+  font-size: 15px;
+  font-weight: 900;
+  color: #1D4ED8;
+  line-height: 1.1;
+}
+
+/* Prix barré (ancien prix) */
+.gk-prix-barre {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #94A3B8;
+  text-decoration: line-through;
+  line-height: 1.1;
+}
+
+/* Bouton standard */
+.gk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  font-family: inherit;
+}
+
+.gk-btn:active {
+  transform: scale(0.96);
+}
+
+.gk-btn-primaire {
+  background-color: #1D4ED8;
+  color: white;
+}
+
+.gk-btn-danger {
+  background-color: #DC2626;
+  color: white;
+}
+
+.gk-btn-succes {
+  background-color: #16A34A;
+  color: white;
+}
+
+.gk-btn-secondaire {
+  background-color: white;
+  color: #1D4ED8;
+  border: 1.5px solid #1D4ED8;
+}
+
+/* Badge générique */
+.gk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 9.5px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.gk-badge-succes {
+  background-color: #DCFCE7;
+  color: #15803D;
+}
+
+.gk-badge-danger {
+  background-color: #FEE2E2;
+  color: #B91C1C;
+}
+
+.gk-badge-warning {
+  background-color: #FEF3C7;
+  color: #B45309;
+}
+
+.gk-badge-info {
+  background-color: #DBEAFE;
+  color: #1E40AF;
+}
+
+/* Carte */
+.gk-card {
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid #E8DFC8;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgba(120, 100, 60, 0.05);
+}
+
+/* ============================================ */
+/* RESPONSIVE                                   */
+/* ============================================ */
+
 @media (max-width: 768px) {
   body {
     padding-bottom: 80px;
   }
 }
+
+/* ============================================ */
+/* ANIMATIONS                                   */
+/* ============================================ */
+
+@keyframes gk-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gk-anim-apparition {
+  animation: gk-fade-in 0.4s ease-out;
+}
+
+@keyframes gk-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.gk-anim-pulse {
+  animation: gk-pulse 1.5s ease-in-out infinite;
+  }
