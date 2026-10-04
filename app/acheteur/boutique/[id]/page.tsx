@@ -138,9 +138,6 @@ export default async function PageBoutique({
           <img
             src={vendeur.photoCouverture!}
             alt={vendeur.nomBoutique}
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
             style={{
               width: "100%",
               height: "100%",
@@ -180,13 +177,12 @@ export default async function PageBoutique({
           boxShadow: "0 8px 24px rgba(15, 23, 42, 0.10)",
           padding: "18px 16px 16px 16px",
         }}>
-          {/* Ligne : Logo carré noir + Nom + Suivre */}
+          {/* Ligne : Logo carré noir + Nom */}
           <div style={{
             display: "flex",
             alignItems: "center",
             gap: "12px",
           }}>
-            {/* Logo carré noir avec initiale */}
             <div style={{
               flexShrink: 0,
               width: "52px",
@@ -224,7 +220,7 @@ export default async function PageBoutique({
             </h1>
           </div>
 
-          {/* Bouton Suivre en pill noir plein */}
+          {/* Bouton Suivre */}
           <div style={{ marginTop: "12px" }}>
             <BoutonSuivre
               vendeurId={vendeur.id}
@@ -376,9 +372,6 @@ export default async function PageBoutique({
                       <img
                         src={p.photo1}
                         alt={p.nom}
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                        }}
                         style={{
                           width: "100%",
                           height: "100%",
