@@ -7,6 +7,7 @@ import {
   getPanier,
   viderPanier,
   formaterPrix,
+  formaterVariante,
   grouperParBoutique,
   GroupeBoutique,
   ArticlePanier,
@@ -404,8 +405,7 @@ function ContenuMulti() {
               Vos infos sont conservées. Il ne reste que la référence de paiement à saisir.
             </p>
           </div>
-        )}
-        <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px", marginTop: "14px" }}>
+        )}        <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px", marginTop: "14px" }}>
           Paiement de l&apos;acompte
         </h2>
 
@@ -543,19 +543,41 @@ function ContenuMulti() {
         }}>
           {groupeActuel.articles.map((a) => {
             const prixFinal = a.prixPromo !== null ? a.prixPromo : a.prix;
+            const cleLigne = `${a.produitId}::${a.varianteId || "sv"}`;
+            const labelVariante = formaterVariante(a.varianteInfo);
+
             return (
-              <div key={a.produitId} style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginBottom: "5px",
-                fontSize: "11.5px",
+              <div key={cleLigne} style={{
+                marginBottom: "8px",
+                paddingBottom: "8px",
+                borderBottom: "1px dashed #F1ECE0",
               }}>
-                <span style={{ color: "#334155", fontWeight: "600" }}>
-                  {a.nom} × {a.quantite}
-                </span>
-                <span style={{ fontWeight: "700", color: "#0F172A" }}>
-                  {formaterPrix(prixFinal * a.quantite, a.devise)}
-                </span>
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: "11.5px",
+                }}>
+                  <span style={{ color: "#334155", fontWeight: "700" }}>
+                    {a.nom} × {a.quantite}
+                  </span>
+                  <span style={{ fontWeight: "700", color: "#0F172A" }}>
+                    {formaterPrix(prixFinal * a.quantite, a.devise)}
+                  </span>
+                </div>
+                {labelVariante && (
+                  <p style={{
+                    fontSize: "10px",
+                    color: "#1D4ED8",
+                    fontWeight: "700",
+                    backgroundColor: "#EFF6FF",
+                    display: "inline-block",
+                    padding: "2px 7px",
+                    borderRadius: "5px",
+                    marginTop: "3px",
+                  }}>
+                    {labelVariante}
+                  </p>
+                )}
               </div>
             );
           })}
@@ -563,9 +585,7 @@ function ContenuMulti() {
           <div style={{
             display: "flex",
             justifyContent: "space-between",
-            paddingTop: "10px",
-            borderTop: "1px solid #F1ECE0",
-            marginTop: "8px",
+            paddingTop: "6px",
           }}>
             <span style={{ fontWeight: "900", fontSize: "13px", color: "#0F172A" }}>TOTAL</span>
             <div style={{ textAlign: "right" }}>
@@ -622,4 +642,4 @@ export default function PageMulti() {
       <ContenuMulti />
     </Suspense>
   );
-            }
+      }
