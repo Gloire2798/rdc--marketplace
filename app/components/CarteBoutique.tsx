@@ -21,13 +21,13 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
       style={{
         display: "flex",
         backgroundColor: "white",
-        borderRadius: "12px",
+        borderRadius: "14px",
         overflow: "hidden",
         textDecoration: "none",
         color: "inherit",
-        border: "1px solid #E8DFC8",
-        boxShadow: "0 1px 4px rgba(120, 100, 60, 0.06)",
-        marginBottom: "10px",
+        border: "1.5px solid #0F172A",
+        boxShadow: "3px 3px 0 #F59E0B",
+        marginBottom: "12px",
         minHeight: "110px",
       }}
     >
@@ -54,7 +54,7 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
           <div style={{
             width: "100%",
             height: "100%",
-            background: "linear-gradient(135deg, #FAF5E8 0%, #E8DFC8 100%)",
+            background: "linear-gradient(135deg, #0F172A 0%, #1E3A5F 100%)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -65,25 +65,26 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
       </div>
 
       {/* SÉPARATION */}
-      <div style={{ width: "1px", backgroundColor: "#E8DFC8", flexShrink: 0 }} />
+      <div style={{ width: "1.5px", backgroundColor: "#0F172A", flexShrink: 0 }} />
 
       {/* INFOS À DROITE */}
       <div style={{
         flex: 1,
         minWidth: 0,
-        padding: "10px 12px",
+        padding: "12px 12px",
         display: "flex",
         flexDirection: "column",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "5px" }}>
           <LogoBoutique nom={boutique.nomBoutique} taille={24} />
           <h3 style={{
-            fontSize: "13px",
-            fontWeight: "800",
+            fontSize: "14px",
+            fontWeight: "900",
             color: "#0F172A",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
+            letterSpacing: "-0.2px",
           }}>
             {boutique.nomBoutique}
           </h3>
@@ -91,13 +92,13 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
 
         {boutique.adresse && (
           <p style={{
-            fontSize: "10px",
-            color: "#78716C",
-            fontWeight: "600",
+            fontSize: "10.5px",
+            color: "#EA580C",
+            fontWeight: "700",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
-            marginBottom: "3px",
+            marginBottom: "4px",
           }}>
             📍 {boutique.adresse}
           </p>
@@ -105,9 +106,9 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
 
         {boutique.description && (
           <p style={{
-            fontSize: "10.5px",
-            color: "#57534E",
-            fontWeight: "500",
+            fontSize: "11px",
+            color: "#334155",
+            fontWeight: "600",
             overflow: "hidden",
             display: "-webkit-box",
             WebkitLineClamp: 3,
@@ -124,9 +125,10 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
             backgroundColor: "#0F172A",
             color: "white",
             fontSize: "10px",
-            fontWeight: "800",
-            padding: "5px 11px",
+            fontWeight: "900",
+            padding: "5px 12px",
             borderRadius: "20px",
+            letterSpacing: "0.3px",
           }}>
             Voir →
           </span>
@@ -134,4 +136,4 @@ export default function CarteBoutique({ boutique }: { boutique: Boutique }) {
       </div>
     </Link>
   );
-}
+      }
