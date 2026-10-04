@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>GK Sensei — Complexe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #F1F5F9;
+    min-height: 100vh;
+    color: #0F172A;
+    padding-bottom: 100px;
+  }
+
+  /* ---------- EN-TÊTE ---------- */
+  .header {
+    padding: 20px 20px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: #F1F5F9;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .header-title {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: #0F172A;
+  }
+  .header-icons {
+    display: flex;
+    gap: 8px;
+  }
+  .icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: white;
+    border: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    position: relative;
+  }
+  .icon-btn .dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #DC2626;
+    border: 2px solid white;
+  }
+
+  /* ---------- INFO BANNIÈRE ---------- */
+  .info-bar {
+    margin: 0 20px 20px;
+    padding: 12px 16px;
+    background: white;
+    border-radius: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #E2E8F0;
+  }
+  .info-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0F172A;
+  }
+  .info-badge {
+    font-size: 10.5px;
+    font-weight: 800;
+    background: #E0E7FF;
+    color: #4338CA;
+    padding: 5px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ---------- TITRE SECTION ---------- */
+  .section-head {
+    padding: 0 20px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #0F172A;
+  }
+  .section-sub {
+    font-size: 12px;
+    color: #64748B;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .section-count {
+    font-size: 11.5px;
+    font-weight: 800;
+    background: white;
+    color: #0F172A;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid #E2E8F0;
+  }
+
+  /* ---------- CONTENEUR CARTES ---------- */
+  .cartes-wrap {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---------- CARTE ÉTAGE ---------- */
+  .carte {
+    position: relative;
+    background: white;
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 
+      0 1px 3px rgba(15, 23, 42, 0.06),
+      0 8px 20px rgba(15, 23, 42, 0.08);
+    border: 1px solid #E2E8F0;
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: visible;
+  }
+  .carte::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    transform: translateY(8px) scale(0.97);
+    z-index: -1;
+    opacity: 0.6;
+  }
+  .carte::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    transform: translateY(16px) scale(0.94);
+    z-index: -2;
+    opacity: 0.35;
+  }
+
+  /* Couleurs par étage (via data-etage) */
+  .carte[data-couleur="bleu"] { --c: #3B82F6; }
+  .carte[data-couleur="rose"] { --c: #EC4899; }
+  .carte[data-couleur="vert"] { --c: #10B981; }
+  .carte[data-couleur="orange"] { --c: #F59E0B; }
+  .carte[data-couleur="violet"] { --c: #8B5CF6; }
+  .carte[data-couleur="gris"] { --c: #64748B; }
+
+  .carte::before { background: var(--c); opacity: 0.18; }
+  .carte::after { background: var(--c); opacity: 0.10; }
+
+  .carte:active {
+    transform: scale(0.985);
+  }
+
+  /* Ligne de gauche colorée */
+  .carte-ligne {
+    position: absolute;
+    left: 0;
+    top: 18px;
+    bottom: 18px;
+    width: 5px;
+    border-radius: 0 6px 6px 0;
+    background: var(--c);
+  }
+
+  /* En-tête carte */
+  .carte-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .carte-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 4px 9px;
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--c) 15%, white);
+    color: var(--c);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+  .carte-tag {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 9px;
+    border-radius: 20px;
+    background: #F1F5F9;
+    color: #475569;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  /* Corps carte */
+  .carte-body {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .carte-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--c) 12%, white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+    border: 1px solid color-mix(in srgb, var(--c) 20%, white);
+  }
+  .carte-content {
+    flex: 1;
+    min-width: 0;
+  }
+  .carte-title {
+    font-size: 16px;
+    font-weight: 900;
+    color: #0F172A;
+    margin-bottom: 3px;
+    letter-spacing: -0.2px;
+  }
+  .carte-desc {
+    font-size: 12px;
+    color: #64748B;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .carte-chevron {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #F1F5F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #64748B;
+    flex-shrink: 0;
+    font-weight: 900;
+  }
+
+  /* ---------- QUICK ACTIONS ---------- */
+  .quick-title {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 900;
+    color: #0F172A;
+    margin: 24px 0 14px;
+  }
+  .quick-actions {
+    display: flex;
+    gap: 10px;
+    padding: 0 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 8px;
+  }
+  .quick-actions::-webkit-scrollbar { display: none; }
+
+  .quick-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 14px;
+    border: none;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    color: #0F172A;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+  }
+  .quick-btn.bleu { background: #DBEAFE; color: #1E40AF; }
+  .quick-btn.violet { background: #EDE9FE; color: #6D28D9; }
+  .quick-btn.orange { background: #FEF3C7; color: #B45309; }
+
+  /* ---------- NAV BAS ---------- */
+  .nav-bas {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #E2E8F0;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.06);
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 800;
+    color: #94A3B8;
+    cursor: pointer;
+    padding: 4px 12px;
+    border-radius: 10px;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-item.actif { color: #1D4ED8; }
+  .nav-emoji {
+    font-size: 20px;
+    line-height: 1;
+  }
+  .nav-badge {
+    position: absolute;
+    top: 0;
+    right: 6px;
+    background: #DC2626;
+    color: white;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 8px;
+    min-width: 16px;
+    text-align: center;
+  }
+
+  /* ---------- OVERLAY ÉTAGE (détail) ---------- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(6px);
+    z-index: 200;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .overlay.actif { display: flex; }
+
+  .sheet {
+    width: 100%;
+    max-width: 500px;
+    background: #F1F5F9;
+    border-radius: 24px 24px 0 0;
+    padding: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: slideUp 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .sheet-handle {
+    width: 40px;
+    height: 4px;
+    border-radius: 4px;
+    background: #CBD5E1;
+    margin: 0 auto 16px;
+  }
+  .sheet-title {
+    font-size: 20px;
+    font-weight: 900;
+    color: #0F172A;
+    margin-bottom: 4px;
+  }
+  .sheet-sub {
+    font-size: 12px;
+    color: #64748B;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .sheet-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #64748B;
+  }
+
+  .boutique-item {
+    background: white;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #E2E8F0;
+    cursor: pointer;
+  }
+  .boutique-logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: #EFF6FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .boutique-info { flex: 1; min-width: 0; }
+  .boutique-nom {
+    font-size: 14px;
+    font-weight: 900;
+    color: #0F172A;
+    margin-bottom: 2px;
+  }
+  .boutique-desc {
+    font-size: 11px;
+    color: #64748B;
+    font-weight: 600;
+  }
+
+  .vide {
+    text-align: center;
+    padding: 40px 20px;
+    color: #94A3B8;
+    font-size: 13px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<!-- EN-TÊTE -->
+<div class="header">
+  <div class="header-title">Marketplace</div>
+  <div class="header-icons">
+    <div class="icon-btn">🔍</div>
+    <div class="icon-btn">🔔<div class="dot"></div></div>
+    <div class="icon-btn">👤</div>
+  </div>
+</div>
+
+<!-- INFO -->
+<div class="info-bar">
+  <div class="info-text">🏢 Browse Floors</div>
+  <div class="info-badge">2.5D • Layered • Perspective</div>
+</div>
+
+<!-- SECTION TITRE -->
+<div class="section-head">
+  <div>
+    <div class="section-title">Featured Floors</div>
+    <div class="section-sub">Tap a floor to explore products</div>
+  </div>
+  <div class="section-count">All • 6 floors</div>
+</div>
+
+<!-- CARTES -->
+<div class="cartes-wrap" id="cartes">
+
+  <!-- ÉTAGE 4 : TOIT -->
+  <div class="carte" data-couleur="orange" onclick="ouvrir(4)">
+    <div class="carte-ligne"></div>
+    <div class="carte-head">
+      <div class="carte-badge">🌟 Toit-Terrasse</div>
+      <div class="carte-tag">Bientôt</div>
+    </div>
+    <div class="carte-body">
+      <div class="carte-icon">🌿</div>
+      <div class="carte-content">
+        <div class="carte-title">Toit-Terrasse</div>
+        <div class="carte-desc">Lounge & vue sur Kinshasa</div>
+      </div>
+      <div class="carte-chevron">›</div>
+    </div>
+  </div>
+
+  <!-- ÉTAGE 3 : FOOD COURT -->
+  <div class="carte" data-couleur="violet" onclick="ouvrir(3)">
+    <div class="carte-ligne"></div>
+    <div class="carte-head">
+      <div class="carte-badge">🍔 Food Court</div>
+      <div class="carte-tag">Bientôt</div>
+    </div>
+    <div class="carte-body">
+      <div class="carte-icon">🍔</div>
+      <div class="carte-content">
+        <div class="carte-title">Food Court</div>
+        <div class="carte-desc">Burgers • Pizza • Ramen</div>
+      </div>
+      <div class="carte-chevron">›</div>
+    </div>
+  </div>
+
+  <!-- ÉTAGE 3 : ÉLECTRONIQUE -->
+  <div class="carte" data-couleur="bleu" onclick="ouvrir(2)">
+    <div class="carte-ligne"></div>
+    <div class="carte-head">
+      <div class="carte-badge">📱 Électronique</div>
+      <div class="carte-tag">Trending</div>
+    </div>
+    <div class="carte-body">
+      <div class="carte-icon">📱</div>
+      <div class="carte-content">
+        <div class="carte-title">Étage 3 — Électronique</div>
+        <div class="carte-desc">1 boutique • Senseimall</div>
+      </div>
+      <div class="carte-chevron">›</div>
+    </div>
+  </div>
+
+  <!-- ÉTAGE 2 : ACCESSOIRES -->
+  <div class="carte" data-couleur="rose" onclick="ouvrir(1)">
+    <div class="carte-ligne"></div>
+    <div class="carte-head">
+      <div class="carte-badge">👜 Accessoires</div>
+      <div class="carte-tag">Nouveau</div>
+    </div>
+    <div class="carte-body">
+      <div class="carte-icon">👜</div>
+      <div class="carte-content">
+        <div class="carte-title">Étage 2 — Accessoires</div>
+        <div class="carte-desc">2 boutiques • Sacs • Beauté • Bijoux</div>
+      </div>
+      <div class="carte-chevron">›</div>
+    </div>
+  </div>
+
+  <!-- ÉTAGE 1 : MODE -->
+  <div class="carte" data-couleur="vert" onclick="ouvrir(0)">
+    <div class="carte-ligne"></div>
+    <div class="carte-head">
+      <div class="carte-badge">👗 Mode</div>
+      <div class="carte-tag">Best Value</div>
+    </div>
+    <div class="carte-body">
+      <div class="carte-icon">👗</div>
+      <div class="carte-content">
+        <div class="carte-title">Étage 1 — Mode</div>
+        <div class="carte-desc">3 boutiques • Wax • Ankara • Prêt-à-porter</div>
+      </div>
+      <div class="carte-chevron">›</div>
+    </div>
+  </div>
+
+  <!-- RDC : ACCUEIL -->
+  <div class="carte" data-couleur="gris" onclick="ouvrir(5)">
+    <div class="carte-ligne"></div>
+    <div class="carte-head">
+      <div class="carte-badge">🏢 Accueil</div>
+      <div class="carte-tag">Today</div>
+    </div>
+    <div class="carte-body">
+      <div class="carte-icon">🏢</div>
+      <div class="carte-content">
+        <div class="carte-title">Rez-de-Chaussée</div>
+        <div class="carte-desc">Page d'accueil • Stories • Promotions</div>
+      </div>
+      <div class="carte-chevron">›</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- QUICK ACTIONS -->
+<div class="quick-title">Quick Actions</div>
+<div class="quick-actions">
+  <button class="quick-btn bleu">🚚 Deliver Now</button>
+  <button class="quick-btn violet">💎 Deals</button>
+  <button class="quick-btn orange">⭐ Top Rated</button>
+</div>
+
+<!-- NAV BAS -->
+<div class="nav-bas">
+  <div class="nav-item actif">
+    <div class="nav-emoji">🏠</div>
+    Accueil
+  </div>
+  <div class="nav-item">
+    <div class="nav-emoji">🔍</div>
+    Explorer
+  </div>
+  <div class="nav-item">
+    <div class="nav-emoji">🛒</div>
+    <div class="nav-badge">3</div>
+    Panier
+  </div>
+  <div class="nav-item">
+    <div class="nav-emoji">❤️</div>
+    Favoris
+  </div>
+  <div class="nav-item">
+    <div class="nav-emoji">👤</div>
+    Profil
+  </div>
+</div>
+
+<!-- OVERLAY DÉTAIL ÉTAGE -->
+<div class="overlay" id="overlay" onclick="fermer(event)">
+  <div class="sheet" id="sheet" onclick="event.stopPropagation()">
+    <div class="sheet-handle"></div>
+    <button class="sheet-close" onclick="fermer()">✕</button>
+    <div class="sheet-title" id="sheetTitle"></div>
+    <div class="sheet-sub" id="sheetSub"></div>
+    <div id="sheetContent"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DONNÉES DES ÉTAGES
+// ============================================================
+const etages = [
+  {
+    id: 0,
+    titre: "Étage 1 — Mode",
+    emoji: "👗",
+    sous: "3 boutiques • Wax • Ankara • Prêt-à-porter",
+    boutiques: [
+      { emoji: "👕", nom: "Jenny fashion", desc: "Mode tendance" },
+      { emoji: "👔", nom: "Nzam's Mode", desc: "Vêtements & accessoires" },
+      { emoji: "👗", nom: "Lisa Mode", desc: "Élégance au quotidien" },
+    ]
+  },
+  {
+    id: 1,
+    titre: "Étage 2 — Accessoires",
+    emoji: "👜",
+    sous: "2 boutiques • Sacs • Beauté • Bijoux",
+    boutiques: [
+      { emoji: "🏪", nom: "GemySab", desc: "Accessoires femmes" },
+      { emoji: "🎁", nom: "DoDo business", desc: "Articles variés" },
+    ]
+  },
+  {
+    id: 2,
+    titre: "Étage 3 — Électronique",
+    emoji: "📱",
+    sous: "1 boutique • Smartphones • Gadgets",
+    boutiques: [
+      { emoji: "📱", nom: "Senseimall", desc: "Électronique & gadgets" },
+    ]
+  },
+  {
+    id: 3,
+    titre: "Food Court",
+    emoji: "🍔",
+    sous: "Bientôt disponible",
+    boutiques: []
+  },
+  {
+    id: 4,
+    titre: "Toit-Terrasse",
+    emoji: "🌿",
+    sous: "Bientôt disponible",
+    boutiques: []
+  },
+  {
+    id: 5,
+    titre: "Rez-de-Chaussée",
+    emoji: "🏢",
+    sous: "Accueil • Stories • Promotions",
+    boutiques: []
+  }
+];
+
+// ============================================================
+// OUVRIR / FERMER OVERLAY
+// ============================================================
+function ouvrir(id) {
+  const etage = etages.find(e => e.id === id);
+  if (!etage) return;
+
+  document.getElementById("sheetTitle").textContent = etage.emoji + " " + etage.titre;
+  document.getElementById("sheetSub").textContent = etage.sous;
+
+  const content = document.getElementById("sheetContent");
+  if (etage.boutiques.length === 0) {
+    content.innerHTML = `<div class="vide">🚧 Cet étage sera bientôt disponible</div>`;
+  } else {
+    content.innerHTML = etage.boutiques.map(b => `
+      <div class="boutique-item">
+        <div class="boutique-logo">${b.emoji}</div>
+        <div class="boutique-info">
+          <div class="boutique-nom">${b.nom}</div>
+          <div class="boutique-desc">${b.desc}</div>
+        </div>
+        <div style="color:#94A3B8;font-weight:900;">›</div>
+      </div>
+    `).join("");
+  }
+
+  document.getElementById("overlay").classList.add("actif");
+}
+
+function fermer(e) {
+  if (e && e.target && e.target.id !== "overlay") return;
+  document.getElementById("overlay").classList.remove("actif");
+}
+</script>
+</body>
+        </html>
