@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import GaleriePhotos from "./GaleriePhotos";
 import SelecteurVariantes from "./SelecteurVariantes";
+import BoutonPanier from "./BoutonPanier";
 import { ArrowLeft, Store, ChevronRight } from "lucide-react";
 
 export default async function FicheProduit({
@@ -105,7 +106,6 @@ export default async function FicheProduit({
           Produit
         </h1>
 
-        {/* Espace vide pour centrer le titre */}
         <div style={{ width: "36px" }} />
       </div>
 
@@ -127,7 +127,6 @@ export default async function FicheProduit({
           padding: "18px 16px",
           marginBottom: "14px",
         }}>
-          {/* Nom */}
           <h2 style={{
             fontSize: "20px",
             fontWeight: "900",
@@ -139,7 +138,6 @@ export default async function FicheProduit({
             {produit.nom}
           </h2>
 
-          {/* Prix */}
           {enPromo ? (
             <div style={{
               display: "flex",
@@ -240,21 +238,27 @@ export default async function FicheProduit({
           </Link>
         </div>
 
-        {/* SELECTEUR VARIANTES */}
+        {/* BLOC ACHAT : VARIANTES OU SIMPLE */}
         <div style={{
           backgroundColor: "white",
           borderRadius: "24px",
           padding: "18px 16px",
           marginBottom: "14px",
         }}>
-          <SelecteurVariantes
-            article={articleBase}
-            variantes={aVariantes ? variantes : []}
-            devise={produit.devise}
-            prixBase={produit.prix}
-            prixPromoBase={produit.prixPromo}
-            stockSimple={aVariantes ? undefined : produit.stock}
-          />
+          {aVariantes ? (
+            <SelecteurVariantes
+              article={articleBase}
+              variantes={variantes}
+              devise={produit.devise}
+              prixBase={produit.prix}
+              prixPromoBase={produit.prixPromo}
+            />
+          ) : (
+            <BoutonPanier
+              article={articleBase}
+              stock={produit.stock}
+            />
+          )}
         </div>
 
         {/* DESCRIPTION */}
@@ -299,4 +303,4 @@ export default async function FicheProduit({
       </div>
     </div>
   );
-}
+      }
