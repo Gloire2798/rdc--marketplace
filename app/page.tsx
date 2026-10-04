@@ -5,13 +5,12 @@ import CarteBoutique from "./components/CarteBoutique";
 import { MapPin, Clock } from "lucide-react";
 
 // ============================================================
-// FONCTION DE RÉCUPÉRATION (avec cache 30 sec)
+// RÉCUPÉRATION (avec cache 30 sec)
 // ============================================================
 const getDonneesAccueil = unstable_cache(
   async () => {
     const maintenant = new Date();
 
-    // Récupérer les boutiques actives + nombre de produits
     const vendeurs = await prisma.vendeur.findMany({
       where: { actif: true },
       select: {
@@ -27,16 +26,13 @@ const getDonneesAccueil = unstable_cache(
       orderBy: { createdAt: "desc" },
     });
 
-    // Récupérer les stories actives
     const storiesBrutes = await prisma.story.findMany({
       where: { expireAt: { gt: maintenant } },
       select: {
         id: true,
         vendeurId: true,
         photo: true,
-        vendeur: {
-          select: { nomBoutique: true },
-        },
+        vendeur: { select: { nomBoutique: true } },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -44,16 +40,12 @@ const getDonneesAccueil = unstable_cache(
     return { vendeurs, storiesBrutes };
   },
   ["accueil-donnees"],
-  {
-    revalidate: 30,
-    tags: ["accueil"],
-  }
+  { revalidate: 30, tags: ["accueil"] }
 );
 
 export default async function Home() {
   const { vendeurs, storiesBrutes } = await getDonneesAccueil();
 
-  // Grouper les stories par vendeur (une seule par boutique)
   const storiesParVendeur = new Map();
   storiesBrutes.forEach((s) => {
     if (!storiesParVendeur.has(s.vendeurId)) {
@@ -81,12 +73,14 @@ export default async function Home() {
 
   return (
     <div style={{ backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-      {/* BANDEAU BEIGE UNI */}
+      {/* BANDEAU STYLE B */}
       <div style={{
         position: "relative",
         padding: "20px 18px 22px 18px",
-        borderBottom: "1px solid #E8DFC8",
+        background: "linear-gradient(180deg, #FFFFFF 0%, #FEFCF8 100%)",
+        borderBottom: "2px solid #0F172A",
       }}>
+        {/* Bande multi-couleurs (CONSERVÉE) */}
         <div style={{
           position: "absolute",
           top: 0,
@@ -96,38 +90,40 @@ export default async function Home() {
           background: "repeating-linear-gradient(90deg, #F97316 0px, #F97316 20px, #FBBF24 20px, #FBBF24 40px, #16A34A 40px, #16A34A 60px, #1E3A5F 60px, #1E3A5F 80px)",
         }} />
 
+        {/* Pill Kinshasa — bleu marine */}
         <div style={{
           display: "inline-flex",
           alignItems: "center",
           gap: "6px",
-          backgroundColor: "white",
-          padding: "4px 10px",
+          backgroundColor: "#0F172A",
+          padding: "5px 12px",
           borderRadius: "20px",
           fontSize: "9.5px",
           fontWeight: "800",
-          color: "#57534E",
+          color: "white",
           marginBottom: "12px",
-          border: "1px solid #E8DFC8",
+          letterSpacing: "0.5px",
         }}>
           <MapPin size={10} strokeWidth={2.5} />
-          Kinshasa
-          <span style={{ color: "#CBD5E1" }}>•</span>
+          KINSHASA
+          <span style={{ color: "#475569" }}>·</span>
           <Clock size={10} strokeWidth={2.5} />
-          Ouvert 24h/24
+          24H/24
         </div>
 
+        {/* Titre — plus gros */}
         <h1 style={{
-          fontSize: "22px",
+          fontSize: "26px",
           fontWeight: "900",
           color: "#0F172A",
-          lineHeight: 1.1,
-          letterSpacing: "-0.4px",
-          marginBottom: "6px",
+          lineHeight: 1.05,
+          letterSpacing: "-0.8px",
+          marginBottom: "8px",
           textTransform: "uppercase",
         }}>
           Le Guide du{" "}
           <span style={{
-            background: "linear-gradient(90deg, #F97316 0%, #EA580C 100%)",
+            background: "linear-gradient(90deg, #EA580C 0%, #F59E0B 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
@@ -137,25 +133,36 @@ export default async function Home() {
         </h1>
 
         <p style={{
-          fontSize: "11px",
-          fontWeight: "600",
-          color: "#57534E",
+          fontSize: "12px",
+          fontWeight: "700",
+          color: "#334155",
         }}>
           Découvre. Explore. Shop en ligne.
         </p>
       </div>
 
-      <div style={{ padding: "14px 14px 20px 14px" }}>
+      <div style={{ padding: "16px 14px 20px 14px" }}>
         <Stories stories={stories} />
 
+        {/* Titre section avec trait orange */}
         <h2 style={{
-          fontSize: "11px",
+          fontSize: "12px",
           fontWeight: "900",
           color: "#0F172A",
-          marginBottom: "8px",
-          letterSpacing: "0.8px",
+          marginBottom: "10px",
+          letterSpacing: "1px",
           textTransform: "uppercase",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
         }}>
+          <span style={{
+            display: "inline-block",
+            width: "3px",
+            height: "14px",
+            backgroundColor: "#EA580C",
+            borderRadius: "2px",
+          }} />
           Nos boutiques
         </h2>
 
@@ -164,13 +171,14 @@ export default async function Home() {
             backgroundColor: "white",
             textAlign: "center",
             padding: "40px 20px",
-            borderRadius: "12px",
-            border: "1px solid #E8DFC8",
+            borderRadius: "14px",
+            border: "1.5px solid #0F172A",
+            boxShadow: "3px 3px 0 #F59E0B",
           }}>
-            <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "6px" }}>
+            <p style={{ fontSize: "13px", fontWeight: "800", marginBottom: "6px", color: "#0F172A" }}>
               Aucune boutique pour le moment
             </p>
-            <p style={{ color: "#78716C", fontSize: "11px" }}>
+            <p style={{ color: "#64748B", fontSize: "11px", fontWeight: "600" }}>
               Les boutiques apparaîtront ici dès qu&apos;elles seront validées.
             </p>
           </div>
@@ -184,4 +192,4 @@ export default async function Home() {
       </div>
     </div>
   );
-                           }
+    }
