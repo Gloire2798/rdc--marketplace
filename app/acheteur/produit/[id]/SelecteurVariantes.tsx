@@ -99,11 +99,6 @@ export default function SelecteurVariantes({
   const enRupture = toutSelectionne && stockActuel === 0;
   const nonSelectionne = aVariantes && !toutSelectionne;
 
-  const formaterPrix = (prix: number, devise: string) => {
-    if (devise === "USD") return `${prix.toFixed(2)} $`;
-    return `${prix.toLocaleString("fr-FR")} FC`;
-  };
-
   const ajouter = () => {
     setErreur("");
 
@@ -134,21 +129,28 @@ export default function SelecteurVariantes({
 
   return (
     <div>
+      {/* ATTRIBUTS */}
       {aVariantes && (
-        <div style={{ marginBottom: "14px" }}>
+        <div style={{ marginBottom: "18px" }}>
           {listeAttributs.map((attr) => (
-            <div key={attr.nom} style={{ marginBottom: "12px" }}>
+            <div key={attr.nom} style={{ marginBottom: "14px" }}>
               <p style={{
-                fontSize: "11px",
-                fontWeight: "800",
+                fontSize: "12px",
+                fontWeight: "900",
                 color: "#334155",
-                marginBottom: "6px",
+                marginBottom: "8px",
                 textTransform: "uppercase",
-                letterSpacing: "0.3px",
+                letterSpacing: "0.8px",
+                textAlign: "center",
               }}>
                 {attr.nom}
               </p>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+              <div style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "8px",
+                justifyContent: "center",
+              }}>
                 {attr.valeurs.map((valeur) => {
                   const actif = selection[attr.nom] === valeur;
                   const dispo = valeurDisponible(attr.nom, valeur);
@@ -162,27 +164,20 @@ export default function SelecteurVariantes({
                       }}
                       disabled={!dispo}
                       style={{
-                        padding: "7px 14px",
-                        borderRadius: "10px",
-                        fontSize: "12px",
-                        fontWeight: "700",
-                        border: actif
-                          ? "2px solid #1D4ED8"
-                          : "1px solid #E5E0D5",
-                        backgroundColor: actif
-                          ? "#EFF6FF"
-                          : dispo
-                          ? "white"
-                          : "#F8FAFC",
-                        color: actif
-                          ? "#1D4ED8"
-                          : dispo
-                          ? "#0F172A"
-                          : "#CBD5E1",
+                        minWidth: "90px",
+                        padding: "8px 18px",
+                        borderRadius: "22px",
+                        fontSize: "13px",
+                        fontWeight: "800",
+                        border: "2px solid #0F172A",
+                        backgroundColor: actif ? "#0F172A" : "white",
+                        color: actif ? "white" : "#0F172A",
                         cursor: dispo ? "pointer" : "not-allowed",
                         textDecoration: dispo ? "none" : "line-through",
-                        opacity: dispo ? 1 : 0.6,
-                        position: "relative",
+                        opacity: dispo ? 1 : 0.4,
+                        boxShadow: actif ? "3px 3px 0 #EA580C" : "none",
+                        transition: "all 0.15s ease",
+                        fontFamily: "inherit",
                       }}
                     >
                       {valeur}
@@ -195,78 +190,83 @@ export default function SelecteurVariantes({
         </div>
       )}
 
+      {/* STATUT STOCK */}
       <p style={{
-        fontSize: "11px",
-        color: nonSelectionne ? "#64748b" : enRupture ? "#dc2626" : "#16a34a",
-        fontWeight: "700",
-        marginBottom: "12px",
+        fontSize: "11.5px",
+        color: nonSelectionne ? "#64748B" : enRupture ? "#DC2626" : "#16A34A",
+        fontWeight: "800",
+        marginBottom: "14px",
+        textAlign: "center",
       }}>
         {nonSelectionne
-          ? "👆 Choisissez les options"
+          ? "Choisissez les options ci-dessus"
           : enRupture
-          ? "❌ Rupture de stock"
-          : `✅ En stock (${stockActuel})`}
+          ? "Rupture de stock pour cette combinaison"
+          : `En stock (${stockActuel} disponible${stockActuel > 1 ? "s" : ""})`}
       </p>
 
+      {/* BOUTON AJOUTER */}
       <button
         onClick={ajouter}
         disabled={enRupture || nonSelectionne}
         style={{
           width: "100%",
-          backgroundColor: enRupture
-            ? "#9ca3af"
-            : nonSelectionne
-            ? "#94a3b8"
-            : ajoute
-            ? "#16a34a"
-            : "#1D4ED8",
+          backgroundColor:
+            enRupture || nonSelectionne
+              ? "#94A3B8"
+              : ajoute
+              ? "#16A34A"
+              : "#0F172A",
           color: "white",
-          padding: "10px 14px",
-          borderRadius: "10px",
+          padding: "16px 20px",
+          borderRadius: "26px",
           border: "none",
-          fontWeight: "800",
-          fontSize: "13px",
+          fontWeight: "900",
+          fontSize: "15px",
           cursor: enRupture || nonSelectionne ? "not-allowed" : "pointer",
-          transition: "background-color 0.3s",
+          transition: "background-color 0.25s",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          gap: "6px",
+          gap: "8px",
+          letterSpacing: "-0.2px",
+          fontFamily: "inherit",
         }}
       >
         {nonSelectionne ? (
           "Choisissez les options"
         ) : enRupture ? (
-          "❌ Rupture de stock"
+          "Rupture de stock"
         ) : ajoute ? (
           <>
-            <Check size={16} strokeWidth={3} />
-            Ajouté au panier !
+            <Check size={18} strokeWidth={3} />
+            Ajouté au panier
           </>
         ) : (
           <>
-            <ShoppingCart size={16} strokeWidth={2.8} />
+            <ShoppingCart size={18} strokeWidth={2.8} />
             Ajouter au panier
           </>
         )}
       </button>
 
+      {/* ERREUR */}
       {erreur && (
         <p style={{
-          color: "#dc2626",
+          color: "#DC2626",
           fontSize: "11px",
-          marginTop: "6px",
+          marginTop: "10px",
           textAlign: "center",
-          fontWeight: "600",
+          fontWeight: "700",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           gap: "4px",
         }}>
-          <AlertCircle size={12} />
+          <AlertCircle size={13} />
           {erreur}
         </p>
       )}
     </div>
   );
-      }
+              }
