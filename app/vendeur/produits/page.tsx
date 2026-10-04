@@ -112,8 +112,8 @@ export default async function MesProduits() {
       ) : (
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: "6px",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: "8px",
         }}>
           {produits.map((p) => {
             const enPromo = p.prixPromo !== null && p.prixPromo < p.prix;
@@ -126,7 +126,7 @@ export default async function MesProduits() {
                 {/* Carte produit */}
                 <div style={{
                   backgroundColor: "white",
-                  borderRadius: "8px",
+                  borderRadius: "10px",
                   overflow: "hidden",
                   border: "1px solid #E8DFC8",
                   boxShadow: "0 1px 2px rgba(120, 100, 60, 0.05)",
@@ -138,14 +138,14 @@ export default async function MesProduits() {
                   {enPromo && (
                     <span style={{
                       position: "absolute",
-                      top: "3px",
-                      left: "3px",
+                      top: "4px",
+                      left: "4px",
                       backgroundColor: "#dc2626",
                       color: "white",
-                      fontSize: "8px",
+                      fontSize: "8.5px",
                       fontWeight: "800",
-                      padding: "1px 4px",
-                      borderRadius: "3px",
+                      padding: "2px 5px",
+                      borderRadius: "4px",
                       zIndex: 2,
                     }}>
                       -{pourcentage}%
@@ -156,7 +156,7 @@ export default async function MesProduits() {
                   {p.photo1 ? (
                     <div style={{
                       width: "100%",
-                      height: "80px",
+                      height: "100px",
                       backgroundColor: "#F8FAFC",
                       overflow: "hidden",
                     }}>
@@ -174,21 +174,21 @@ export default async function MesProduits() {
                   ) : (
                     <div style={{
                       width: "100%",
-                      height: "80px",
+                      height: "100px",
                       backgroundColor: "#F8FAFC",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "20px",
+                      fontSize: "24px",
                     }}>
                       📦
                     </div>
                   )}
 
                   {/* Contenu */}
-                  <div style={{ padding: "5px 6px 6px 6px", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  <div style={{ padding: "6px 7px 7px 7px", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                     <h3 style={{
-                      fontSize: "9.5px",
+                      fontSize: "10.5px",
                       fontWeight: "700",
                       marginBottom: "3px",
                       color: "#0F172A",
@@ -202,26 +202,26 @@ export default async function MesProduits() {
 
                     {enPromo ? (
                       <div style={{ display: "flex", flexDirection: "column", gap: "0px" }}>
-                        <span style={{ fontSize: "10px", fontWeight: "800", color: "#16a34a", lineHeight: 1.1 }}>
+                        <span style={{ fontSize: "11px", fontWeight: "800", color: "#16a34a", lineHeight: 1.1 }}>
                           {formaterPrix(p.prixPromo!, p.devise)}
                         </span>
-                        <span style={{ fontSize: "8px", color: "#94a3b8", textDecoration: "line-through", lineHeight: 1.1 }}>
+                        <span style={{ fontSize: "8.5px", color: "#94a3b8", textDecoration: "line-through", lineHeight: 1.1 }}>
                           {formaterPrix(p.prix, p.devise)}
                         </span>
                       </div>
                     ) : (
-                      <p style={{ fontSize: "10px", fontWeight: "800", color: "#1D4ED8", lineHeight: 1.1 }}>
+                      <p style={{ fontSize: "11px", fontWeight: "800", color: "#1D4ED8", lineHeight: 1.1 }}>
                         {formaterPrix(p.prix, p.devise)}
                       </p>
                     )}
 
                     <p style={{
-                      fontSize: "8.5px",
+                      fontSize: "9px",
                       color: p.stock > 0 ? "#16a34a" : "#dc2626",
                       fontWeight: "700",
                       marginTop: "3px",
                     }}>
-                      {p.stock > 0 ? `✅ ${p.stock}` : "❌"}
+                      {p.stock > 0 ? `✅ ${p.stock} en stock` : "❌ Rupture"}
                     </p>
                   </div>
                 </div>
@@ -234,17 +234,17 @@ export default async function MesProduits() {
                     alignItems: "center",
                     justifyContent: "center",
                     gap: "3px",
-                    marginTop: "3px",
-                    padding: "5px 4px",
+                    marginTop: "4px",
+                    padding: "6px 4px",
                     backgroundColor: "#1D4ED8",
                     color: "white",
-                    borderRadius: "6px",
+                    borderRadius: "7px",
                     textDecoration: "none",
-                    fontSize: "9.5px",
+                    fontSize: "10px",
                     fontWeight: "800",
                   }}
                 >
-                  <Pencil size={9} strokeWidth={2.5} />
+                  <Pencil size={10} strokeWidth={2.5} />
                   Modifier
                 </Link>
               </div>
@@ -254,4 +254,4 @@ export default async function MesProduits() {
       )}
     </div>
   );
-                               }
+              }
