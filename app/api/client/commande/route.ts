@@ -6,6 +6,15 @@ import {
   creerNotificationAdmin,
 } from "@/lib/notifications";
 
+interface ArticleInput {
+  produitId: string;
+  quantite: number;
+  prix: number;
+  prixPromo: number | null;
+  varianteId?: string | null;
+  varianteInfo?: Record<string, string> | null;
+}
+
 export async function POST(request: Request) {
   try {
     const session = await getSession();
@@ -43,6 +52,7 @@ export async function POST(request: Request) {
       );
     }
 
+    // Récupérer ou créer l'acheteur
     let acheteurId: string | null = null;
 
     if (session && session.role === "ACHETEUR") {
@@ -66,8 +76,34 @@ export async function POST(request: Request) {
       }
     }
 
+    // Vérifier les stocks avant de créer la commande
+    for (const a of articles as ArticleInput[]) {
+      if (a.varianteId) {
+        const variante = await prisma.variante.findUnique({
+          where: { id: a.varianteId },
+        });
+        if (!variante || variante.stock < a.quantite) {
+          return NextResponse.json(
+            { erreur: "Stock insuffisant pour un article. Veuillez réessayer." },
+            { status: 400 }
+          );
+        }
+      } else {
+        const produit = await prisma.produit.findUnique({
+          where: { id: a.produitId },
+        });
+        if (!produit || produit.stock < a.quantite) {
+          return NextResponse.json(
+            { erreur: "Stock insuffisant pour un article. Veuillez réessayer." },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
     const totalCombine = (totalFC || 0) + (totalUSD || 0);
 
+    // Créer la commande
     const commande = await prisma.commande.create({
       data: {
         groupeId: groupeId || null,
@@ -82,15 +118,11 @@ export async function POST(request: Request) {
         statut: "EN_ATTENTE",
         methodePaiement: "MOBILE_MONEY",
         items: {
-          create: articles.map((a: {
-            produitId: string;
-            quantite: number;
-            prix: number;
-            prixPromo: number | null;
-          }) => ({
+          create: (articles as ArticleInput[]).map((a) => ({
             produitId: a.produitId,
             quantite: a.quantite,
             prixUnitaire: a.prixPromo !== null ? a.prixPromo : a.prix,
+            varianteInfo: a.varianteInfo ? JSON.stringify(a.varianteInfo) : null,
           })),
         },
         paiement: {
@@ -107,9 +139,34 @@ export async function POST(request: Request) {
       },
     });
 
+    // Décrémenter les stocks
+    for (const a of articles as ArticleInput[]) {
+      if (a.varianteId) {
+        await prisma.variante.update({
+          where: { id: a.varianteId },
+          data: { stock: { decrement: a.quantite } },
+        });
+
+        // Mettre à jour le stock total du produit
+        const variantesProduit = await prisma.variante.findMany({
+          where: { produitId: a.produitId },
+        });
+        const nouveauStock = variantesProduit.reduce((sum, v) => sum + v.stock, 0);
+        await prisma.produit.update({
+          where: { id: a.produitId },
+          data: { stock: Math.max(0, nouveauStock) },
+        });
+      } else {
+        await prisma.produit.update({
+          where: { id: a.produitId },
+          data: { stock: { decrement: a.quantite } },
+        });
+      }
+    }
+
     const numCommande = commande.id.slice(0, 8);
 
-    // 🔔 Notification au vendeur
+    // Notification au vendeur
     await creerNotificationVendeur(
       vendeurId,
       "COMMANDE_RECUE",
@@ -118,7 +175,7 @@ export async function POST(request: Request) {
       "/vendeur/commandes"
     );
 
-    // 🔔 Notification aux admins
+    // Notification aux admins
     await creerNotificationAdmin(
       "COMMANDE_PASSEE",
       "📦 Nouvelle commande",
@@ -138,4 +195,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-      }
+          }
