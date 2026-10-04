@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>GK Sensei — Building Navigator</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(180deg, #EFF6FF 0%, #F1F5F9 100%);
+    min-height: 100vh;
+    color: #0F172A;
+    padding-bottom: 100px;
+  }
+
+  /* ---------- EN-TÊTE ---------- */
+  .header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #EFF6FF;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .back-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: white;
+    border: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 900;
+  }
+  .header-title {
+    flex: 1;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: #0F172A;
+  }
+  .search-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: white;
+    border: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  /* ---------- INFO BAR ---------- */
+  .info-banner {
+    margin: 0 20px 12px;
+    padding: 10px 16px;
+    background: #DBEAFE;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1E40AF;
+  }
+
+  /* ---------- SEARCH BAR ---------- */
+  .search-bar {
+    margin: 0 20px 16px;
+    padding: 12px 16px;
+    background: white;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  }
+  .search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    font-family: inherit;
+    color: #0F172A;
+    font-weight: 600;
+    background: transparent;
+  }
+  .search-input::placeholder { color: #94A3B8; }
+
+  /* ---------- LAYOUT PRINCIPAL ---------- */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 90px;
+    gap: 12px;
+    padding: 0 20px;
+  }
+
+  /* ---------- COLONNE GAUCHE : CONTENU ÉTAGE ---------- */
+  .contenu-etage {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .etage-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+    margin-bottom: 4px;
+  }
+  .etage-header-icon {
+    font-size: 20px;
+  }
+  .etage-header-text {
+    flex: 1;
+    min-width: 0;
+  }
+  .etage-header-titre {
+    font-size: 13px;
+    font-weight: 900;
+    color: #0F172A;
+  }
+  .etage-header-sub {
+    font-size: 10.5px;
+    color: #64748B;
+    font-weight: 600;
+  }
+  .etage-header-badge {
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: #DCFCE7;
+    color: #15803D;
+    text-transform: uppercase;
+  }
+
+  /* ---------- CARTES ÉTAGE ADJACENTS (mini) ---------- */
+  .etage-mini {
+    background: white;
+    border-radius: 14px;
+    padding: 12px;
+    border: 1px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.85;
+    transition: all 0.3s ease;
+  }
+  .etage-mini .mini-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    background: #F1F5F9;
+    flex-shrink: 0;
+  }
+  .etage-mini .mini-text {
+    flex: 1;
+    min-width: 0;
+  }
+  .etage-mini .mini-titre {
+    font-size: 12.5px;
+    font-weight: 900;
+    color: #0F172A;
+    margin-bottom: 1px;
+  }
+  .etage-mini .mini-sub {
+    font-size: 10px;
+    color: #64748B;
+    font-weight: 600;
+  }
+  .etage-mini .mini-count {
+    font-size: 10px;
+    font-weight: 800;
+    color: #64748B;
+    background: #F1F5F9;
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+
+  /* ---------- CARTE ACTIVE (plus grande) ---------- */
+  .etage-actif {
+    background: white;
+    border-radius: 16px;
+    padding: 14px;
+    border: 2px solid #1D4ED8;
+    box-shadow: 0 8px 24px rgba(29, 78, 216, 0.15);
+    position: relative;
+  }
+  .etage-actif::before {
+    content: 'ACTIVE';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 9px;
+    font-weight: 900;
+    background: #DCFCE7;
+    color: #15803D;
+    padding: 3px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  .etage-actif-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #F1F5F9;
+    padding-right: 70px;
+  }
+  .etage-actif-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: #EFF6FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .etage-actif-titre {
+    font-size: 15px;
+    font-weight: 900;
+    color: #0F172A;
+    margin-bottom: 1px;
+  }
+  .etage-actif-sub {
+    font-size: 11px;
+    color: #64748B;
+    font-weight: 600;
+  }
+
+  .boutiques-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .boutique-carte {
+    background: #F8FAFC;
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    border: 1px solid #F1F5F9;
+  }
+  .boutique-carte:active { transform: scale(0.98); }
+  .boutique-carte .b-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    border: 1px solid #E2E8F0;
+  }
+  .boutique-carte .b-info { flex: 1; min-width: 0; }
+  .boutique-carte .b-nom {
+    font-size: 13px;
+    font-weight: 900;
+    color: #0F172A;
+    margin-bottom: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .boutique-carte .b-desc {
+    font-size: 10.5px;
+    color: #64748B;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .boutique-carte .b-chev {
+    color: #94A3B8;
+    font-size: 14px;
+    font-weight: 900;
+  }
+
+  .vide-etage {
+    text-align: center;
+    padding: 30px 20px;
+    color: #94A3B8;
+    font-size: 12px;
+    font-weight: 700;
+    background: #F8FAFC;
+    border-radius: 12px;
+  }
+
+  /* ---------- COLONNE DROITE : ASCENSEUR ---------- */
+  .ascenseur {
+    background: white;
+    border-radius: 16px;
+    padding: 14px 10px;
+    border: 1px solid #E2E8F0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 100px;
+    align-self: start;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  }
+  .asc-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #F1F5F9;
+    width: 100%;
+  }
+  .asc-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #DBEAFE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .asc-label {
+    font-size: 9px;
+    font-weight: 900;
+    color: #64748B;
+    letter-spacing: 0.5px;
+  }
+
+  /* ---------- ÉTAGES DANS L'ASCENSEUR ---------- */
+  .asc-etages {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    position: relative;
+    padding: 8px 0;
+  }
+  .asc-ligne {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #E2E8F0;
+    transform: translateX(-50%);
+    z-index: 0;
+  }
+  .asc-etage-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: white;
+    border: 1.5px solid #E2E8F0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 900;
+    color: #64748B;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    z-index: 1;
+    margin: 0 auto;
+  }
+  .asc-etage-btn:active { transform: scale(0.9); }
+  .asc-etage-btn.actif {
+    background: #1D4ED8;
+    border-color: #1D4ED8;
+    color: white;
+    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.4);
+    transform: scale(1.1);
+  }
+
+  /* Badge "you are here" */
+  .asc-you {
+    font-size: 8px;
+    font-weight: 900;
+    color: #1D4ED8;
+    background: #DBEAFE;
+    padding: 2px 6px;
+    border-radius: 20px;
+    text-align: center;
+    width: 100%;
+    letter-spacing: 0.3px;
+  }
+
+  /* ---------- BOUTONS HAUT/BAS ---------- */
+  .asc-boutons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    padding-top: 8px;
+    border-top: 1px solid #F1F5F9;
+  }
+  .asc-btn {
+    width: 100%;
+    height: 40px;
+    border-radius: 12px;
+    background: #F1F5F9;
+    border: none;
+    font-size: 18px;
+    font-weight: 900;
+    color: #0F172A;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .asc-btn:active { transform: scale(0.94); background: #1D4ED8; color: white; }
+  .asc-btn:disabled { opacity: 0.3; }
+
+  .asc-footer {
+    font-size: 8.5px;
+    font-weight: 800;
+    color: #64748B;
+    text-align: center;
+    padding-top: 4px;
+    background: #F1F5F9;
+    width: 100%;
+    padding: 6px;
+    border-radius: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ---------- NAV BAS ---------- */
+  .nav-bas {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #E2E8F0;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.06);
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 800;
+    color: #94A3B8;
+    cursor: pointer;
+    padding: 4px 12px;
+    border-radius: 10px;
+    position: relative;
+  }
+  .nav-item.actif { color: #1D4ED8; }
+  .nav-emoji {
+    font-size: 20px;
+    line-height: 1;
+  }
+  .nav-badge {
+    position: absolute;
+    top: 0;
+    right: 6px;
+    background: #DC2626;
+    color: white;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 8px;
+    min-width: 16px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="back-btn">←</div>
+  <div class="header-title">Building Navigator</div>
+  <div class="search-btn">🔍</div>
+</div>
+
+<!-- INFO -->
+<div class="info-banner">
+  ℹ️ GK Sensei Complexe • Ouvert 24h/24
+</div>
+
+<!-- SEARCH -->
+<div class="search-bar">
+  <span>🔍</span>
+  <input class="search-input" type="text" placeholder="Search stores, products, floors...">
+  <span style="color:#94A3B8;font-weight:900;">⚙️</span>
+</div>
+
+<!-- MAIN : contenu + ascenseur -->
+<div class="main">
+  
+  <!-- CONTENU ÉTAGE ACTUEL -->
+  <div class="contenu-etage" id="contenu">
+    <!-- Rempli en JS -->
+  </div>
+
+  <!-- ASCENSEUR -->
+  <div class="ascenseur">
+    <div class="asc-header">
+      <div class="asc-icon">🛗</div>
+      <div class="asc-label">ELEVATOR</div>
+    </div>
+
+    <div class="asc-etages" id="ascEtages">
+      <div class="asc-ligne"></div>
+      <!-- Rempli en JS -->
+    </div>
+
+    <div class="asc-boutons">
+      <button class="asc-btn" id="btnUp">↑</button>
+      <button class="asc-btn" id="btnDown">↓</button>
+    </div>
+
+    <div class="asc-footer" id="ascFooter">Niveau 1</div>
+  </div>
+
+</div>
+
+<!-- NAV BAS -->
+<div class="nav-bas">
+  <div class="nav-item actif">
+    <div class="nav-emoji">🏠</div>
+    Accueil
+  </div>
+  <div class="nav-item">
+    <div class="nav-emoji">🔍</div>
+    Explorer
+  </div>
+  <div class="nav-item">
+    <div class="nav-emoji">🛒</div>
+    <div class="nav-badge">3</div>
+    Panier
+  </div>
+  <div class="nav-item">
+    <div class="nav-emoji">❤️</div>
+    Favoris
+  </div>
+  <div class="nav-item">
+    <div class="nav-emoji">👤</div>
+    Profil
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DONNÉES DES ÉTAGES (du haut vers le bas)
+// ============================================================
+const etages = [
+  {
+    id: 5,
+    code: "5F",
+    titre: "Toit-Terrasse",
+    emoji: "🌟",
+    sous: "Lounge & vue sur Kinshasa",
+    couleur: "#F59E0B",
+    boutiques: []
+  },
+  {
+    id: 4,
+    code: "4F",
+    titre: "Food Court",
+    emoji: "🍔",
+    sous: "Burgers • Pizza • Ramen",
+    couleur: "#8B5CF6",
+    boutiques: []
+  },
+  {
+    id: 3,
+    code: "3F",
+    titre: "Électronique",
+    emoji: "📱",
+    sous: "Smartphones • Gadgets • Accessoires",
+    couleur: "#3B82F6",
+    boutiques: [
+      { emoji: "📱", nom: "Senseimall", desc: "Électronique & gadgets" }
+    ]
+  },
+  {
+    id: 2,
+    code: "2F",
+    titre: "Accessoires",
+    emoji: "👜",
+    sous: "Sacs • Beauté • Bijoux",
+    couleur: "#EC4899",
+    boutiques: [
+      { emoji: "🏪", nom: "GemySab", desc: "Accessoires femmes" },
+      { emoji: "🎁", nom: "DoDo business", desc: "Articles variés" }
+    ]
+  },
+  {
+    id: 1,
+    code: "1F",
+    titre: "Mode",
+    emoji: "👗",
+    sous: "Wax • Ankara • Prêt-à-porter",
+    couleur: "#10B981",
+    boutiques: [
+      { emoji: "👕", nom: "Jenny fashion", desc: "Mode tendance" },
+      { emoji: "👔", nom: "Nzam's Mode", desc: "Vêtements & accessoires" },
+      { emoji: "👗", nom: "Lisa Mode", desc: "Élégance au quotidien" }
+    ]
+  },
+  {
+    id: 0,
+    code: "RDC",
+    titre: "Rez-de-Chaussée",
+    emoji: "🏢",
+    sous: "Accueil • Stories • Promotions",
+    couleur: "#64748B",
+    boutiques: []
+  }
+];
+
+let niveauActuel = 1; // On démarre à l'Étage 1 (Mode)
+
+// ============================================================
+// AFFICHAGE DU CONTENU
+// ============================================================
+function afficherContenu() {
+  const contenu = document.getElementById("contenu");
+  const indexActuel = etages.findIndex(e => e.id === niveauActuel);
+  
+  // Étage au-dessus (si existe)
+  const auDessus = indexActuel > 0 ? etages[indexActuel - 1] : null;
+  // Étage en-dessous (si existe)
+  const enDessous = indexActuel < etages.length - 1 ? etages[indexActuel + 1] : null;
+  // Étage actuel
+  const actif = etages[indexActuel];
+
+  let html = "";
+
+  // Étage au-dessus (mini)
+  if (auDessus) {
+    html += `
+      <div class="etage-mini" onclick="allerA(${auDessus.id})">
+        <div class="mini-icon" style="background: ${auDessus.couleur}22; color: ${auDessus.couleur}">
+          ${auDessus.emoji}
+        </div>
+        <div class="mini-text">
+          <div class="mini-titre">${auDessus.code} • ${auDessus.titre}</div>
+          <div class="mini-sub">${auDessus.sous}</div>
+        </div>
+        <div class="mini-count">${auDessus.boutiques.length}</div>
+      </div>
+    `;
+  }
+
+  // Étage ACTIF (grand)
+  html += `
+    <div class="etage-actif">
+      <div class="etage-actif-head">
+        <div class="etage-actif-icon" style="background: ${actif.couleur}22; color: ${actif.couleur}">
+          ${actif.emoji}
+        </div>
+        <div>
+          <div class="etage-actif-titre">${actif.code} • ${actif.titre}</div>
+          <div class="etage-actif-sub">${actif.sous}</div>
+        </div>
+      </div>
+      <div class="boutiques-list">
+        ${actif.boutiques.length === 0 
+          ? `<div class="vide-etage">🚧 Cet étage sera bientôt disponible</div>`
+          : actif.boutiques.map(b => `
+            <div class="boutique-carte">
+              <div class="b-logo">${b.emoji}</div>
+              <div class="b-info">
+                <div class="b-nom">${b.nom}</div>
+                <div class="b-desc">${b.desc}</div>
+              </div>
+              <div class="b-chev">›</div>
+            </div>
+          `).join("")
+        }
+      </div>
+    </div>
+  `;
+
+  // Étage en-dessous (mini)
+  if (enDessous) {
+    html += `
+      <div class="etage-mini" onclick="allerA(${enDessous.id})">
+        <div class="mini-icon" style="background: ${enDessous.couleur}22; color: ${enDessous.couleur}">
+          ${enDessous.emoji}
+        </div>
+        <div class="mini-text">
+          <div class="mini-titre">${enDessous.code} • ${enDessous.titre}</div>
+          <div class="mini-sub">${enDessous.sous}</div>
+        </div>
+        <div class="mini-count">${enDessous.boutiques.length}</div>
+      </div>
+    `;
+  }
+
+  contenu.innerHTML = html;
+}
+
+// ============================================================
+// AFFICHAGE DE L'ASCENSEUR
+// ============================================================
+function afficherAscenseur() {
+  const asc = document.getElementById("ascEtages");
+  
+  asc.innerHTML = '<div class="asc-ligne"></div>' + etages.map(e => `
+    <button class="asc-etage-btn ${e.id === niveauActuel ? "actif" : ""}" 
+            onclick="allerA(${e.id})">
+      ${e.code}
+    </button>
+    ${e.id === niveauActuel ? '<div class="asc-you">YOU ARE HERE</div>' : ''}
+  `).join("");
+
+  // Footer
+  document.getElementById("ascFooter").textContent = `Niveau ${niveauActuel}`;
+
+  // Boutons haut/bas
+  const indexActuel = etages.findIndex(e => e.id === niveauActuel);
+  document.getElementById("btnUp").disabled = indexActuel === 0;
+  document.getElementById("btnDown").disabled = indexActuel === etages.length - 1;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function allerA(id) {
+  if (id === niveauActuel) return;
+  niveauActuel = id;
+  rafraichir();
+}
+
+function monter() {
+  const indexActuel = etages.findIndex(e => e.id === niveauActuel);
+  if (indexActuel > 0) {
+    niveauActuel = etages[indexActuel - 1].id;
+    rafraichir();
+  }
+}
+
+function descendre() {
+  const indexActuel = etages.findIndex(e => e.id === niveauActuel);
+  if (indexActuel < etages.length - 1) {
+    niveauActuel = etages[indexActuel + 1].id;
+    rafraichir();
+  }
+}
+
+function rafraichir() {
+  afficherContenu();
+  afficherAscenseur();
+}
+
+// ============================================================
+// ÉVÉNEMENTS
+// ============================================================
+document.getElementById("btnUp").addEventListener("click", monter);
+document.getElementById("btnDown").addEventListener("click", descendre);
+
+// Support swipe vertical
+let touchStartY = 0;
+document.addEventListener("touchstart", (e) => {
+  touchStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener("touchend", (e) => {
+  const diff = touchStartY - e.changedTouches[0].clientY;
+  if (Math.abs(diff) > 80) {
+    if (diff > 0) monter();
+    else descendre();
+  }
+}, { passive: true });
+
+// ============================================================
+// INITIALISATION
+// ============================================================
+rafraichir();
+</script>
+</body>
+</html>
