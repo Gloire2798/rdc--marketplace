@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Store, TrendingUp, User, LogOut } from "lucide-react";
+import { Home, Store, TrendingUp, LogOut } from "lucide-react";
 
 const onglets = [
   { href: "/admin/dashboard", label: "Accueil", Icon: Home },
   { href: "/admin/boutiques", label: "Boutiques", Icon: Store },
   { href: "/admin/ventes", label: "Ventes", Icon: TrendingUp },
-  { href: "/admin/profil", label: "Profil", Icon: User },
   { href: "/deconnexion", label: "Quitter", Icon: LogOut },
 ];
 
@@ -75,4 +74,4 @@ export default function NavigationBas() {
       })}
     </nav>
   );
-              }
+}
