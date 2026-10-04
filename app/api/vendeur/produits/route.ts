@@ -3,15 +3,19 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { creerNotificationAbonnes } from "@/lib/notifications";
 
+interface VarianteInput {
+  attributs: Record<string, string>;  // { "Taille": "M", "Couleur": "Noir" }
+  stock: number;
+  prix?: number | null;
+  prixPromo?: number | null;
+}
+
 export async function POST(request: Request) {
   try {
     const session = await getSession();
 
     if (!session || session.role !== "VENDEUR") {
-      return NextResponse.json(
-        { erreur: "Non autorisé" },
-        { status: 403 }
-      );
+      return NextResponse.json({ erreur: "Non autorisé" }, { status: 403 });
     }
 
     const vendeur = await prisma.vendeur.findUnique({
@@ -19,10 +23,7 @@ export async function POST(request: Request) {
     });
 
     if (!vendeur) {
-      return NextResponse.json(
-        { erreur: "Boutique introuvable" },
-        { status: 404 }
-      );
+      return NextResponse.json({ erreur: "Boutique introuvable" }, { status: 404 });
     }
 
     if (!vendeur.actif) {
@@ -33,11 +34,22 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { nom, description, prix, prixPromo, devise, stock, photo1, photo2, photo3 } = body;
+    const {
+      nom,
+      description,
+      prix,
+      prixPromo,
+      devise,
+      stock,
+      photo1,
+      photo2,
+      photo3,
+      variantes,
+    } = body;
 
-    if (!nom || prix === undefined || stock === undefined) {
+    if (!nom || prix === undefined) {
       return NextResponse.json(
-        { erreur: "Nom, prix et stock sont obligatoires" },
+        { erreur: "Nom et prix sont obligatoires" },
         { status: 400 }
       );
     }
@@ -49,9 +61,9 @@ export async function POST(request: Request) {
       );
     }
 
-    if (prix < 0 || stock < 0) {
+    if (prix < 0) {
       return NextResponse.json(
-        { erreur: "Le prix et le stock doivent être positifs" },
+        { erreur: "Le prix doit être positif" },
         { status: 400 }
       );
     }
@@ -68,6 +80,41 @@ export async function POST(request: Request) {
       prixPromoFinal = promo;
     }
 
+    // Vérifier les variantes si présentes
+    const aVariantes = Array.isArray(variantes) && variantes.length > 0;
+
+    if (aVariantes) {
+      // Validation des variantes
+      for (const v of variantes as VarianteInput[]) {
+        if (!v.attributs || typeof v.attributs !== "object" || Object.keys(v.attributs).length === 0) {
+          return NextResponse.json(
+            { erreur: "Chaque variante doit avoir des attributs" },
+            { status: 400 }
+          );
+        }
+        if (typeof v.stock !== "number" || v.stock < 0) {
+          return NextResponse.json(
+            { erreur: "Le stock des variantes doit être un nombre positif" },
+            { status: 400 }
+          );
+        }
+      }
+    } else {
+      // Pas de variantes → stock global obligatoire
+      if (stock === undefined || stock < 0) {
+        return NextResponse.json(
+          { erreur: "Le stock est obligatoire" },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Calculer le stock total
+    const stockTotal = aVariantes
+      ? (variantes as VarianteInput[]).reduce((sum, v) => sum + v.stock, 0)
+      : parseInt(stock);
+
+    // Créer le produit
     const produit = await prisma.produit.create({
       data: {
         vendeurId: vendeur.id,
@@ -76,15 +123,28 @@ export async function POST(request: Request) {
         prix: parseFloat(prix),
         prixPromo: prixPromoFinal,
         devise: devise || "FC",
-        stock: parseInt(stock),
+        stock: stockTotal,
         photo1,
         photo2: photo2 || null,
         photo3: photo3 || null,
         actif: true,
+        variantes: aVariantes
+          ? {
+              create: (variantes as VarianteInput[]).map((v) => ({
+                attributs: JSON.stringify(v.attributs),
+                stock: v.stock,
+                prix: v.prix || null,
+                prixPromo: v.prixPromo || null,
+              })),
+            }
+          : undefined,
+      },
+      include: {
+        variantes: true,
       },
     });
 
-    // 🔔 Notifier tous les abonnés de la boutique
+    // Notification aux abonnés
     await creerNotificationAbonnes(
       vendeur.id,
       "NOUVEAU_PRODUIT",
@@ -101,4 +161,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-      }
+}
