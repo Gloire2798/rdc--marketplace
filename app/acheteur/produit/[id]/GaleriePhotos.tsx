@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Package } from "lucide-react";
 
 export default function GaleriePhotos({
   photos,
@@ -16,88 +17,99 @@ export default function GaleriePhotos({
       <div
         style={{
           width: "100%",
-          height: "180px",
-          backgroundColor: "#F1F5F9",
+          aspectRatio: "1 / 1",
+          backgroundColor: "#F8FAFC",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: "40px",
-          borderRadius: "12px",
+          borderRadius: "20px",
+          border: "2px solid #0F172A",
+          boxShadow: "6px 6px 0 #EA580C",
         }}
       >
-        📦
+        <Package size={56} color="#CBD5E1" strokeWidth={1.8} />
       </div>
     );
   }
 
   return (
     <div>
-      {/* Grande photo — s'adapte à la taille réelle, sans fond blanc */}
+      {/* GRANDE PHOTO — bord noir + ombre orange */}
       <div
         style={{
+          position: "relative",
           width: "100%",
-          borderRadius: "12px",
+          aspectRatio: "1 / 1",
+          backgroundColor: "white",
+          borderRadius: "20px",
+          border: "2px solid #0F172A",
           overflow: "hidden",
-          marginBottom: "8px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#FFFFFF",
-          minHeight: "140px",
-          maxHeight: "280px",
+          marginBottom: "12px",
         }}
       >
         <img
           src={photos[photoActive]}
           alt={nomProduit}
           style={{
-            maxWidth: "100%",
-            maxHeight: "280px",
-            width: "auto",
-            height: "auto",
+            width: "100%",
+            height: "100%",
             objectFit: "contain",
+            objectPosition: "center",
             display: "block",
+            padding: "8px",
+            boxSizing: "border-box",
           }}
         />
       </div>
 
-      {/* Miniatures */}
+      {/* MINIATURES */}
       {photos.length > 1 && (
         <div
           style={{
             display: "flex",
-            gap: "6px",
+            gap: "10px",
             justifyContent: "center",
             flexWrap: "wrap",
           }}
         >
-          {photos.map((photo, index) => (
-            <button
-              key={index}
-              onClick={() => setPhotoActive(index)}
-              style={{
-                width: "50px",
-                height: "50px",
-                borderRadius: "8px",
-                border: photoActive === index ? "2px solid #1D4ED8" : "1px solid #E8DFC8",
-                padding: "2px",
-                backgroundColor: "white",
-                cursor: "pointer",
-                overflow: "hidden",
-              }}
-            >
-              <img
-                src={photo}
-                alt={`Photo ${index + 1}`}
+          {photos.map((photo, index) => {
+            const active = photoActive === index;
+            return (
+              <button
+                key={index}
+                onClick={() => setPhotoActive(index)}
                 style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  borderRadius: "6px",
+                  width: "64px",
+                  height: "64px",
+                  borderRadius: "12px",
+                  border: active ? "2px solid #0F172A" : "2px solid #E5E5E5",
+                  padding: "2px",
+                  backgroundColor: "white",
+                  cursor: "pointer",
+                  overflow: "hidden",
+                  boxShadow: active ? "3px 3px 0 #EA580C" : "none",
+                  transition: "box-shadow 0.15s ease, border 0.15s ease",
                 }}
-              />
-            </button>
-          ))}
+              >
+                <img
+                  src={photo}
+                  alt={`Photo ${index + 1}`}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    borderRadius: "8px",
+                    display: "block",
+                    padding: "2px",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
