@@ -8,6 +8,7 @@ import {
   retirerDuPanier,
   viderPanier,
   formaterPrix,
+  formaterVariante,
   ArticlePanier,
 } from "@/lib/panier";
 
@@ -28,14 +29,14 @@ export default function PagePanier() {
     };
   }, []);
 
-  const modifier = (produitId: string, nouvelleQuantite: number) => {
-    changerQuantite(produitId, nouvelleQuantite);
+  const modifier = (produitId: string, nouvelleQuantite: number, varianteId?: string | null) => {
+    changerQuantite(produitId, nouvelleQuantite, varianteId);
     chargerPanier();
   };
 
-  const supprimer = (produitId: string) => {
+  const supprimer = (produitId: string, varianteId?: string | null) => {
     if (confirm("Retirer cet article du panier ?")) {
-      retirerDuPanier(produitId);
+      retirerDuPanier(produitId, varianteId);
       chargerPanier();
     }
   };
@@ -47,7 +48,6 @@ export default function PagePanier() {
     }
   };
 
-  // Totaux séparés par devise
   let totalFC = 0;
   let totalUSD = 0;
   let originalFC = 0;
@@ -124,14 +124,15 @@ export default function PagePanier() {
         {panier.length} article{panier.length > 1 ? "s" : ""}
       </p>
 
-      {/* Liste articles */}
       <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
         {panier.map((article) => {
           const enPromo = article.prixPromo !== null && article.prixPromo < article.prix;
           const prixFinal = enPromo ? article.prixPromo! : article.prix;
+          const cleLigne = `${article.produitId}::${article.varianteId || "sv"}`;
+          const labelVariante = formaterVariante(article.varianteInfo);
 
           return (
-            <div key={article.produitId} style={{
+            <div key={cleLigne} style={{
               backgroundColor: "white",
               borderRadius: "12px",
               padding: "10px",
@@ -172,6 +173,22 @@ export default function PagePanier() {
                 <h3 style={{ fontSize: "13px", fontWeight: "800", marginBottom: "2px", color: "#0F172A" }}>
                   {article.nom}
                 </h3>
+
+                {labelVariante && (
+                  <p style={{
+                    fontSize: "10.5px",
+                    color: "#1D4ED8",
+                    marginBottom: "2px",
+                    fontWeight: "700",
+                    backgroundColor: "#EFF6FF",
+                    display: "inline-block",
+                    padding: "2px 8px",
+                    borderRadius: "6px",
+                  }}>
+                    {labelVariante}
+                  </p>
+                )}
+
                 <p style={{ fontSize: "10.5px", color: "#78716C", marginBottom: "6px", fontWeight: "600" }}>
                   🏪 {article.nomBoutique}
                 </p>
@@ -193,7 +210,7 @@ export default function PagePanier() {
 
                 <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                   <button
-                    onClick={() => modifier(article.produitId, article.quantite - 1)}
+                    onClick={() => modifier(article.produitId, article.quantite - 1, article.varianteId)}
                     style={{
                       width: "26px",
                       height: "26px",
@@ -211,7 +228,7 @@ export default function PagePanier() {
                     {article.quantite}
                   </span>
                   <button
-                    onClick={() => modifier(article.produitId, article.quantite + 1)}
+                    onClick={() => modifier(article.produitId, article.quantite + 1, article.varianteId)}
                     style={{
                       width: "26px",
                       height: "26px",
@@ -226,7 +243,7 @@ export default function PagePanier() {
                     +
                   </button>
                   <button
-                    onClick={() => supprimer(article.produitId)}
+                    onClick={() => supprimer(article.produitId, article.varianteId)}
                     style={{
                       marginLeft: "auto",
                       padding: "4px 8px",
@@ -248,7 +265,6 @@ export default function PagePanier() {
         })}
       </div>
 
-      {/* Récapitulatif séparé par devise */}
       <div style={{
         backgroundColor: "white",
         borderRadius: "12px",
