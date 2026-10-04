@@ -2,6 +2,14 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 
+interface VarianteInput {
+  attributs: Record<string, string>;
+  stock: number;
+  prix?: number | null;
+  prixPromo?: number | null;
+}
+
+// GET : récupérer un produit
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -25,6 +33,7 @@ export async function GET(
 
     const produit = await prisma.produit.findUnique({
       where: { id },
+      include: { variantes: true },
     });
 
     if (!produit || produit.vendeurId !== vendeur.id) {
@@ -38,6 +47,7 @@ export async function GET(
   }
 }
 
+// PATCH : modifier un produit
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -68,11 +78,22 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { nom, description, prix, prixPromo, devise, stock, photo1, photo2, photo3 } = body;
+    const {
+      nom,
+      description,
+      prix,
+      prixPromo,
+      devise,
+      stock,
+      photo1,
+      photo2,
+      photo3,
+      variantes,
+    } = body;
 
-    if (!nom || prix === undefined || stock === undefined) {
+    if (!nom || prix === undefined) {
       return NextResponse.json(
-        { erreur: "Nom, prix et stock sont obligatoires" },
+        { erreur: "Nom et prix sont obligatoires" },
         { status: 400 }
       );
     }
@@ -96,6 +117,30 @@ export async function PATCH(
       prixPromoFinal = promo;
     }
 
+    const aVariantes = Array.isArray(variantes) && variantes.length > 0;
+
+    if (aVariantes) {
+      for (const v of variantes as VarianteInput[]) {
+        if (!v.attributs || typeof v.attributs !== "object" || Object.keys(v.attributs).length === 0) {
+          return NextResponse.json(
+            { erreur: "Chaque variante doit avoir des attributs" },
+            { status: 400 }
+          );
+        }
+        if (typeof v.stock !== "number" || v.stock < 0) {
+          return NextResponse.json(
+            { erreur: "Le stock des variantes doit être un nombre positif" },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
+    const stockTotal = aVariantes
+      ? (variantes as VarianteInput[]).reduce((sum, v) => sum + v.stock, 0)
+      : parseInt(stock || "0");
+
+    // Mettre à jour le produit
     const produitModifie = await prisma.produit.update({
       where: { id },
       data: {
@@ -104,12 +149,34 @@ export async function PATCH(
         prix: parseFloat(prix),
         prixPromo: prixPromoFinal,
         devise: devise || "FC",
-        stock: parseInt(stock),
+        stock: stockTotal,
         photo1,
         photo2: photo2 || null,
         photo3: photo3 || null,
       },
     });
+
+    // Supprimer les anciennes variantes et recréer
+    if (aVariantes) {
+      await prisma.variante.deleteMany({
+        where: { produitId: id },
+      });
+
+      await prisma.variante.createMany({
+        data: (variantes as VarianteInput[]).map((v) => ({
+          produitId: id,
+          attributs: JSON.stringify(v.attributs),
+          stock: v.stock,
+          prix: v.prix || null,
+          prixPromo: v.prixPromo || null,
+        })),
+      });
+    } else {
+      // Si plus de variantes → supprimer toutes les anciennes
+      await prisma.variante.deleteMany({
+        where: { produitId: id },
+      });
+    }
 
     return NextResponse.json({ succes: true, produit: produitModifie });
   } catch (error) {
@@ -118,6 +185,7 @@ export async function PATCH(
   }
 }
 
+// DELETE : supprimer un produit
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -147,6 +215,12 @@ export async function DELETE(
       return NextResponse.json({ erreur: "Produit introuvable" }, { status: 404 });
     }
 
+    // Supprimer les variantes d'abord
+    await prisma.variante.deleteMany({
+      where: { produitId: id },
+    });
+
+    // Puis le produit
     await prisma.produit.delete({
       where: { id },
     });
@@ -156,4 +230,4 @@ export async function DELETE(
     console.error("Erreur DELETE produit:", error);
     return NextResponse.json({ erreur: "Erreur serveur" }, { status: 500 });
   }
-}
+        }
