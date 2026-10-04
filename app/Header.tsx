@@ -41,7 +41,8 @@ export default function Header() {
     pathname === "/vendeur/inscription" ||
     pathname === "/client/inscription" ||
     pathname === "/compte" ||
-    pathname === "/mot-de-passe-oublie";
+    pathname === "/mot-de-passe-oublie" ||
+    pathname.startsWith("/acheteur/boutique/");
 
   if (pageSansHeader) return null;
 
@@ -245,4 +246,4 @@ export default function Header() {
       </div>
     </header>
   );
-            }
+                  }
