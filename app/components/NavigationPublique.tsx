@@ -15,7 +15,6 @@ export default function NavigationPublique() {
   const pathname = usePathname();
   const [user, setUser] = useState<InfosUser | null>(null);
 
-  // Recharger à chaque changement de page
   useEffect(() => {
     fetch("/api/auth/moi")
       .then((res) => res.json())
@@ -29,7 +28,6 @@ export default function NavigationPublique() {
       .catch(() => setUser(null));
   }, [pathname]);
 
-  // Ne pas afficher sur les pages admin, vendeur et client
   if (
     pathname.startsWith("/admin") ||
     pathname.startsWith("/vendeur") ||
@@ -63,13 +61,13 @@ export default function NavigationPublique() {
       bottom: 0,
       left: 0,
       right: 0,
-      backgroundColor: "white",
-      borderTop: "1px solid #E8DFC8",
+      backgroundColor: "#0F172A",
+      borderTop: "3px solid #EA580C",
       display: "flex",
       justifyContent: "space-around",
-      padding: "6px 0 8px 0",
+      padding: "8px 0 10px 0",
       zIndex: 100,
-      boxShadow: "0 -2px 8px rgba(120, 100, 60, 0.08)",
+      boxShadow: "0 -4px 16px rgba(15, 23, 42, 0.2)",
     }}>
       {onglets.map((onglet) => {
         const actif = pathname === onglet.href;
@@ -84,37 +82,38 @@ export default function NavigationPublique() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: "2px",
+              gap: "3px",
               textDecoration: "none",
               color: estDeconnexion
-                ? "#dc2626"
+                ? "#F87171"
                 : actif
-                ? "#F97316"
-                : "#94a3b8",
-              fontSize: "9px",
-              fontWeight: actif || estDeconnexion ? "800" : "600",
+                ? "#F59E0B"
+                : "#94A3B8",
+              fontSize: "9.5px",
+              fontWeight: actif || estDeconnexion ? "900" : "700",
               padding: "3px 6px",
               position: "relative",
               flex: 1,
+              letterSpacing: "0.2px",
             }}
           >
             {actif && !estDeconnexion && (
               <span style={{
                 position: "absolute",
-                top: "-6px",
+                top: "-8px",
                 left: "50%",
                 transform: "translateX(-50%)",
-                width: "16px",
-                height: "2.5px",
-                backgroundColor: "#F97316",
+                width: "24px",
+                height: "3px",
+                backgroundColor: "#F59E0B",
                 borderRadius: "2px",
               }} />
             )}
-            <Icon size={18} strokeWidth={actif || estDeconnexion ? 2.6 : 2.1} />
+            <Icon size={actif ? 20 : 18} strokeWidth={actif ? 2.8 : 2.2} />
             <span>{onglet.label}</span>
           </Link>
         );
       })}
     </nav>
   );
-}
+                  }
