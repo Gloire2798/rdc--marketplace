@@ -48,7 +48,7 @@ export default function NouveauProduit() {
       formData.append("upload_preset", "gk_sensei");
 
       const res = await fetch(
-        `https://api.cloudinary.com/v1_1/i4cve5t1/image/upload`
+        `https://api.cloudinary.com/v1_1/i4cve5t1/image/upload`,
         { method: "POST", body: formData }
       );
 
