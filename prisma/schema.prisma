@@ -69,6 +69,32 @@ model Produit {
   actif       Boolean  @default(true)
   createdAt   DateTime @default(now())
   items       CommandeItem[]
+  variantes   Variante[]
+
+  @@index([vendeurId])
+  @@index([actif])
+}
+
+// VARIANTES DE PRODUIT (taille, couleur, capacité...)
+model Variante {
+  id          String   @id @default(cuid())
+  produitId   String
+  produit     Produit  @relation(fields: [produitId], references: [id], onDelete: Cascade)
+
+  // Attributs dynamiques (stockés en JSON)
+  // Exemple: { "Taille": "M", "Couleur": "Noir" }
+  attributs   String   // JSON stringifié
+
+  // Stock propre à cette variante
+  stock       Int      @default(0)
+
+  // Prix optionnel (si différent du produit de base)
+  prix        Float?
+  prixPromo   Float?
+
+  createdAt   DateTime @default(now())
+
+  @@index([produitId])
 }
 
 // STORIES
@@ -118,6 +144,7 @@ model CommandeItem {
   produit      Produit  @relation(fields: [produitId], references: [id])
   quantite     Int
   prixUnitaire Float
+  varianteInfo String?  // JSON avec les attributs choisis (ex: {"Taille":"M","Couleur":"Noir"})
 }
 
 // PAIEMENTS
@@ -233,15 +260,15 @@ model TokenReset {
 model LogSecurite {
   id        String   @id @default(cuid())
 
-  type      String   // CONNEXION_ECHEC, INSCRIPTION, ACTION_ADMIN, ERREUR...
-  niveau    String   @default("INFO") // INFO, WARNING, DANGER
+  type      String
+  niveau    String   @default("INFO")
   message   String
-  details   String?  // JSON stringifié avec plus d'infos
+  details   String?
 
-  userId    String?  // User concerné (si connu)
-  telephone String?  // Téléphone tenté (si connu)
-  ip        String?  // Adresse IP
-  userAgent String?  // Navigateur
+  userId    String?
+  telephone String?
+  ip        String?
+  userAgent String?
 
   createdAt DateTime @default(now())
 
