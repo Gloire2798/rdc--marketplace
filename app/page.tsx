@@ -1,26 +1,59 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import Stories from "./components/Stories";
 import CarteBoutique from "./components/CarteBoutique";
 import { MapPin, Clock } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+// ============================================================
+// FONCTION DE RÉCUPÉRATION (avec cache 30 sec)
+// ============================================================
+const getDonneesAccueil = unstable_cache(
+  async () => {
+    const maintenant = new Date();
+
+    // Récupérer les boutiques actives + nombre de produits
+    const vendeurs = await prisma.vendeur.findMany({
+      where: { actif: true },
+      select: {
+        id: true,
+        nomBoutique: true,
+        description: true,
+        adresse: true,
+        photoCouverture: true,
+        photo2: true,
+        photo3: true,
+        _count: { select: { produits: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    // Récupérer les stories actives
+    const storiesBrutes = await prisma.story.findMany({
+      where: { expireAt: { gt: maintenant } },
+      select: {
+        id: true,
+        vendeurId: true,
+        photo: true,
+        vendeur: {
+          select: { nomBoutique: true },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return { vendeurs, storiesBrutes };
+  },
+  ["accueil-donnees"],
+  {
+    revalidate: 30,
+    tags: ["accueil"],
+  }
+);
 
 export default async function Home() {
-  const vendeurs = await prisma.vendeur.findMany({
-    where: { actif: true },
-    include: {
-      _count: { select: { produits: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  const { vendeurs, storiesBrutes } = await getDonneesAccueil();
 
-  const maintenant = new Date();
-  const storiesBrutes = await prisma.story.findMany({
-    where: { expireAt: { gt: maintenant } },
-    include: { vendeur: true },
-    orderBy: { createdAt: "desc" },
-  });
-
+  // Grouper les stories par vendeur (une seule par boutique)
   const storiesParVendeur = new Map();
   storiesBrutes.forEach((s) => {
     if (!storiesParVendeur.has(s.vendeurId)) {
@@ -151,4 +184,4 @@ export default async function Home() {
       </div>
     </div>
   );
-}
+                           }
