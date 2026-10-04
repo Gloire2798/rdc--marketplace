@@ -1,11 +1,43 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
-import { creerNotification, creerNotificationAdmin } from "@/lib/notifications";
+import { creerNotification } from "@/lib/notifications";
 
 const LOYER_MENSUEL = 15000;
 
-// Créer automatiquement les loyers manquants
+// Créer une notif admin seulement si elle n'existe pas déjà
+async function creerNotifAdminSansDoublon(
+  type: string,
+  titre: string,
+  message: string,
+  lien: string
+) {
+  // Récupérer tous les admins
+  const admins = await prisma.user.findMany({
+    where: { role: "ADMIN" },
+    select: { id: true },
+  });
+
+  for (const admin of admins) {
+    // Vérifier si une notif identique non lue existe déjà
+    const existante = await prisma.notification.findFirst({
+      where: {
+        userId: admin.id,
+        type,
+        titre,
+        lu: false,
+        createdAt: {
+          gte: new Date(Date.now() - 24 * 60 * 60 * 1000), // dernière 24h
+        },
+      },
+    });
+
+    if (!existante) {
+      await creerNotification(admin.id, type, titre, message, lien);
+    }
+  }
+}
+
 async function creerLoyersManquants() {
   const maintenant = new Date();
   const moisActuel = `${maintenant.getFullYear()}-${String(maintenant.getMonth() + 1).padStart(2, "0")}`;
@@ -21,7 +53,6 @@ async function creerLoyersManquants() {
   let loyersCrees = 0;
 
   for (const vendeur of vendeurs) {
-    // Vérifier si la ligne du mois existe déjà
     const loyerExistant = await prisma.paiementFinance.findUnique({
       where: {
         vendeurId_type_periode: {
@@ -44,7 +75,6 @@ async function creerLoyersManquants() {
       });
       loyersCrees++;
 
-      // Notifier le vendeur
       await creerNotification(
         vendeur.userId,
         "LOYER_A_PAYER",
@@ -54,7 +84,6 @@ async function creerLoyersManquants() {
       );
     }
 
-    // Vérifier si 2 mois impayés
     const loyerPrecedent = await prisma.paiementFinance.findUnique({
       where: {
         vendeurId_type_periode: {
@@ -69,7 +98,7 @@ async function creerLoyersManquants() {
     const retardPrecedent = loyerPrecedent?.statut === "IMPAYE";
 
     if (retardActuel && retardPrecedent) {
-      await creerNotificationAdmin(
+      await creerNotifAdminSansDoublon(
         "LOYER_RETARD_CRITIQUE",
         "⚠️ Vendeur en retard de 2 mois",
         `La boutique "${vendeur.nomBoutique}" a 2 loyers impayés. Suspension à prévoir.`,
@@ -91,7 +120,6 @@ export async function GET() {
       );
     }
 
-    // Créer les loyers manquants (silencieux si déjà faits)
     try {
       await creerLoyersManquants();
     } catch (e) {
@@ -138,4 +166,4 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+  }
