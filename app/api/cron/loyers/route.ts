@@ -4,6 +4,12 @@ import { creerNotification, creerNotificationAdmin } from "@/lib/notifications";
 
 const LOYER_MENSUEL = 15000;
 
+// Renvoie le mois précédent au format "2026-09"
+function getMoisPrecedent(date: Date): string {
+  const d = new Date(date.getFullYear(), date.getMonth() - 1, 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -17,44 +23,44 @@ export async function GET(request: Request) {
       return NextResponse.json({ erreur: "Non autorisé" }, { status: 401 });
     }
 
-    // ---------- MOIS À TRAITER ----------
-    let moisActuel: string;
-    const moisParam = searchParams.get("mois");
+    // ---------- DATE DE RÉFÉRENCE ----------
+    // Normalement = maintenant. Mais on peut forcer pour tester.
+    const dateRef = searchParams.get("date"); // Format "2026-11-05"
+    const maintenant = dateRef ? new Date(dateRef) : new Date();
 
-    if (moisParam && /^\d{4}-\d{2}$/.test(moisParam)) {
-      // Format "2026-09" fourni → utilisé pour test
-      moisActuel = moisParam;
-    } else {
-      // Par défaut : mois précédent (car on paie le 5 pour le mois précédent)
-      const maintenant = new Date();
-      const datePrecedente = new Date(maintenant.getFullYear(), maintenant.getMonth() - 1, 1);
-      moisActuel = `${datePrecedente.getFullYear()}-${String(datePrecedente.getMonth() + 1).padStart(2, "0")}`;
-    }
-
-    // Calculer le mois encore avant (pour détecter les 2 mois de retard)
-    const [annee, mois] = moisActuel.split("-").map(Number);
-    const dateAvant = new Date(annee, mois - 2, 1);
-    const moisAvant = `${dateAvant.getFullYear()}-${String(dateAvant.getMonth() + 1).padStart(2, "0")}`;
-
-    // ---------- VENDEURS ----------
+    // ---------- RÉCUPÉRER LES VENDEURS CONCERNÉS ----------
+    // Ceux dont la prochaineEcheance est <= aujourd'hui
     const vendeurs = await prisma.vendeur.findMany({
-      where: { actif: true },
-      select: { id: true, nomBoutique: true, userId: true },
+      where: {
+        actif: true,
+        prochaineEcheance: { lte: maintenant },
+      },
+      select: {
+        id: true,
+        nomBoutique: true,
+        userId: true,
+        prochaineEcheance: true,
+      },
     });
 
     let loyersCrees = 0;
     let notifsEnvoyees = 0;
+    let echeancesAvancees = 0;
     let alertesRetard = 0;
-    let vendeursEnRetard: string[] = [];
 
     for (const vendeur of vendeurs) {
-      // 1. Vérifier si la ligne existe
+      const echeance = vendeur.prochaineEcheance!;
+
+      // Le loyer concerne le mois PRÉCÉDENT la date d'échéance
+      const moisConcerne = getMoisPrecedent(echeance);
+
+      // 1. Vérifier si la ligne de loyer du mois existe déjà
       const loyerExistant = await prisma.paiementFinance.findUnique({
         where: {
           vendeurId_type_periode: {
             vendeurId: vendeur.id,
             type: "LOYER",
-            periode: moisActuel,
+            periode: moisConcerne,
           },
         },
       });
@@ -65,25 +71,28 @@ export async function GET(request: Request) {
           data: {
             vendeurId: vendeur.id,
             type: "LOYER",
-            periode: moisActuel,
+            periode: moisConcerne,
             montant: LOYER_MENSUEL,
             statut: "IMPAYE",
           },
         });
         loyersCrees++;
 
-        // Notif vendeur
         await creerNotification(
           vendeur.userId,
           "LOYER_A_PAYER",
           "💰 Loyer à payer",
-          `Votre loyer de ${LOYER_MENSUEL.toLocaleString("fr-FR")} FC (période ${moisActuel}) est à régler avant le 5.`,
+          `Votre loyer de ${LOYER_MENSUEL.toLocaleString("fr-FR")} FC (période ${moisConcerne}) est à régler.`,
           "/vendeur/dashboard"
         );
         notifsEnvoyees++;
       }
 
       // 3. Vérifier 2 mois de retard
+      const moisAvantConcerne = getMoisPrecedent(echeance);
+      const dateAvant = new Date(echeance.getFullYear(), echeance.getMonth() - 2, 1);
+      const moisAvant = `${dateAvant.getFullYear()}-${String(dateAvant.getMonth() + 1).padStart(2, "0")}`;
+
       const loyerAvant = await prisma.paiementFinance.findUnique({
         where: {
           vendeurId_type_periode: {
@@ -94,37 +103,42 @@ export async function GET(request: Request) {
         },
       });
 
-      const loyerActuelImpaye = !loyerExistant || loyerExistant.statut === "IMPAYE";
-      const loyerAvantImpaye = loyerAvant?.statut === "IMPAYE";
+      const retardActuel = !loyerExistant || loyerExistant.statut === "IMPAYE";
+      const retardPrecedent = loyerAvant?.statut === "IMPAYE";
 
-      if (loyerActuelImpaye && loyerAvantImpaye) {
-        vendeursEnRetard.push(vendeur.nomBoutique);
+      if (retardActuel && retardPrecedent) {
+        await creerNotificationAdmin(
+          "LOYER_RETARD_CRITIQUE",
+          "⚠️ Vendeur en retard de 2 mois",
+          `La boutique "${vendeur.nomBoutique}" a 2 loyers impayés. Suspension à prévoir.`,
+          "/admin/finance"
+        );
         alertesRetard++;
       }
-    }
 
-    // 4. Alerte globale admin (1 seul message)
-    if (vendeursEnRetard.length > 0) {
-      await creerNotificationAdmin(
-        "LOYER_RETARD_CRITIQUE",
-        "⚠️ Vendeurs en retard de 2 mois",
-        `${vendeursEnRetard.length} boutique(s) ont 2 loyers impayés : ${vendeursEnRetard.join(", ")}. Suspension à prévoir.`,
-        "/admin/finance"
-      );
+      // 4. Avancer prochaineEcheance de 30 jours
+      const nouvelleEcheance = new Date(echeance);
+      nouvelleEcheance.setDate(nouvelleEcheance.getDate() + 30);
+
+      await prisma.vendeur.update({
+        where: { id: vendeur.id },
+        data: { prochaineEcheance: nouvelleEcheance },
+      });
+      echeancesAvancees++;
     }
 
     return NextResponse.json({
       succes: true,
       message: "Cron loyers exécuté",
-      moisTraite: moisActuel,
-      moisPourRetard: moisAvant,
-      vendeurs: vendeurs.length,
+      dateReference: maintenant.toISOString(),
+      vendeursConcernes: vendeurs.length,
       loyersCrees,
       notifsEnvoyees,
+      echeancesAvancees,
       alertesRetard,
     });
   } catch (error) {
     console.error("Erreur cron loyers:", error);
     return NextResponse.json({ erreur: "Erreur serveur" }, { status: 500 });
   }
-    }
+          }
