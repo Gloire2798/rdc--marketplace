@@ -36,7 +36,6 @@ export default function Header() {
       .catch(() => {});
   }, []);
 
-  // Pages sans header (auth)
   const pageSansHeader =
     pathname === "/vendeur/connexion" ||
     pathname === "/vendeur/inscription" ||
@@ -73,7 +72,9 @@ export default function Header() {
           </div>
         </Link>
         <div style={{ display: "flex", gap: "16px", alignItems: "center", color: "#0F172A" }}>
-          <Search size={22} strokeWidth={2.8} />
+          <Link href="/recherche" style={{ color: "#0F172A", display: "flex", alignItems: "center" }}>
+            <Search size={22} strokeWidth={2.8} />
+          </Link>
           <NotificationBell />
         </div>
       </header>
@@ -107,6 +108,9 @@ export default function Header() {
           </div>
         </Link>
         <div style={{ display: "flex", gap: "16px", alignItems: "center", color: "#0F172A" }}>
+          <Link href="/recherche" style={{ color: "#0F172A", display: "flex", alignItems: "center" }}>
+            <Search size={22} strokeWidth={2.8} />
+          </Link>
           <NotificationBell />
         </div>
       </header>
@@ -139,6 +143,9 @@ export default function Header() {
           </div>
         </Link>
         <div style={{ display: "flex", gap: "16px", alignItems: "center", color: "#0F172A" }}>
+          <Link href="/recherche" style={{ color: "#0F172A", display: "flex", alignItems: "center" }}>
+            <Search size={22} strokeWidth={2.8} />
+          </Link>
           <NotificationBell />
           <Link href="/acheteur/panier" style={{ position: "relative", color: "#0F172A" }}>
             <ShoppingCart size={24} strokeWidth={2.8} />
@@ -209,7 +216,9 @@ export default function Header() {
         </Link>
 
         <div style={{ display: "flex", gap: "18px", alignItems: "center", color: "#0F172A" }}>
-          <Search size={24} strokeWidth={2.8} />
+          <Link href="/recherche" style={{ color: "#0F172A", display: "flex", alignItems: "center" }}>
+            <Search size={24} strokeWidth={2.8} />
+          </Link>
           <Link href="/acheteur/panier" style={{ position: "relative", color: "#0F172A" }}>
             <ShoppingCart size={24} strokeWidth={2.8} />
             {nbPanier > 0 && (
@@ -236,4 +245,4 @@ export default function Header() {
       </div>
     </header>
   );
-        }
+            }
