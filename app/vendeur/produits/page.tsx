@@ -32,50 +32,52 @@ export default async function MesProduits() {
   };
 
   return (
-    <div style={{ padding: "16px 14px 100px 14px", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-      <Link
-        href="/vendeur/dashboard"
-        style={{ color: "#1D4ED8", fontSize: "11.5px", fontWeight: "700", textDecoration: "none" }}
-      >
-        ← Retour au tableau de bord
-      </Link>
-
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginTop: "12px",
-        marginBottom: "16px",
-        gap: "8px",
-        flexWrap: "wrap",
-      }}>
-        <div>
-          <h1 style={{ fontSize: "20px", fontWeight: "900", color: "#0F172A", marginBottom: "2px" }}>
-            Mes produits
-          </h1>
-          <p style={{ color: "#64748b", fontSize: "11.5px", fontWeight: "600" }}>
-            {produits.length} produit{produits.length > 1 ? "s" : ""}
-          </p>
-        </div>
-
+    <div style={{ padding: "16px 8px 100px 8px", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
+      <div style={{ padding: "0 6px" }}>
         <Link
-          href="/vendeur/produits/nouveau"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "5px",
-            backgroundColor: "#1D4ED8",
-            color: "white",
-            padding: "8px 12px",
-            borderRadius: "10px",
-            textDecoration: "none",
-            fontSize: "11.5px",
-            fontWeight: "800",
-          }}
+          href="/vendeur/dashboard"
+          style={{ color: "#1D4ED8", fontSize: "11.5px", fontWeight: "700", textDecoration: "none" }}
         >
-          <Plus size={14} strokeWidth={3} />
-          Ajouter
+          ← Retour au tableau de bord
         </Link>
+
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: "12px",
+          marginBottom: "16px",
+          gap: "8px",
+          flexWrap: "wrap",
+        }}>
+          <div>
+            <h1 style={{ fontSize: "20px", fontWeight: "900", color: "#0F172A", marginBottom: "2px" }}>
+              Mes produits
+            </h1>
+            <p style={{ color: "#64748b", fontSize: "11.5px", fontWeight: "600" }}>
+              {produits.length} produit{produits.length > 1 ? "s" : ""}
+            </p>
+          </div>
+
+          <Link
+            href="/vendeur/produits/nouveau"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "5px",
+              backgroundColor: "#1D4ED8",
+              color: "white",
+              padding: "8px 12px",
+              borderRadius: "10px",
+              textDecoration: "none",
+              fontSize: "11.5px",
+              fontWeight: "800",
+            }}
+          >
+            <Plus size={14} strokeWidth={3} />
+            Ajouter
+          </Link>
+        </div>
       </div>
 
       {produits.length === 0 ? (
@@ -85,6 +87,7 @@ export default async function MesProduits() {
           padding: "40px 20px",
           textAlign: "center",
           border: "1px solid #E8DFC8",
+          margin: "0 6px",
         }}>
           <p style={{ fontSize: "40px", marginBottom: "10px" }}>📦</p>
           <p style={{ fontSize: "14px", fontWeight: "800", color: "#0F172A", marginBottom: "4px" }}>
@@ -113,7 +116,7 @@ export default async function MesProduits() {
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "8px",
+          gap: "6px",
         }}>
           {produits.map((p) => {
             const enPromo = p.prixPromo !== null && p.prixPromo < p.prix;
@@ -122,11 +125,11 @@ export default async function MesProduits() {
               : 0;
 
             return (
-              <div key={p.id} style={{ display: "flex", flexDirection: "column" }}>
+              <div key={p.id} style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
                 {/* Carte produit */}
                 <div style={{
                   backgroundColor: "white",
-                  borderRadius: "10px",
+                  borderRadius: "8px",
                   overflow: "hidden",
                   border: "1px solid #E8DFC8",
                   boxShadow: "0 1px 2px rgba(120, 100, 60, 0.05)",
@@ -138,14 +141,14 @@ export default async function MesProduits() {
                   {enPromo && (
                     <span style={{
                       position: "absolute",
-                      top: "4px",
-                      left: "4px",
+                      top: "3px",
+                      left: "3px",
                       backgroundColor: "#dc2626",
                       color: "white",
-                      fontSize: "8.5px",
+                      fontSize: "8px",
                       fontWeight: "800",
-                      padding: "2px 5px",
-                      borderRadius: "4px",
+                      padding: "1px 4px",
+                      borderRadius: "3px",
                       zIndex: 2,
                     }}>
                       -{pourcentage}%
@@ -156,7 +159,7 @@ export default async function MesProduits() {
                   {p.photo1 ? (
                     <div style={{
                       width: "100%",
-                      height: "100px",
+                      height: "80px",
                       backgroundColor: "#F8FAFC",
                       overflow: "hidden",
                     }}>
@@ -174,21 +177,28 @@ export default async function MesProduits() {
                   ) : (
                     <div style={{
                       width: "100%",
-                      height: "100px",
+                      height: "80px",
                       backgroundColor: "#F8FAFC",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "24px",
+                      fontSize: "20px",
                     }}>
                       📦
                     </div>
                   )}
 
                   {/* Contenu */}
-                  <div style={{ padding: "6px 7px 7px 7px", flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  <div style={{
+                    padding: "5px 5px 6px 5px",
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    minWidth: 0,
+                  }}>
                     <h3 style={{
-                      fontSize: "10.5px",
+                      fontSize: "9.5px",
                       fontWeight: "700",
                       marginBottom: "3px",
                       color: "#0F172A",
@@ -201,32 +211,56 @@ export default async function MesProduits() {
                     </h3>
 
                     {enPromo ? (
-                      <div style={{ display: "flex", flexDirection: "column", gap: "0px" }}>
-                        <span style={{ fontSize: "11px", fontWeight: "800", color: "#16a34a", lineHeight: 1.1 }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "0px", minWidth: 0 }}>
+                        <span style={{
+                          fontSize: "10px",
+                          fontWeight: "800",
+                          color: "#16a34a",
+                          lineHeight: 1.1,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}>
                           {formaterPrix(p.prixPromo!, p.devise)}
                         </span>
-                        <span style={{ fontSize: "8.5px", color: "#94a3b8", textDecoration: "line-through", lineHeight: 1.1 }}>
+                        <span style={{
+                          fontSize: "8px",
+                          color: "#94a3b8",
+                          textDecoration: "line-through",
+                          lineHeight: 1.1,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}>
                           {formaterPrix(p.prix, p.devise)}
                         </span>
                       </div>
                     ) : (
-                      <p style={{ fontSize: "11px", fontWeight: "800", color: "#1D4ED8", lineHeight: 1.1 }}>
+                      <p style={{
+                        fontSize: "10px",
+                        fontWeight: "800",
+                        color: "#1D4ED8",
+                        lineHeight: 1.1,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}>
                         {formaterPrix(p.prix, p.devise)}
                       </p>
                     )}
 
                     <p style={{
-                      fontSize: "9px",
+                      fontSize: "8px",
                       color: p.stock > 0 ? "#16a34a" : "#dc2626",
                       fontWeight: "700",
                       marginTop: "3px",
                     }}>
-                      {p.stock > 0 ? `✅ ${p.stock} en stock` : "❌ Rupture"}
+                      {p.stock > 0 ? `✅ ${p.stock}` : "❌ Rupture"}
                     </p>
                   </div>
                 </div>
 
-                {/* Bouton Modifier EN DESSOUS */}
+                {/* Bouton Modifier */}
                 <Link
                   href={`/vendeur/produits/${p.id}/modifier`}
                   style={{
@@ -234,17 +268,17 @@ export default async function MesProduits() {
                     alignItems: "center",
                     justifyContent: "center",
                     gap: "3px",
-                    marginTop: "4px",
-                    padding: "6px 4px",
+                    marginTop: "3px",
+                    padding: "5px 4px",
                     backgroundColor: "#1D4ED8",
                     color: "white",
-                    borderRadius: "7px",
+                    borderRadius: "6px",
                     textDecoration: "none",
-                    fontSize: "10px",
+                    fontSize: "9.5px",
                     fontWeight: "800",
                   }}
                 >
-                  <Pencil size={10} strokeWidth={2.5} />
+                  <Pencil size={9} strokeWidth={2.5} />
                   Modifier
                 </Link>
               </div>
@@ -254,4 +288,4 @@ export default async function MesProduits() {
       )}
     </div>
   );
-              }
+                      }
