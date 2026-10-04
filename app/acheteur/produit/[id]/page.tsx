@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import GaleriePhotos from "./GaleriePhotos";
-import BoutonPanier from "./BoutonPanier";
+import SelecteurVariantes from "./SelecteurVariantes";
 
 export default async function FicheProduit({
   params,
@@ -15,6 +15,7 @@ export default async function FicheProduit({
     where: { id },
     include: {
       vendeur: true,
+      variantes: true,
     },
   });
 
@@ -39,7 +40,19 @@ export default async function FicheProduit({
     ? Math.round(((produit.prix - produit.prixPromo!) / produit.prix) * 100)
     : 0;
 
-  const article = {
+  // Préparer les variantes pour le client
+  const variantes = produit.variantes.map((v) => ({
+    id: v.id,
+    attributs: JSON.parse(v.attributs) as Record<string, string>,
+    stock: v.stock,
+    prix: v.prix,
+    prixPromo: v.prixPromo,
+  }));
+
+  const aVariantes = variantes.length > 0;
+
+  // Article de base pour le panier
+  const articleBase = {
     produitId: produit.id,
     vendeurId: produit.vendeurId,
     nom: produit.nom,
@@ -123,17 +136,6 @@ export default async function FicheProduit({
         </p>
       )}
 
-      <p style={{
-        fontSize: "11px",
-        color: produit.stock > 0 ? "#16a34a" : "#dc2626",
-        fontWeight: "700",
-        marginBottom: "12px",
-      }}>
-        {produit.stock > 0
-          ? `✅ En stock (${produit.stock})`
-          : "❌ Rupture de stock"}
-      </p>
-
       <Link
         href={`/acheteur/boutique/${produit.vendeur.id}`}
         style={{
@@ -168,7 +170,24 @@ export default async function FicheProduit({
         <span style={{ fontSize: "11px", color: "#1D4ED8", fontWeight: "700" }}>→</span>
       </Link>
 
-      <BoutonPanier article={article} stock={produit.stock} />
+      {aVariantes ? (
+        <SelecteurVariantes
+          article={articleBase}
+          variantes={variantes}
+          devise={produit.devise}
+          prixBase={produit.prix}
+          prixPromoBase={produit.prixPromo}
+        />
+      ) : (
+        <SelecteurVariantes
+          article={articleBase}
+          variantes={[]}
+          devise={produit.devise}
+          prixBase={produit.prix}
+          prixPromoBase={produit.prixPromo}
+          stockSimple={produit.stock}
+        />
+      )}
     </div>
   );
-}
+          }
