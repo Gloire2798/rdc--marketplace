@@ -62,69 +62,76 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
   };
 
   return (
-    <div className="card" style={{ borderLeft: `4px solid ${couleurBordure()}` }}>
-      <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", marginBottom: "12px" }}>
+    <div style={{
+      backgroundColor: "white",
+      borderRadius: "10px",
+      padding: "10px 12px",
+      borderLeft: `3px solid ${couleurBordure()}`,
+      boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+    }}>
+      {/* En-tête compact */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "6px", marginBottom: "8px" }}>
         <div style={{ minWidth: 0, flex: 1 }}>
-          <p style={{ fontSize: "12px", color: "#6b7280" }}>
-            Commande #{commande.id.slice(0, 8)}
+          <p style={{ fontSize: "10px", color: "#94a3b8", fontWeight: "700", marginBottom: "1px" }}>
+            #{commande.id.slice(0, 8)}
           </p>
-          <p style={{ fontSize: "16px", fontWeight: "600", marginTop: "4px" }}>
+          <p style={{ fontSize: "12.5px", fontWeight: "800", color: "#0F172A", marginBottom: "1px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             👤 {commande.nomClient || "Client"}
           </p>
-          <p style={{ fontSize: "13px", color: "#6b7280", marginTop: "2px" }}>
+          <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "600" }}>
             📞 {commande.telephoneClient}
           </p>
         </div>
-
-        {/* Totaux séparés par devise */}
         <div style={{ textAlign: "right", flexShrink: 0 }}>
           {commande.totalUSD > 0 && (
-            <p style={{ fontSize: "17px", fontWeight: "bold", color: "#2563eb", lineHeight: 1.2 }}>
+            <p style={{ fontSize: "13.5px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.15 }}>
               {formaterPrix(commande.totalUSD, "USD")}
             </p>
           )}
           {commande.totalFC > 0 && (
-            <p style={{ fontSize: "17px", fontWeight: "bold", color: "#2563eb", lineHeight: 1.2 }}>
+            <p style={{ fontSize: "13.5px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.15 }}>
               {formaterPrix(commande.totalFC, "FC")}
             </p>
           )}
-          <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>
+          <p style={{ fontSize: "9.5px", color: "#64748b", fontWeight: "700", marginTop: "2px" }}>
             {commande.mode === "LIVRAISON" ? "🚚 Livraison" : "🏪 Retrait"}
           </p>
         </div>
       </div>
 
       {commande.mode === "LIVRAISON" && commande.adresse && (
-        <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "12px" }}>
+        <p style={{ fontSize: "10.5px", color: "#64748b", fontWeight: "600", marginBottom: "6px" }}>
           📍 {commande.adresse}
         </p>
       )}
 
+      {/* Articles compacts */}
       <div style={{
-        backgroundColor: "#f9fafb",
-        borderRadius: "8px",
-        padding: "10px 12px",
-        marginBottom: "12px",
+        backgroundColor: "#F8FAFC",
+        borderRadius: "7px",
+        padding: "6px 8px",
+        marginBottom: "8px",
       }}>
         {commande.items.map((item, index) => (
           <div key={index} style={{
             display: "flex",
             justifyContent: "space-between",
-            fontSize: "13px",
-            marginBottom: index < commande.items.length - 1 ? "4px" : "0",
-            gap: "8px",
+            fontSize: "11px",
+            marginBottom: index < commande.items.length - 1 ? "2px" : "0",
+            gap: "6px",
           }}>
-            <span style={{ minWidth: 0, flex: 1 }}>
+            <span style={{ color: "#334155", fontWeight: "600", minWidth: 0, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {item.nom} × {item.quantite}
             </span>
-            <span style={{ color: "#6b7280", flexShrink: 0 }}>
+            <span style={{ color: "#64748b", fontWeight: "700", flexShrink: 0 }}>
               {formaterPrix(item.prixUnitaire * item.quantite, item.devise)}
             </span>
           </div>
         ))}
       </div>
 
-      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+      {/* Boutons compacts */}
+      <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
         {commande.statut === "EN_ATTENTE" && (
           <>
             <button
@@ -132,14 +139,14 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
               disabled={chargement}
               style={{
                 flex: 1,
-                minWidth: "120px",
+                minWidth: "90px",
                 backgroundColor: "#16a34a",
                 color: "white",
-                padding: "10px",
-                borderRadius: "8px",
+                padding: "7px",
+                borderRadius: "7px",
                 border: "none",
-                fontWeight: "600",
-                fontSize: "14px",
+                fontWeight: "800",
+                fontSize: "11px",
                 cursor: "pointer",
                 opacity: chargement ? 0.6 : 1,
               }}
@@ -151,14 +158,14 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
               disabled={chargement}
               style={{
                 flex: 1,
-                minWidth: "120px",
+                minWidth: "90px",
                 backgroundColor: "#dc2626",
                 color: "white",
-                padding: "10px",
-                borderRadius: "8px",
+                padding: "7px",
+                borderRadius: "7px",
                 border: "none",
-                fontWeight: "600",
-                fontSize: "14px",
+                fontWeight: "800",
+                fontSize: "11px",
                 cursor: "pointer",
                 opacity: chargement ? 0.6 : 1,
               }}
@@ -176,11 +183,11 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
               flex: 1,
               backgroundColor: "#2563eb",
               color: "white",
-              padding: "10px",
-              borderRadius: "8px",
+              padding: "7px",
+              borderRadius: "7px",
               border: "none",
-              fontWeight: "600",
-              fontSize: "14px",
+              fontWeight: "800",
+              fontSize: "11px",
               cursor: "pointer",
               opacity: chargement ? 0.6 : 1,
             }}
@@ -194,11 +201,11 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
             flex: 1,
             backgroundColor: "#dcfce7",
             color: "#166534",
-            padding: "10px",
-            borderRadius: "8px",
+            padding: "7px",
+            borderRadius: "7px",
             textAlign: "center",
-            fontWeight: "600",
-            fontSize: "14px",
+            fontWeight: "800",
+            fontSize: "11px",
           }}>
             ⏳ En attente du client
           </div>
@@ -209,11 +216,11 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
             flex: 1,
             backgroundColor: "#e5e7eb",
             color: "#374151",
-            padding: "10px",
-            borderRadius: "8px",
+            padding: "7px",
+            borderRadius: "7px",
             textAlign: "center",
-            fontWeight: "600",
-            fontSize: "14px",
+            fontWeight: "800",
+            fontSize: "11px",
           }}>
             ✅ Commande terminée
           </div>
@@ -224,11 +231,11 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
             flex: 1,
             backgroundColor: "#fee2e2",
             color: "#991b1b",
-            padding: "10px",
-            borderRadius: "8px",
+            padding: "7px",
+            borderRadius: "7px",
             textAlign: "center",
-            fontWeight: "600",
-            fontSize: "14px",
+            fontWeight: "800",
+            fontSize: "11px",
           }}>
             ❌ Commande annulée
           </div>
@@ -236,4 +243,4 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
       </div>
     </div>
   );
-                     }
+      }
