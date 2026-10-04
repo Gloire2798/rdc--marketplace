@@ -42,12 +42,10 @@ export default function SelecteurVariantes({
 }: Props) {
   const aVariantes = variantes.length > 0;
 
-  // Sélection actuelle (attribut → valeur)
   const [selection, setSelection] = useState<Record<string, string>>({});
   const [ajoute, setAjoute] = useState(false);
   const [erreur, setErreur] = useState("");
 
-  // Extraire la liste des attributs et leurs valeurs
   const listeAttributs = useMemo(() => {
     if (!aVariantes) return [];
     const map = new Map<string, Set<string>>();
@@ -63,28 +61,25 @@ export default function SelecteurVariantes({
     }));
   }, [variantes, aVariantes]);
 
-  // Trouver la variante correspondant à la sélection actuelle
   const varianteChoisie = useMemo(() => {
     if (!aVariantes) return null;
     const nbAttributs = listeAttributs.length;
     if (Object.keys(selection).length !== nbAttributs) return null;
 
-    return variantes.find((v) => {
-      return listeAttributs.every(
-        (attr) => v.attributs[attr.nom] === selection[attr.nom]
-      );
-    }) || null;
+    return (
+      variantes.find((v) => {
+        return listeAttributs.every(
+          (attr) => v.attributs[attr.nom] === selection[attr.nom]
+        );
+      }) || null
+    );
   }, [selection, variantes, listeAttributs, aVariantes]);
 
-  // Vérifier si une valeur est disponible (pour griser les combinaisons impossibles)
   const valeurDisponible = (attributNom: string, valeur: string): boolean => {
-    // On teste si, en gardant les autres sélections, au moins une variante existe
-    // avec cette valeur ET avec du stock
     return variantes.some((v) => {
       if (v.attributs[attributNom] !== valeur) return false;
       if (v.stock <= 0) return false;
 
-      // Vérifier les autres attributs sélectionnés
       for (const [autreAttr, autreVal] of Object.entries(selection)) {
         if (autreAttr === attributNom) continue;
         if (v.attributs[autreAttr] !== autreVal) return false;
@@ -94,14 +89,15 @@ export default function SelecteurVariantes({
   };
 
   const stockActuel = aVariantes
-    ? (varianteChoisie?.stock ?? 0)
-    : (stockSimple ?? 0);
+    ? varianteChoisie?.stock ?? 0
+    : stockSimple ?? 0;
 
   const toutSelectionne = aVariantes
     ? Object.keys(selection).length === listeAttributs.length
     : true;
 
-  const enRupture = stockActuel === 0;
+  const enRupture = toutSelectionne && stockActuel === 0;
+  const nonSelectionne = aVariantes && !toutSelectionne;
 
   const formaterPrix = (prix: number, devise: string) => {
     if (devise === "USD") return `${prix.toFixed(2)} $`;
@@ -111,7 +107,7 @@ export default function SelecteurVariantes({
   const ajouter = () => {
     setErreur("");
 
-    if (aVariantes && !toutSelectionne) {
+    if (nonSelectionne) {
       setErreur("Veuillez choisir toutes les options");
       return;
     }
@@ -122,7 +118,6 @@ export default function SelecteurVariantes({
     }
 
     try {
-      // Construire l'article avec variante
       const articleAvecVariante = {
         ...article,
         varianteId: varianteChoisie?.id || null,
@@ -139,7 +134,6 @@ export default function SelecteurVariantes({
 
   return (
     <div>
-      {/* Sélecteurs d'attributs */}
       {aVariantes && (
         <div style={{ marginBottom: "14px" }}>
           {listeAttributs.map((attr) => (
@@ -201,26 +195,28 @@ export default function SelecteurVariantes({
         </div>
       )}
 
-      {/* Stock */}
       <p style={{
         fontSize: "11px",
-        color: enRupture ? "#dc2626" : "#16a34a",
+        color: nonSelectionne ? "#64748b" : enRupture ? "#dc2626" : "#16a34a",
         fontWeight: "700",
         marginBottom: "12px",
       }}>
-        {enRupture
+        {nonSelectionne
+          ? "👆 Choisissez les options"
+          : enRupture
           ? "❌ Rupture de stock"
           : `✅ En stock (${stockActuel})`}
       </p>
 
-      {/* Bouton ajouter */}
       <button
         onClick={ajouter}
-        disabled={enRupture || (aVariantes && !toutSelectionne)}
+        disabled={enRupture || nonSelectionne}
         style={{
           width: "100%",
           backgroundColor: enRupture
             ? "#9ca3af"
+            : nonSelectionne
+            ? "#94a3b8"
             : ajoute
             ? "#16a34a"
             : "#1D4ED8",
@@ -230,28 +226,23 @@ export default function SelecteurVariantes({
           border: "none",
           fontWeight: "800",
           fontSize: "13px",
-          cursor:
-            enRupture || (aVariantes && !toutSelectionne)
-              ? "not-allowed"
-              : "pointer",
+          cursor: enRupture || nonSelectionne ? "not-allowed" : "pointer",
           transition: "background-color 0.3s",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           gap: "6px",
-          opacity:
-            aVariantes && !toutSelectionne && !enRupture ? 0.5 : 1,
         }}
       >
-        {enRupture ? (
+        {nonSelectionne ? (
+          "Choisissez les options"
+        ) : enRupture ? (
           "❌ Rupture de stock"
         ) : ajoute ? (
           <>
             <Check size={16} strokeWidth={3} />
             Ajouté au panier !
           </>
-        ) : aVariantes && !toutSelectionne ? (
-          "Choisissez toutes les options"
         ) : (
           <>
             <ShoppingCart size={16} strokeWidth={2.8} />
@@ -278,4 +269,4 @@ export default function SelecteurVariantes({
       )}
     </div>
   );
-    }
+      }
