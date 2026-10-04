@@ -12,7 +12,6 @@ export default function Connexion() {
   const [voirMdp, setVoirMdp] = useState(false);
   const [form, setForm] = useState({ telephone: "", motDePasse: "" });
 
-  // Bloquer le scroll
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -51,13 +50,13 @@ export default function Connexion() {
     <div style={{
       position: "fixed",
       inset: 0,
-      background: "linear-gradient(180deg, #FAF5E8 0%, #F5EAD2 100%)",
+      background: "linear-gradient(180deg, #FFFFFF 0%, #FDF6EC 100%)",
       padding: "16px 14px 20px 14px",
       display: "flex",
       flexDirection: "column",
       overflow: "hidden",
     }}>
-      {/* SKYLINE EN HAUT (derrière le slogan) */}
+      {/* SKYLINE + SOLEIL */}
       <div style={{
         position: "absolute",
         top: 0,
@@ -67,7 +66,6 @@ export default function Connexion() {
         pointerEvents: "none",
         zIndex: 0,
       }}>
-        {/* Soleil couchant */}
         <div style={{
           position: "absolute",
           top: "30px",
@@ -75,29 +73,28 @@ export default function Connexion() {
           width: "90px",
           height: "90px",
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, rgba(249, 115, 22, 0.08) 50%, transparent 75%)",
+          background: "radial-gradient(circle, rgba(234, 88, 12, 0.35) 0%, rgba(234, 88, 12, 0.10) 50%, transparent 75%)",
         }} />
 
-        {/* Bâtiments (skyline) */}
         <svg
           viewBox="0 0 400 100"
           preserveAspectRatio="none"
           style={{ width: "100%", height: "100%", display: "block" }}
         >
           <defs>
-            <linearGradient id="ville" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#1E3A5F" stopOpacity="0.13" />
-              <stop offset="100%" stopColor="#1E3A5F" stopOpacity="0.02" />
+            <linearGradient id="ville-conn" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#0F172A" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#0F172A" stopOpacity="0.02" />
             </linearGradient>
           </defs>
           <path
             d="M0 100 L0 65 L15 65 L15 45 L28 45 L28 60 L42 60 L42 30 L55 30 L55 50 L70 50 L70 20 L85 20 L85 45 L100 45 L100 35 L115 35 L115 55 L130 55 L130 25 L148 25 L148 50 L165 50 L165 15 L180 15 L180 40 L198 40 L198 30 L215 30 L215 55 L232 55 L232 35 L250 35 L250 60 L268 60 L268 40 L285 40 L285 65 L302 65 L302 45 L320 45 L320 25 L338 25 L338 50 L355 50 L355 35 L372 35 L372 60 L388 60 L388 45 L400 45 L400 100 Z"
-            fill="url(#ville)"
+            fill="url(#ville-conn)"
           />
         </svg>
       </div>
 
-      {/* Header : logo + slogan */}
+      {/* HEADER : logo + slogan */}
       <div style={{
         display: "flex",
         justifyContent: "space-between",
@@ -120,8 +117,8 @@ export default function Connexion() {
           />
           <p style={{
             fontSize: "9px",
-            color: "#78716C",
-            fontWeight: "700",
+            color: "#64748B",
+            fontWeight: "800",
             letterSpacing: "0.3px",
           }}>
             Le commerce en un clic
@@ -131,16 +128,16 @@ export default function Connexion() {
         <div style={{ textAlign: "right", maxWidth: "130px" }}>
           <p style={{
             fontSize: "10px",
-            color: "#1E3A5F",
-            fontWeight: "800",
+            color: "#0F172A",
+            fontWeight: "900",
             lineHeight: 1.3,
           }}>
             Plus proche de vos besoins, partout à Kinshasa.
           </p>
           <div style={{
-            height: "2px",
+            height: "3px",
             width: "26px",
-            background: "#F97316",
+            background: "#EA580C",
             marginLeft: "auto",
             marginTop: "3px",
             borderRadius: "2px",
@@ -148,16 +145,16 @@ export default function Connexion() {
         </div>
       </div>
 
-      {/* Carte connexion — coins courbés (haut arrondi, bas droit) */}
+      {/* CARTE CONNEXION — style B */}
       <div style={{
         backgroundColor: "white",
         borderTopLeftRadius: "40px",
-        borderTopRightRadius: "12px",
-        borderBottomLeftRadius: "12px",
+        borderTopRightRadius: "14px",
+        borderBottomLeftRadius: "14px",
         borderBottomRightRadius: "40px",
-        padding: "18px 16px 16px 16px",
-        boxShadow: "0 6px 24px rgba(120, 100, 60, 0.10)",
-        border: "1px solid #F1ECE0",
+        padding: "20px 18px 18px 18px",
+        boxShadow: "4px 4px 0 #F59E0B, 0 6px 24px rgba(15, 23, 42, 0.10)",
+        border: "1.5px solid #0F172A",
         maxWidth: "400px",
         width: "100%",
         margin: "0 auto",
@@ -166,19 +163,19 @@ export default function Connexion() {
         flexShrink: 0,
       }}>
         <h1 style={{
-          fontSize: "17px",
+          fontSize: "20px",
           fontWeight: "900",
           color: "#0F172A",
           marginBottom: "4px",
-          letterSpacing: "-0.3px",
+          letterSpacing: "-0.5px",
         }}>
           Connectez-vous
         </h1>
         <p style={{
-          fontSize: "10.5px",
-          color: "#78716C",
-          fontWeight: "500",
-          marginBottom: "14px",
+          fontSize: "11px",
+          color: "#334155",
+          fontWeight: "700",
+          marginBottom: "16px",
           lineHeight: 1.4,
         }}>
           Connectez-vous ou créez un compte.
@@ -188,11 +185,12 @@ export default function Connexion() {
           <div style={{
             backgroundColor: "#FEE2E2",
             color: "#991B1B",
-            padding: "7px 10px",
+            padding: "8px 10px",
             borderRadius: "8px",
             marginBottom: "10px",
             fontSize: "10.5px",
-            fontWeight: "600",
+            fontWeight: "700",
+            border: "1px solid #FECACA",
           }}>
             {erreur}
           </div>
@@ -204,15 +202,15 @@ export default function Connexion() {
             display: "flex",
             alignItems: "center",
             gap: "8px",
-            border: "1px solid #E5E0D5",
+            border: "1.5px solid #0F172A",
             borderRadius: "10px",
-            padding: "7px 10px",
+            padding: "8px 10px",
             marginBottom: "8px",
-            backgroundColor: "#FEFCF8",
+            backgroundColor: "white",
           }}>
-            <Phone size={13} color="#78716C" strokeWidth={2.2} />
+            <Phone size={14} color="#0F172A" strokeWidth={2.5} />
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: "8px", color: "#94a3b8", fontWeight: "700" }}>
+              <p style={{ fontSize: "8.5px", color: "#64748B", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.3px" }}>
                 Numéro de téléphone
               </p>
               <input
@@ -226,8 +224,8 @@ export default function Connexion() {
                   border: "none",
                   outline: "none",
                   backgroundColor: "transparent",
-                  fontSize: "12px",
-                  fontWeight: "600",
+                  fontSize: "13px",
+                  fontWeight: "700",
                   color: "#0F172A",
                   fontFamily: "inherit",
                 }}
@@ -240,15 +238,15 @@ export default function Connexion() {
             display: "flex",
             alignItems: "center",
             gap: "8px",
-            border: "1px solid #E5E0D5",
+            border: "1.5px solid #0F172A",
             borderRadius: "10px",
-            padding: "7px 10px",
-            marginBottom: "4px",
-            backgroundColor: "#FEFCF8",
+            padding: "8px 10px",
+            marginBottom: "6px",
+            backgroundColor: "white",
           }}>
-            <Lock size={13} color="#78716C" strokeWidth={2.2} />
+            <Lock size={14} color="#0F172A" strokeWidth={2.5} />
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: "8px", color: "#94a3b8", fontWeight: "700" }}>
+              <p style={{ fontSize: "8.5px", color: "#64748B", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.3px" }}>
                 Mot de passe
               </p>
               <input
@@ -261,8 +259,8 @@ export default function Connexion() {
                   border: "none",
                   outline: "none",
                   backgroundColor: "transparent",
-                  fontSize: "12px",
-                  fontWeight: "600",
+                  fontSize: "13px",
+                  fontWeight: "700",
                   color: "#0F172A",
                   fontFamily: "inherit",
                 }}
@@ -281,20 +279,20 @@ export default function Connexion() {
               }}
             >
               {voirMdp ? (
-                <EyeOff size={13} color="#78716C" strokeWidth={2.2} />
+                <EyeOff size={14} color="#64748B" strokeWidth={2.5} />
               ) : (
-                <Eye size={13} color="#78716C" strokeWidth={2.2} />
+                <Eye size={14} color="#64748B" strokeWidth={2.5} />
               )}
             </button>
           </div>
 
-          <div style={{ textAlign: "right", marginBottom: "10px" }}>
+          <div style={{ textAlign: "right", marginBottom: "12px" }}>
             <Link
               href="/mot-de-passe-oublie"
               style={{
                 color: "#1D4ED8",
-                fontSize: "10px",
-                fontWeight: "700",
+                fontSize: "10.5px",
+                fontWeight: "800",
                 textDecoration: "none",
               }}
             >
@@ -307,19 +305,20 @@ export default function Connexion() {
             disabled={chargement}
             style={{
               width: "100%",
-              background: "linear-gradient(135deg, #1E3A5F 0%, #0F172A 100%)",
+              background: "linear-gradient(135deg, #0F172A 0%, #1E3A5F 100%)",
               color: "white",
-              padding: "10px",
+              padding: "12px",
               borderRadius: "10px",
               border: "none",
-              fontWeight: "800",
-              fontSize: "12px",
+              fontWeight: "900",
+              fontSize: "13px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: "6px",
               opacity: chargement ? 0.6 : 1,
+              boxShadow: "0 4px 12px rgba(15, 23, 42, 0.25)",
             }}
           >
             {chargement ? (
@@ -327,7 +326,7 @@ export default function Connexion() {
             ) : (
               <>
                 Se connecter
-                <ArrowRight size={13} strokeWidth={2.8} />
+                <ArrowRight size={14} strokeWidth={3} />
               </>
             )}
           </button>
@@ -337,13 +336,13 @@ export default function Connexion() {
           display: "flex",
           alignItems: "center",
           gap: "8px",
-          margin: "10px 0",
+          margin: "12px 0",
         }}>
-          <div style={{ flex: 1, height: "1px", backgroundColor: "#E5E0D5" }} />
-          <span style={{ fontSize: "9.5px", color: "#94a3b8", fontWeight: "700" }}>
+          <div style={{ flex: 1, height: "1.5px", backgroundColor: "#E2E8F0" }} />
+          <span style={{ fontSize: "10px", color: "#64748B", fontWeight: "800" }}>
             Ou
           </span>
-          <div style={{ flex: 1, height: "1px", backgroundColor: "#E5E0D5" }} />
+          <div style={{ flex: 1, height: "1.5px", backgroundColor: "#E2E8F0" }} />
         </div>
 
         <Link
@@ -353,32 +352,32 @@ export default function Connexion() {
             alignItems: "center",
             justifyContent: "center",
             gap: "6px",
-            border: "1.5px solid #1D4ED8",
+            border: "2px solid #1D4ED8",
             borderRadius: "10px",
-            padding: "9px",
+            padding: "10px",
             textDecoration: "none",
             color: "#1D4ED8",
-            fontSize: "11.5px",
-            fontWeight: "800",
+            fontSize: "12px",
+            fontWeight: "900",
           }}
         >
-          <UserPlus size={13} strokeWidth={2.8} />
+          <UserPlus size={14} strokeWidth={3} />
           Créer un compte client
         </Link>
 
         <p style={{
           textAlign: "center",
-          fontSize: "10.5px",
-          color: "#78716C",
-          fontWeight: "600",
-          marginTop: "10px",
+          fontSize: "11px",
+          color: "#334155",
+          fontWeight: "700",
+          marginTop: "12px",
         }}>
           Vous vendez déjà ?{" "}
           <Link
             href="/vendeur/inscription"
             style={{
-              color: "#1D4ED8",
-              fontWeight: "800",
+              color: "#EA580C",
+              fontWeight: "900",
               textDecoration: "none",
             }}
           >
@@ -388,4 +387,4 @@ export default function Connexion() {
       </div>
     </div>
   );
-  }
+          }
