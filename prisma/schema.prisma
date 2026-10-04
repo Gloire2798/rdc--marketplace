@@ -71,7 +71,7 @@ model Produit {
   items       CommandeItem[]
 }
 
-// STORIES (expirent après 24h)
+// STORIES
 model Story {
   id        String   @id @default(cuid())
   vendeurId String
@@ -120,7 +120,7 @@ model CommandeItem {
   prixUnitaire Float
 }
 
-// PAIEMENTS DES COMMANDES
+// PAIEMENTS
 model Paiement {
   id                String   @id @default(cuid())
   commandeId        String   @unique
@@ -135,7 +135,7 @@ model Paiement {
   createdAt         DateTime @default(now())
 }
 
-// SCANS DU QR
+// SCANS QR
 model QrScan {
   id          String   @id @default(cuid())
   commandeId  String
@@ -145,7 +145,7 @@ model QrScan {
   scanAt      DateTime @default(now())
 }
 
-// FINANCES ADMINISTRATIVES
+// FINANCES
 model PaiementFinance {
   id           String   @id @default(cuid())
   vendeurId    String
@@ -165,7 +165,7 @@ model PaiementFinance {
   @@index([statut])
 }
 
-// PARAMÈTRES DU COMPLEXE (singleton)
+// PARAMÈTRES DU COMPLEXE
 model Parametre {
   id                String   @id @default("singleton")
   nomComplexe       String   @default("GK Sensei")
@@ -212,14 +212,14 @@ model Abonnement {
   @@index([vendeurId])
 }
 
-// TOKENS DE RÉINITIALISATION MOT DE PASSE
+// TOKENS RESET MDP
 model TokenReset {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  code      String   // Code à 6 chiffres
-  expireAt  DateTime // Expire après 15 minutes
+  code      String
+  expireAt  DateTime
   utilise   Boolean  @default(false)
 
   createdAt DateTime @default(now())
@@ -227,4 +227,27 @@ model TokenReset {
   @@index([userId])
   @@index([code])
   @@index([expireAt])
+}
+
+// LOGS DE SÉCURITÉ
+model LogSecurite {
+  id        String   @id @default(cuid())
+
+  type      String   // CONNEXION_ECHEC, INSCRIPTION, ACTION_ADMIN, ERREUR...
+  niveau    String   @default("INFO") // INFO, WARNING, DANGER
+  message   String
+  details   String?  // JSON stringifié avec plus d'infos
+
+  userId    String?  // User concerné (si connu)
+  telephone String?  // Téléphone tenté (si connu)
+  ip        String?  // Adresse IP
+  userAgent String?  // Navigateur
+
+  createdAt DateTime @default(now())
+
+  @@index([type])
+  @@index([niveau])
+  @@index([userId])
+  @@index([ip])
+  @@index([createdAt])
 }
