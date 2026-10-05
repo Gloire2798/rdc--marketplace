@@ -36,40 +36,51 @@ export default function GraphiqueVentes({ data }: GraphiqueVentesProps) {
   return (
     <div style={{
       backgroundColor: "white",
-      borderRadius: "10px",
-      padding: "12px",
+      borderRadius: "20px",
+      padding: "16px",
       marginBottom: "16px",
-      boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
-      border: "1px solid #F1F5F9",
+      border: "1px solid #D4C5A0",
+      boxShadow: "0 2px 8px rgba(120, 100, 60, 0.06)",
     }}>
       <div style={{
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        marginBottom: "8px",
+        marginBottom: "12px",
         flexWrap: "wrap",
         gap: "8px",
       }}>
         <h2 style={{
-          fontSize: "14px",
-          fontWeight: "800",
+          fontSize: "13px",
+          fontWeight: "900",
           color: "#0F172A",
+          textTransform: "uppercase",
+          letterSpacing: "0.5px",
         }}>
           Évolution des ventes
         </h2>
 
-        <div style={{ display: "flex", gap: "3px", backgroundColor: "#F1F5F9", borderRadius: "7px", padding: "2px" }}>
+        <div style={{
+          display: "flex",
+          gap: "3px",
+          backgroundColor: "#F5EAD2",
+          borderRadius: "10px",
+          padding: "3px",
+          border: "1px solid #D4C5A0",
+        }}>
           <button
             onClick={() => setPeriode("semaine")}
             style={{
-              padding: "3px 9px",
-              fontSize: "10px",
-              fontWeight: "700",
+              padding: "4px 10px",
+              fontSize: "10.5px",
+              fontWeight: "800",
               border: "none",
-              borderRadius: "5px",
-              backgroundColor: periode === "semaine" ? "white" : "transparent",
-              color: periode === "semaine" ? "#0F172A" : "#64748b",
+              borderRadius: "7px",
+              backgroundColor: periode === "semaine" ? "#0F172A" : "transparent",
+              color: periode === "semaine" ? "white" : "#57534E",
               cursor: "pointer",
+              transition: "all 0.15s ease",
+              fontFamily: "inherit",
             }}
           >
             Semaine
@@ -77,14 +88,16 @@ export default function GraphiqueVentes({ data }: GraphiqueVentesProps) {
           <button
             onClick={() => setPeriode("mois")}
             style={{
-              padding: "3px 9px",
-              fontSize: "10px",
-              fontWeight: "700",
+              padding: "4px 10px",
+              fontSize: "10.5px",
+              fontWeight: "800",
               border: "none",
-              borderRadius: "5px",
-              backgroundColor: periode === "mois" ? "#1D4ED8" : "transparent",
-              color: periode === "mois" ? "white" : "#64748b",
+              borderRadius: "7px",
+              backgroundColor: periode === "mois" ? "#0F172A" : "transparent",
+              color: periode === "mois" ? "white" : "#57534E",
               cursor: "pointer",
+              transition: "all 0.15s ease",
+              fontFamily: "inherit",
             }}
           >
             Mois
@@ -93,23 +106,32 @@ export default function GraphiqueVentes({ data }: GraphiqueVentesProps) {
       </div>
 
       {dataAffichee.length === 0 ? (
-        <div style={{
-          textAlign: "center",
-          padding: "30px 20px",
-          color: "#94a3b8",
-        }}>
-          <TrendingUp size={24} strokeWidth={1.5} style={{ marginBottom: "6px" }} />
-          <p style={{ fontSize: "11px", fontWeight: "600" }}>
+        <div style={{ textAlign: "center", padding: "34px 20px" }}>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "50px",
+            height: "50px",
+            borderRadius: "50%",
+            backgroundColor: "#F5EAD2",
+            marginBottom: "8px",
+          }}>
+            <TrendingUp size={22} color="#EA580C" strokeWidth={2} />
+          </div>
+          <p style={{ fontSize: "11.5px", fontWeight: "800", color: "#57534E" }}>
             Aucune vente pour le moment
           </p>
         </div>
       ) : (
         <>
           <p style={{
-            fontSize: "10px",
-            color: "#64748b",
-            fontWeight: "600",
-            marginBottom: "8px",
+            fontSize: "10.5px",
+            color: "#57534E",
+            fontWeight: "800",
+            marginBottom: "10px",
+            textTransform: "uppercase",
+            letterSpacing: "0.3px",
           }}>
             {dataAffichee.length} mois avec des ventes
           </p>
@@ -119,43 +141,45 @@ export default function GraphiqueVentes({ data }: GraphiqueVentesProps) {
               <AreaChart data={dataAffichee} margin={{ top: 10, right: 8, left: -28, bottom: 5 }}>
                 <defs>
                   <linearGradient id="colorVentes" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="#3B82F6" stopOpacity={0.05} />
+                    <stop offset="0%" stopColor="#EA580C" stopOpacity={0.5} />
+                    <stop offset="100%" stopColor="#EA580C" stopOpacity={0.05} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="4 4" stroke="#E2E8F0" vertical={false} />
+                <CartesianGrid strokeDasharray="4 4" stroke="#D4C5A0" vertical={false} />
                 <XAxis
                   dataKey="mois"
-                  tick={{ fontSize: 10, fill: "#475569", fontWeight: 600 }}
-                  axisLine={{ stroke: "#E2E8F0" }}
+                  tick={{ fontSize: 10, fill: "#57534E", fontWeight: 700 }}
+                  axisLine={{ stroke: "#D4C5A0" }}
                   tickLine={false}
                 />
                 <YAxis
-                  tick={{ fontSize: 10, fill: "#475569", fontWeight: 600 }}
+                  tick={{ fontSize: 10, fill: "#57534E", fontWeight: 700 }}
                   axisLine={false}
                   tickLine={false}
                   tickFormatter={formaterMontant}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "white",
+                    backgroundColor: "#0F172A",
                     border: "none",
-                    borderRadius: "8px",
+                    borderRadius: "10px",
                     fontSize: "11px",
-                    padding: "6px 10px",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                    padding: "8px 12px",
+                    boxShadow: "0 4px 12px rgba(15, 23, 42, 0.25)",
+                    color: "white",
                   }}
-                  labelStyle={{ color: "#0F172A", fontWeight: "700", marginBottom: "2px" }}
+                  labelStyle={{ color: "white", fontWeight: "900", marginBottom: "3px" }}
+                  itemStyle={{ color: "#EA580C", fontWeight: "900" }}
                   formatter={(value: number) => [`${value.toLocaleString("fr-FR")} FC`, "Ventes"]}
                 />
                 <Area
                   type="monotone"
                   dataKey="montant"
-                  stroke="#1D4ED8"
-                  strokeWidth={2}
+                  stroke="#EA580C"
+                  strokeWidth={2.5}
                   fill="url(#colorVentes)"
-                  dot={{ fill: "#1D4ED8", r: 4, strokeWidth: 2, stroke: "white" }}
-                  activeDot={{ r: 6, fill: "#1D4ED8", stroke: "white", strokeWidth: 3 }}
+                  dot={{ fill: "#EA580C", r: 4, strokeWidth: 2, stroke: "white" }}
+                  activeDot={{ r: 6, fill: "#EA580C", stroke: "white", strokeWidth: 3 }}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -164,4 +188,4 @@ export default function GraphiqueVentes({ data }: GraphiqueVentesProps) {
       )}
     </div>
   );
-              }
+          }
