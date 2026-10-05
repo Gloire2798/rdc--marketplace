@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import LogoBoutique from "@/app/components/LogoBoutique";
-import { Phone, Package, Check, X } from "lucide-react";
+import { Phone, Package, Check, X, User } from "lucide-react";
 
 interface Vendeur {
   id: string;
@@ -44,50 +44,50 @@ export default function LienVendeur({ vendeur }: { vendeur: Vendeur }) {
   return (
     <div style={{
       backgroundColor: "white",
-      borderRadius: "12px",
-      padding: "12px",
-      boxShadow: "0 1px 4px rgba(15, 23, 42, 0.06)",
+      borderRadius: "14px",
+      padding: "10px",
+      boxShadow: "0 2px 6px rgba(120, 100, 60, 0.06)",
       display: "flex",
       alignItems: "center",
       gap: "10px",
-      borderLeft: `3px solid ${vendeur.actif ? "#16a34a" : "#f97316"}`,
+      border: "1px solid #D4C5A0",
+      borderLeft: `3px solid ${vendeur.actif ? "#16A34A" : "#EA580C"}`,
     }}>
       <LogoBoutique nom={vendeur.nomBoutique} taille={44} />
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <h3 style={{
-          fontSize: "14px",
-          fontWeight: "700",
+          fontSize: "13.5px",
+          fontWeight: "900",
           color: "#0F172A",
           marginBottom: "3px",
           overflow: "hidden",
-          display: "-webkit-box",
-          WebkitLineClamp: 1,
-          WebkitBoxOrient: "vertical",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          lineHeight: 1.2,
         }}>
           {vendeur.nomBoutique}
         </h3>
 
         <p style={{
-          fontSize: "11px",
-          color: "#334155",
-          fontWeight: "600",
-          marginBottom: "2px",
-          overflow: "hidden",
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
-          lineHeight: 1.3,
+          fontSize: "10.5px",
+          color: "#57534E",
+          fontWeight: "700",
+          marginBottom: "3px",
+          display: "flex",
+          alignItems: "center",
+          gap: "3px",
         }}>
-          Propriétaire : {vendeur.nomProprietaire || "—"}
+          <User size={10} strokeWidth={2.8} />
+          {vendeur.nomProprietaire || "—"}
         </p>
 
         {vendeur.description && (
           <p style={{
-            fontSize: "10.5px",
-            color: "#64748b",
-            fontWeight: "500",
-            marginBottom: "4px",
+            fontSize: "10px",
+            color: "#57534E",
+            fontWeight: "600",
+            marginBottom: "5px",
             overflow: "hidden",
             display: "-webkit-box",
             WebkitLineClamp: 2,
@@ -102,15 +102,15 @@ export default function LienVendeur({ vendeur }: { vendeur: Vendeur }) {
           href={`tel:${vendeur.telephone}`}
           style={{
             fontSize: "10.5px",
-            color: "#1D4ED8",
-            fontWeight: "700",
+            color: "#0F172A",
+            fontWeight: "900",
             display: "inline-flex",
             alignItems: "center",
             gap: "4px",
             textDecoration: "none",
           }}
         >
-          <Phone size={11} strokeWidth={2.5} />
+          <Phone size={11} strokeWidth={2.8} />
           Appeler
         </a>
       </div>
@@ -125,16 +125,17 @@ export default function LienVendeur({ vendeur }: { vendeur: Vendeur }) {
               alignItems: "center",
               justifyContent: "center",
               gap: "4px",
-              backgroundColor: "#1D4ED8",
+              backgroundColor: "#0F172A",
               color: "white",
-              padding: "7px 12px",
-              borderRadius: "7px",
+              padding: "8px 12px",
+              borderRadius: "20px",
               border: "none",
-              fontWeight: "700",
+              fontWeight: "900",
               fontSize: "11px",
               cursor: "pointer",
               opacity: chargement ? 0.6 : 1,
               whiteSpace: "nowrap",
+              fontFamily: "inherit",
             }}
           >
             <Check size={12} strokeWidth={3} />
@@ -150,15 +151,16 @@ export default function LienVendeur({ vendeur }: { vendeur: Vendeur }) {
               justifyContent: "center",
               gap: "4px",
               backgroundColor: "white",
-              color: "#475569",
-              padding: "7px 12px",
-              borderRadius: "7px",
-              border: "1px solid #cbd5e1",
-              fontWeight: "700",
+              color: "#DC2626",
+              padding: "8px 12px",
+              borderRadius: "20px",
+              border: "1.5px solid #DC2626",
+              fontWeight: "900",
               fontSize: "11px",
               cursor: "pointer",
               opacity: chargement ? 0.6 : 1,
               whiteSpace: "nowrap",
+              fontFamily: "inherit",
             }}
           >
             <X size={12} strokeWidth={3} />
@@ -173,21 +175,22 @@ export default function LienVendeur({ vendeur }: { vendeur: Vendeur }) {
             alignItems: "center",
             justifyContent: "center",
             gap: "4px",
-            backgroundColor: "#F1F5F9",
-            color: "#334155",
-            padding: "5px 10px",
-            borderRadius: "7px",
+            backgroundColor: "#F5EAD2",
+            color: "#0F172A",
+            padding: "6px 10px",
+            borderRadius: "20px",
             textAlign: "center",
             textDecoration: "none",
             fontSize: "10.5px",
-            fontWeight: "700",
+            fontWeight: "900",
             whiteSpace: "nowrap",
+            border: "1px solid #D4C5A0",
           }}
         >
-          <Package size={11} strokeWidth={2.5} />
+          <Package size={11} strokeWidth={2.8} />
           Voir
         </a>
       </div>
     </div>
   );
-}
+            }
