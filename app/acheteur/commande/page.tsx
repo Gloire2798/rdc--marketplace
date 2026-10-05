@@ -152,37 +152,42 @@ export default function PageCommande() {
 
   if (chargement) {
     return (
-      <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-        <p>Chargement...</p>
+      <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
+        <p style={{ color: "#57534E", fontWeight: "700" }}>Chargement...</p>
       </div>
     );
   }
 
   const champStyle = {
     width: "100%",
-    padding: "10px",
-    borderRadius: "10px",
-    border: "1px solid #E5E0D5",
+    padding: "12px 14px",
+    borderRadius: "14px",
+    border: "1.5px solid #0F172A",
     fontSize: "13px",
-    marginBottom: "10px",
+    marginBottom: "12px",
     fontFamily: "inherit",
-    backgroundColor: "#FEFCF8",
+    backgroundColor: "white",
+    fontWeight: "700" as const,
+    color: "#0F172A",
+    outline: "none",
   };
 
   const labelStyle = {
     display: "block",
-    marginBottom: "5px",
-    fontWeight: "700" as const,
-    fontSize: "11.5px",
-    color: "#334155",
+    marginBottom: "6px",
+    fontWeight: "800" as const,
+    fontSize: "11px",
+    color: "#0F172A",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.4px",
   };
 
   const logoBox = {
     width: "38px",
     height: "38px",
-    borderRadius: "8px",
+    borderRadius: "10px",
     backgroundColor: "white",
-    border: "1px solid #E5E0D5",
+    border: "1.5px solid #0F172A",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -204,46 +209,81 @@ export default function PageCommande() {
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "white",
-    border: "1px solid #E5E0D5",
-    borderRadius: "8px",
+    border: "1.5px solid #0F172A",
+    borderRadius: "12px",
     padding: "8px 10px",
     minWidth: 0,
   };
 
   const copierBtnStyle = (actif: boolean) => ({
-    padding: "5px 9px",
-    fontSize: "10.5px",
-    backgroundColor: actif ? "#16a34a" : "#F1ECE0",
-    color: actif ? "white" : "#374151",
+    padding: "5px 10px",
+    fontSize: "11px",
+    backgroundColor: actif ? "#16A34A" : "#0F172A",
+    color: "white",
     border: "none",
-    borderRadius: "6px",
+    borderRadius: "8px",
     cursor: "pointer",
-    fontWeight: "700" as const,
+    fontWeight: "800" as const,
     flexShrink: 0,
     marginLeft: "6px",
   });
 
-  return (
-    <div style={{ padding: "16px 14px 20px 14px", maxWidth: "600px", margin: "0 auto", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-      <Link href="/acheteur/panier" style={{ color: "#1D4ED8", fontSize: "11px", fontWeight: "700" }}>
+  const titreSection = {
+    fontSize: "12px",
+    fontWeight: "900" as const,
+    color: "#0F172A",
+    marginBottom: "10px",
+    textTransform: "uppercase" as const,
+    letterSpacing: "1px",
+    display: "flex" as const,
+    alignItems: "center" as const,
+    gap: "8px",
+  };
+
+  const traitOrange = {
+    display: "inline-block",
+    width: "3px",
+    height: "14px",
+    backgroundColor: "#EA580C",
+    borderRadius: "2px",
+  };  return (
+    <div style={{ padding: "16px 14px 30px 14px", maxWidth: "600px", margin: "0 auto", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
+      <Link href="/acheteur/panier" style={{
+        color: "#0F172A",
+        fontSize: "11.5px",
+        fontWeight: "800",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "4px",
+      }}>
         ← Retour au panier
       </Link>
 
-      <h1 style={{ fontSize: "20px", fontWeight: "900", color: "#0F172A", marginBottom: "4px", marginTop: "12px" }}>
+      <h1 style={{ fontSize: "24px", fontWeight: "900", color: "#0F172A", marginBottom: "4px", marginTop: "12px", letterSpacing: "-0.5px" }}>
         Finaliser ma commande
       </h1>
-      <p style={{ color: "#64748b", marginBottom: "20px", fontSize: "11.5px", fontWeight: "600" }}>
+      <p style={{ color: "#57534E", marginBottom: "20px", fontSize: "12px", fontWeight: "700" }}>
         Remplissez vos informations.
       </p>
 
       {erreur && (
-        <div style={{ backgroundColor: "#FEE2E2", color: "#991B1B", padding: "10px", borderRadius: "10px", marginBottom: "14px", fontSize: "11.5px", fontWeight: "600" }}>
+        <div style={{
+          backgroundColor: "#FEE2E2",
+          color: "#991B1B",
+          padding: "12px",
+          borderRadius: "14px",
+          marginBottom: "14px",
+          fontSize: "11.5px",
+          fontWeight: "700",
+          border: "1.5px solid #DC2626",
+        }}>
           {erreur}
         </div>
       )}
 
       <form onSubmit={soumettre}>
-        <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px" }}>
+        <h2 style={titreSection}>
+          <span style={traitOrange} />
           Vos informations
         </h2>
 
@@ -266,42 +306,47 @@ export default function PageCommande() {
           required
         />
 
-        <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px", marginTop: "14px" }}>
+        <h2 style={{ ...titreSection, marginTop: "16px" }}>
+          <span style={traitOrange} />
           Mode de réception
         </h2>
 
-        <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+        <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
           <button
             type="button"
             onClick={() => changer("mode", "RETRAIT")}
             style={{
               flex: 1,
-              padding: "10px",
-              borderRadius: "10px",
-              border: form.mode === "RETRAIT" ? "2px solid #1D4ED8" : "1px solid #E5E0D5",
-              backgroundColor: form.mode === "RETRAIT" ? "#EFF6FF" : "white",
-              fontWeight: "700",
-              fontSize: "12px",
+              padding: "12px",
+              borderRadius: "14px",
+              border: form.mode === "RETRAIT" ? "2px solid #0F172A" : "1.5px solid #D4C5A0",
+              backgroundColor: form.mode === "RETRAIT" ? "#0F172A" : "white",
+              color: form.mode === "RETRAIT" ? "white" : "#0F172A",
+              fontWeight: "900",
+              fontSize: "12.5px",
               cursor: "pointer",
+              transition: "all 0.15s ease",
             }}
           >
-            🏪 Retrait
+            Retrait
           </button>
           <button
             type="button"
             onClick={() => changer("mode", "LIVRAISON")}
             style={{
               flex: 1,
-              padding: "10px",
-              borderRadius: "10px",
-              border: form.mode === "LIVRAISON" ? "2px solid #1D4ED8" : "1px solid #E5E0D5",
-              backgroundColor: form.mode === "LIVRAISON" ? "#EFF6FF" : "white",
-              fontWeight: "700",
-              fontSize: "12px",
+              padding: "12px",
+              borderRadius: "14px",
+              border: form.mode === "LIVRAISON" ? "2px solid #0F172A" : "1.5px solid #D4C5A0",
+              backgroundColor: form.mode === "LIVRAISON" ? "#0F172A" : "white",
+              color: form.mode === "LIVRAISON" ? "white" : "#0F172A",
+              fontWeight: "900",
+              fontSize: "12.5px",
               cursor: "pointer",
+              transition: "all 0.15s ease",
             }}
           >
-            🚚 Livraison
+            Livraison
           </button>
         </div>
 
@@ -319,58 +364,80 @@ export default function PageCommande() {
           </>
         )}
 
-        <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px", marginTop: "14px" }}>
+        <h2 style={{ ...titreSection, marginTop: "16px" }}>
+          <span style={traitOrange} />
           Paiement de l&apos;acompte
         </h2>
 
         <div style={{
-          backgroundColor: "#EFF6FF",
-          border: "1px solid #BFDBFE",
-          borderRadius: "12px",
-          padding: "12px",
+          backgroundColor: "white",
+          border: "1.5px solid #0F172A",
+          borderRadius: "20px",
+          padding: "14px",
           marginBottom: "14px",
+          boxShadow: "4px 4px 0 #EA580C",
         }}>
-          <p style={{ fontSize: "10.5px", fontWeight: "800", color: "#1E40AF", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+          <p style={{
+            fontSize: "10.5px",
+            fontWeight: "900",
+            color: "#57534E",
+            marginBottom: "6px",
+            textTransform: "uppercase",
+            letterSpacing: "0.5px",
+          }}>
             Acompte à payer (10%)
           </p>
 
           {acompteUSD > 0 && (
-            <p style={{ fontSize: "15px", fontWeight: "900", color: "#1E40AF", marginBottom: "2px" }}>
+            <p style={{ fontSize: "20px", fontWeight: "900", color: "#EA580C", marginBottom: "2px", letterSpacing: "-0.3px" }}>
               {formaterPrix(acompteUSD, "USD")}
             </p>
           )}
           {acompteFC > 0 && (
-            <p style={{ fontSize: "15px", fontWeight: "900", color: "#1E40AF", marginBottom: "8px" }}>
+            <p style={{ fontSize: "20px", fontWeight: "900", color: "#EA580C", marginBottom: "8px", letterSpacing: "-0.3px" }}>
               {formaterPrix(acompteFC, "FC")}
             </p>
           )}
 
-          <p style={{ fontSize: "10.5px", fontWeight: "800", color: "#1E40AF", marginBottom: "6px", marginTop: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-            Reste à payer à la remise
-          </p>
-
-          {resteUSD > 0 && (
-            <p style={{ fontSize: "13px", fontWeight: "800", color: "#1E3A5F", marginBottom: "2px" }}>
-              {formaterPrix(resteUSD, "USD")}
+          <div style={{
+            borderTop: "1px dashed #D4C5A0",
+            paddingTop: "10px",
+            marginTop: "8px",
+          }}>
+            <p style={{
+              fontSize: "10.5px",
+              fontWeight: "900",
+              color: "#57534E",
+              marginBottom: "6px",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+            }}>
+              Reste à payer à la remise
             </p>
-          )}
-          {resteFC > 0 && (
-            <p style={{ fontSize: "13px", fontWeight: "800", color: "#1E3A5F" }}>
-              {formaterPrix(resteFC, "FC")}
-            </p>
-          )}
 
-          <p style={{ fontSize: "10px", color: "#475569", marginTop: "10px", lineHeight: 1.4, fontWeight: "500" }}>
-            Envoyez l&apos;acompte à <strong>{vendeur?.nomBoutique}</strong> via l&apos;un des numéros ci-dessous.
+            {resteUSD > 0 && (
+              <p style={{ fontSize: "14px", fontWeight: "900", color: "#0F172A", marginBottom: "2px" }}>
+                {formaterPrix(resteUSD, "USD")}
+              </p>
+            )}
+            {resteFC > 0 && (
+              <p style={{ fontSize: "14px", fontWeight: "900", color: "#0F172A" }}>
+                {formaterPrix(resteFC, "FC")}
+              </p>
+            )}
+          </div>
+
+          <p style={{ fontSize: "11px", color: "#57534E", marginTop: "12px", lineHeight: 1.5, fontWeight: "600" }}>
+            Envoyez l&apos;acompte à <strong style={{ color: "#0F172A" }}>{vendeur?.nomBoutique}</strong> via l&apos;un des numéros ci-dessous.
           </p>
 
           {vendeur?.numMpesa && (
-            <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center", marginTop: "10px" }}>
+            <div style={{ display: "flex", gap: "6px", marginBottom: "8px", alignItems: "center", marginTop: "12px" }}>
               <div style={logoBox}>
                 <img src="https://i.ibb.co/NndcrT1d/m-pesa.jpg" alt="M-Pesa" style={logoImg} />
               </div>
               <div style={numeroBoxStyle}>
-                <span style={{ fontSize: "12.5px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <span style={{ fontSize: "13px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis", color: "#0F172A" }}>
                   {vendeur.numMpesa}
                 </span>
                 <button
@@ -378,19 +445,19 @@ export default function PageCommande() {
                   onClick={() => copier(vendeur.numMpesa!, "mpesa")}
                   style={copierBtnStyle(copie === "mpesa")}
                 >
-                  {copie === "mpesa" ? "✅" : "📋"}
+                  {copie === "mpesa" ? "Copié" : "Copier"}
                 </button>
               </div>
             </div>
           )}
 
           {vendeur?.numOrange && (
-            <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center" }}>
+            <div style={{ display: "flex", gap: "6px", marginBottom: "8px", alignItems: "center" }}>
               <div style={logoBox}>
                 <img src="https://i.ibb.co/pvr5LPxN/orange.jpg" alt="Orange" style={logoImg} />
               </div>
               <div style={numeroBoxStyle}>
-                <span style={{ fontSize: "12.5px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <span style={{ fontSize: "13px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis", color: "#0F172A" }}>
                   {vendeur.numOrange}
                 </span>
                 <button
@@ -398,19 +465,19 @@ export default function PageCommande() {
                   onClick={() => copier(vendeur.numOrange!, "orange")}
                   style={copierBtnStyle(copie === "orange")}
                 >
-                  {copie === "orange" ? "✅" : "📋"}
+                  {copie === "orange" ? "Copié" : "Copier"}
                 </button>
               </div>
             </div>
           )}
 
           {vendeur?.numAirtel && (
-            <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center" }}>
+            <div style={{ display: "flex", gap: "6px", marginBottom: "8px", alignItems: "center" }}>
               <div style={logoBox}>
                 <img src="https://i.ibb.co/spmBgLvg/airtel.jpg" alt="Airtel" style={logoImg} />
               </div>
               <div style={numeroBoxStyle}>
-                <span style={{ fontSize: "12.5px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <span style={{ fontSize: "13px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis", color: "#0F172A" }}>
                   {vendeur.numAirtel}
                 </span>
                 <button
@@ -418,23 +485,23 @@ export default function PageCommande() {
                   onClick={() => copier(vendeur.numAirtel!, "airtel")}
                   style={copierBtnStyle(copie === "airtel")}
                 >
-                  {copie === "airtel" ? "✅" : "📋"}
+                  {copie === "airtel" ? "Copié" : "Copier"}
                 </button>
               </div>
             </div>
           )}
 
           {!vendeur?.numMpesa && !vendeur?.numOrange && !vendeur?.numAirtel && vendeur?.numMobileMoney && (
-            <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center", marginTop: "10px" }}>
+            <div style={{ display: "flex", gap: "6px", marginBottom: "8px", alignItems: "center", marginTop: "12px" }}>
               <div style={logoBox}>
                 <span style={{ fontSize: "18px" }}>📱</span>
               </div>
               <div style={numeroBoxStyle}>
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <p style={{ fontSize: "9px", color: "#64748b", fontWeight: "700", textTransform: "uppercase" }}>
+                  <p style={{ fontSize: "9px", color: "#57534E", fontWeight: "800", textTransform: "uppercase" }}>
                     Mobile Money
                   </p>
-                  <span style={{ fontSize: "12.5px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis", display: "block" }}>
+                  <span style={{ fontSize: "13px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis", display: "block", color: "#0F172A" }}>
                     {vendeur.numMobileMoney}
                   </span>
                 </div>
@@ -443,7 +510,7 @@ export default function PageCommande() {
                   onClick={() => copier(vendeur.numMobileMoney!, "mobile")}
                   style={copierBtnStyle(copie === "mobile")}
                 >
-                  {copie === "mobile" ? "✅" : "📋"}
+                  {copie === "mobile" ? "Copié" : "Copier"}
                 </button>
               </div>
             </div>
@@ -460,16 +527,18 @@ export default function PageCommande() {
           required
         />
 
-        <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px", marginTop: "14px" }}>
+        <h2 style={{ ...titreSection, marginTop: "16px" }}>
+          <span style={traitOrange} />
           Récapitulatif
         </h2>
 
         <div style={{
           backgroundColor: "white",
-          borderRadius: "12px",
-          padding: "12px",
-          border: "1px solid #E8DFC8",
-          marginBottom: "14px",
+          borderRadius: "20px",
+          padding: "14px",
+          border: "1.5px solid #0F172A",
+          marginBottom: "16px",
+          boxShadow: "4px 4px 0 #EA580C",
         }}>
           {panier.map((a) => {
             const prixFinal = a.prixPromo !== null ? a.prixPromo : a.prix;
@@ -478,32 +547,33 @@ export default function PageCommande() {
 
             return (
               <div key={cleLigne} style={{
-                marginBottom: "8px",
-                paddingBottom: "8px",
-                borderBottom: "1px dashed #F1ECE0",
+                marginBottom: "10px",
+                paddingBottom: "10px",
+                borderBottom: "1px dashed #D4C5A0",
               }}>
                 <div style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  fontSize: "11.5px",
+                  fontSize: "12px",
                 }}>
-                  <span style={{ color: "#334155", fontWeight: "700" }}>
+                  <span style={{ color: "#0F172A", fontWeight: "800" }}>
                     {a.nom} × {a.quantite}
                   </span>
-                  <span style={{ fontWeight: "700", color: "#0F172A" }}>
+                  <span style={{ fontWeight: "900", color: "#0F172A" }}>
                     {formaterPrix(prixFinal * a.quantite, a.devise)}
                   </span>
                 </div>
                 {labelVariante && (
                   <p style={{
                     fontSize: "10px",
-                    color: "#1D4ED8",
-                    fontWeight: "700",
-                    backgroundColor: "#EFF6FF",
+                    color: "#0F172A",
+                    fontWeight: "800",
+                    backgroundColor: "#F5EAD2",
+                    border: "1px solid #D4C5A0",
                     display: "inline-block",
                     padding: "2px 7px",
-                    borderRadius: "5px",
-                    marginTop: "3px",
+                    borderRadius: "8px",
+                    marginTop: "4px",
                   }}>
                     {labelVariante}
                   </p>
@@ -515,17 +585,20 @@ export default function PageCommande() {
           <div style={{
             display: "flex",
             justifyContent: "space-between",
-            paddingTop: "6px",
+            alignItems: "center",
+            paddingTop: "8px",
           }}>
-            <span style={{ fontWeight: "900", fontSize: "13px", color: "#0F172A" }}>TOTAL</span>
+            <span style={{ fontWeight: "900", fontSize: "13px", color: "#0F172A", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+              Total
+            </span>
             <div style={{ textAlign: "right" }}>
               {totalUSD > 0 && (
-                <p style={{ fontSize: "14px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.2 }}>
+                <p style={{ fontSize: "17px", fontWeight: "900", color: "#EA580C", lineHeight: 1.2, letterSpacing: "-0.3px" }}>
                   {formaterPrix(totalUSD, "USD")}
                 </p>
               )}
               {totalFC > 0 && (
-                <p style={{ fontSize: "14px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.2 }}>
+                <p style={{ fontSize: "17px", fontWeight: "900", color: "#EA580C", lineHeight: 1.2, letterSpacing: "-0.3px" }}>
                   {formaterPrix(totalFC, "FC")}
                 </p>
               )}
@@ -538,20 +611,23 @@ export default function PageCommande() {
           disabled={envoi}
           style={{
             width: "100%",
-            backgroundColor: "#1D4ED8",
+            backgroundColor: "#0F172A",
             color: "white",
-            padding: "13px",
-            borderRadius: "12px",
+            padding: "16px",
+            borderRadius: "26px",
             border: "none",
-            fontWeight: "800",
-            fontSize: "13px",
+            fontWeight: "900",
+            fontSize: "14px",
             cursor: "pointer",
             opacity: envoi ? 0.6 : 1,
+            letterSpacing: "-0.2px",
+            boxShadow: "0 4px 12px rgba(15, 23, 42, 0.25)",
+            fontFamily: "inherit",
           }}
         >
-          {envoi ? "Envoi..." : "✅ Confirmer la commande"}
+          {envoi ? "Envoi..." : "Confirmer la commande"}
         </button>
       </form>
     </div>
   );
-        }
+                      }
