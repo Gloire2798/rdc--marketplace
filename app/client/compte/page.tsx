@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import CarteQR from "@/app/acheteur/commande/confirmation/CarteQR";
+import { Phone, Heart, ShoppingBag, Store, ChevronRight, Clock, CheckCircle, Package, XCircle } from "lucide-react";
 
 export default async function CompteClient() {
   const session = await getSession();
@@ -49,45 +50,68 @@ export default async function CompteClient() {
     });
   };
 
-  const configStatut: Record<string, { label: string; bg: string; color: string }> = {
-    EN_ATTENTE: { label: "⏳ En attente", bg: "#FEF3C7", color: "#78350F" },
-    PAYE: { label: "✅ Payé", bg: "#DBEAFE", color: "#1E40AF" },
-    PRET: { label: "🟢 Prêt", bg: "#DCFCE7", color: "#15803D" },
-    RETIRE: { label: "🎉 Retiré", bg: "#DBEAFE", color: "#1E40AF" },
-    ANNULE: { label: "❌ Annulé", bg: "#FEE2E2", color: "#991B1B" },
+  const configStatut: Record<string, { label: string; bg: string; color: string; Icon: any }> = {
+    EN_ATTENTE: { label: "En attente", bg: "#FEF3C7", color: "#B45309", Icon: Clock },
+    PAYE: { label: "Payé", bg: "#DBEAFE", color: "#1E40AF", Icon: CheckCircle },
+    PRET: { label: "Prêt", bg: "#DCFCE7", color: "#15803D", Icon: Package },
+    RETIRE: { label: "Retiré", bg: "#DCFCE7", color: "#15803D", Icon: CheckCircle },
+    ANNULE: { label: "Annulé", bg: "#FEE2E2", color: "#991B1B", Icon: XCircle },
   };
 
   return (
     <div style={{
-      padding: "20px 14px 100px 14px",
+      padding: "16px 12px 100px 12px",
       maxWidth: "600px",
       margin: "0 auto",
-      backgroundColor: "#FAF5E8",
+      backgroundColor: "#F5EAD2",
       minHeight: "100vh",
     }}>
-      <h1 style={{ fontSize: "22px", fontWeight: "900", color: "#0F172A", marginBottom: "4px" }}>
+      <h1 style={{
+        fontSize: "24px",
+        fontWeight: "900",
+        color: "#0F172A",
+        marginBottom: "3px",
+        letterSpacing: "-0.5px",
+      }}>
         Bonjour {session.nom || "Client"}
       </h1>
-      <p style={{ color: "#64748b", fontSize: "12px", fontWeight: "600", marginBottom: "18px" }}>
+      <p style={{ color: "#57534E", fontSize: "12px", fontWeight: "700", marginBottom: "18px" }}>
         Bienvenue dans votre espace GK Sensei
       </p>
 
+      {/* Carte téléphone */}
       <div style={{
         backgroundColor: "white",
-        borderRadius: "12px",
-        padding: "12px 14px",
-        border: "1px solid #E8DFC8",
+        borderRadius: "16px",
+        padding: "14px",
+        border: "1px solid #D4C5A0",
         marginBottom: "12px",
+        boxShadow: "0 2px 6px rgba(120, 100, 60, 0.06)",
       }}>
-        <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "700", marginBottom: "3px", textTransform: "uppercase" }}>
+        <p style={{
+          fontSize: "10px",
+          color: "#57534E",
+          fontWeight: "900",
+          marginBottom: "5px",
+          textTransform: "uppercase",
+          letterSpacing: "0.5px",
+        }}>
           Téléphone
         </p>
-        <p style={{ fontSize: "14px", fontWeight: "800", color: "#0F172A" }}>
-          📞 {session.telephone}
+        <p style={{
+          fontSize: "14px",
+          fontWeight: "900",
+          color: "#0F172A",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+        }}>
+          <Phone size={14} strokeWidth={2.8} />
+          {session.telephone}
         </p>
       </div>
 
-      {/* Carte "Mes abonnements" */}
+      {/* Carte "Mes boutiques suivies" */}
       <Link
         href="/client/abonnements"
         style={{
@@ -95,98 +119,125 @@ export default async function CompteClient() {
           alignItems: "center",
           gap: "12px",
           backgroundColor: "white",
-          borderRadius: "12px",
+          borderRadius: "16px",
           padding: "14px",
-          border: "1px solid #E8DFC8",
-          marginBottom: "18px",
+          border: "1px solid #D4C5A0",
+          marginBottom: "20px",
           textDecoration: "none",
           color: "inherit",
+          boxShadow: "0 2px 6px rgba(120, 100, 60, 0.06)",
         }}
       >
         <div style={{
-          width: "42px",
-          height: "42px",
-          borderRadius: "10px",
-          backgroundColor: "#EFF6FF",
+          width: "44px",
+          height: "44px",
+          borderRadius: "14px",
+          backgroundColor: "#0F172A",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: "20px",
           flexShrink: 0,
         }}>
-          💙
+          <Heart size={20} color="white" strokeWidth={2.5} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <p style={{
-            fontSize: "13px",
-            fontWeight: "800",
+            fontSize: "13.5px",
+            fontWeight: "900",
             color: "#0F172A",
-            marginBottom: "2px",
+            marginBottom: "3px",
           }}>
             Mes boutiques suivies
           </p>
           <p style={{
-            fontSize: "10.5px",
-            color: "#64748b",
-            fontWeight: "600",
+            fontSize: "11px",
+            color: "#57534E",
+            fontWeight: "700",
           }}>
             {nombreAbonnements === 0
               ? "Aucune boutique suivie"
               : `${nombreAbonnements} boutique${nombreAbonnements > 1 ? "s" : ""} suivie${nombreAbonnements > 1 ? "s" : ""}`}
           </p>
         </div>
-        <span style={{
-          fontSize: "16px",
-          color: "#1D4ED8",
-          fontWeight: "800",
-          flexShrink: 0,
-        }}>
-          →
-        </span>
+        <ChevronRight size={18} color="#57534E" strokeWidth={2.8} />
       </Link>
 
+      {/* Titre section commandes */}
       <h2 style={{
-        fontSize: "15px",
+        fontSize: "12px",
         fontWeight: "900",
         color: "#0F172A",
         marginBottom: "12px",
+        textTransform: "uppercase",
+        letterSpacing: "0.8px",
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
       }}>
+        <span style={{ display: "inline-block", width: "3px", height: "14px", backgroundColor: "#EA580C", borderRadius: "2px" }} />
         Mes commandes ({commandes.length})
       </h2>
 
       {commandes.length === 0 ? (
         <div style={{
           backgroundColor: "white",
-          borderRadius: "12px",
+          borderRadius: "20px",
           padding: "50px 20px",
           textAlign: "center",
-          border: "1px solid #E8DFC8",
+          border: "1.5px solid #0F172A",
+          boxShadow: "4px 4px 0 #EA580C",
         }}>
-          <p style={{ fontSize: "44px", marginBottom: "12px" }}>🛍️</p>
-          <p style={{ fontSize: "14px", fontWeight: "800", marginBottom: "6px", color: "#0F172A" }}>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "64px",
+            height: "64px",
+            borderRadius: "50%",
+            backgroundColor: "#F5EAD2",
+            marginBottom: "12px",
+          }}>
+            <ShoppingBag size={28} color="#EA580C" strokeWidth={2.2} />
+          </div>
+          <p style={{
+            fontSize: "15px",
+            fontWeight: "900",
+            marginBottom: "6px",
+            color: "#0F172A",
+          }}>
             Aucune commande
           </p>
-          <p style={{ color: "#64748b", marginBottom: "20px", fontSize: "11.5px", fontWeight: "500" }}>
+          <p style={{
+            color: "#57534E",
+            marginBottom: "20px",
+            fontSize: "11.5px",
+            fontWeight: "600",
+            lineHeight: 1.5,
+          }}>
             Découvrez nos boutiques et faites votre première commande.
           </p>
           <Link
             href="/"
             style={{
-              display: "inline-block",
-              backgroundColor: "#1D4ED8",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              backgroundColor: "#0F172A",
               color: "white",
-              padding: "10px 20px",
-              borderRadius: "10px",
-              fontWeight: "700",
+              padding: "12px 20px",
+              borderRadius: "24px",
+              fontWeight: "900",
               fontSize: "12.5px",
               textDecoration: "none",
+              boxShadow: "0 4px 12px rgba(15, 23, 42, 0.20)",
             }}
           >
+            <Store size={14} strokeWidth={2.8} />
             Voir les boutiques
           </Link>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {commandes.map((c) => {
             let totalFC = 0;
             let totalUSD = 0;
@@ -201,6 +252,7 @@ export default async function CompteClient() {
             });
 
             const conf = configStatut[c.statut] || configStatut.EN_ATTENTE;
+            const IconeStatut = conf.Icon;
             const qrVisible = c.statut === "EN_ATTENTE" || c.statut === "PAYE" || c.statut === "PRET";
 
             return (
@@ -208,11 +260,13 @@ export default async function CompteClient() {
                 key={c.id}
                 style={{
                   backgroundColor: "white",
-                  borderRadius: "12px",
+                  borderRadius: "20px",
                   padding: "14px",
-                  border: "1px solid #E8DFC8",
+                  border: "1px solid #D4C5A0",
+                  boxShadow: "0 2px 8px rgba(120, 100, 60, 0.06)",
                 }}
               >
+                {/* Header carte */}
                 <div style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -220,38 +274,63 @@ export default async function CompteClient() {
                   gap: "8px",
                   marginBottom: "10px",
                   paddingBottom: "10px",
-                  borderBottom: "1px solid #F1ECE0",
+                  borderBottom: "1px dashed #D4C5A0",
                 }}>
                   <div style={{ minWidth: 0, flex: 1 }}>
-                    <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "700", marginBottom: "2px" }}>
-                      Commande #{c.id.slice(0, 8)}
+                    <p style={{
+                      fontSize: "9.5px",
+                      color: "#94A3B8",
+                      fontWeight: "800",
+                      marginBottom: "3px",
+                      letterSpacing: "0.2px",
+                    }}>
+                      #{c.id.slice(0, 8)}
                     </p>
-                    <p style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A" }}>
-                      🏪 {c.vendeur.nomBoutique}
+                    <p style={{
+                      fontSize: "13px",
+                      fontWeight: "900",
+                      color: "#0F172A",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                      marginBottom: "3px",
+                    }}>
+                      <Store size={12} strokeWidth={2.8} />
+                      {c.vendeur.nomBoutique}
                     </p>
-                    <p style={{ fontSize: "9.5px", color: "#94a3b8", fontWeight: "600", marginTop: "2px" }}>
+                    <p style={{
+                      fontSize: "9.5px",
+                      color: "#57534E",
+                      fontWeight: "700",
+                    }}>
                       {formaterDate(c.createdAt)}
                     </p>
                   </div>
                   <span style={{
-                    fontSize: "9.5px",
-                    fontWeight: "800",
+                    fontSize: "10px",
+                    fontWeight: "900",
                     backgroundColor: conf.bg,
                     color: conf.color,
-                    padding: "4px 8px",
+                    padding: "4px 10px",
                     borderRadius: "10px",
                     flexShrink: 0,
                     whiteSpace: "nowrap",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
                   }}>
+                    <IconeStatut size={11} strokeWidth={2.8} />
                     {conf.label}
                   </span>
                 </div>
 
+                {/* Articles */}
                 <div style={{
-                  backgroundColor: "#F8FAFC",
-                  borderRadius: "8px",
-                  padding: "8px 10px",
+                  backgroundColor: "#F5EAD2",
+                  borderRadius: "12px",
+                  padding: "10px 12px",
                   marginBottom: "10px",
+                  border: "1px solid #D4C5A0",
                 }}>
                   {c.items.map((item) => (
                     <div
@@ -259,21 +338,30 @@ export default async function CompteClient() {
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
-                        fontSize: "11px",
-                        marginBottom: "3px",
+                        fontSize: "11.5px",
+                        marginBottom: "4px",
                         gap: "8px",
                       }}
                     >
-                      <span style={{ color: "#334155", fontWeight: "600", minWidth: 0, flex: 1 }}>
+                      <span style={{
+                        color: "#0F172A",
+                        fontWeight: "800",
+                        minWidth: 0,
+                        flex: 1,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}>
                         {item.produit.nom} × {item.quantite}
                       </span>
-                      <span style={{ color: "#64748b", fontWeight: "700", flexShrink: 0 }}>
+                      <span style={{ color: "#57534E", fontWeight: "800", flexShrink: 0 }}>
                         {formaterPrix(item.prixUnitaire * item.quantite, item.produit.devise)}
                       </span>
                     </div>
                   ))}
                 </div>
 
+                {/* Total */}
                 <div style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -281,17 +369,35 @@ export default async function CompteClient() {
                   gap: "8px",
                   marginBottom: qrVisible ? "10px" : "0",
                 }}>
-                  <span style={{ fontSize: "12px", fontWeight: "900", color: "#0F172A" }}>
-                    TOTAL
+                  <span style={{
+                    fontSize: "11px",
+                    fontWeight: "900",
+                    color: "#57534E",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}>
+                    Total
                   </span>
                   <div style={{ textAlign: "right" }}>
                     {totalUSD > 0 && (
-                      <p style={{ fontSize: "14px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.2 }}>
+                      <p style={{
+                        fontSize: "17px",
+                        fontWeight: "900",
+                        color: "#EA580C",
+                        lineHeight: 1.2,
+                        letterSpacing: "-0.3px",
+                      }}>
                         {formaterPrix(totalUSD, "USD")}
                       </p>
                     )}
                     {totalFC > 0 && (
-                      <p style={{ fontSize: "14px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.2 }}>
+                      <p style={{
+                        fontSize: "17px",
+                        fontWeight: "900",
+                        color: "#EA580C",
+                        lineHeight: 1.2,
+                        letterSpacing: "-0.3px",
+                      }}>
                         {formaterPrix(totalFC, "FC")}
                       </p>
                     )}
@@ -314,4 +420,4 @@ export default async function CompteClient() {
       )}
     </div>
   );
-                    }
+        }
