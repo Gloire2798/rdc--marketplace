@@ -386,7 +386,7 @@ export default function InscriptionClient() {
           Je veux vendre
         </Link>
 
-        <p style={{
+                <p style={{
           textAlign: "center",
           fontSize: "11px",
           color: "#334155",
@@ -395,7 +395,7 @@ export default function InscriptionClient() {
         }}>
           Déjà un compte ?{" "}
           <Link
-            href="/connexion"
+            href="/vendeur/connexion"
             style={{
               color: "#1D4ED8",
               fontWeight: "900",
@@ -408,4 +408,4 @@ export default function InscriptionClient() {
       </div>
     </div>
   );
-                    }
+}
