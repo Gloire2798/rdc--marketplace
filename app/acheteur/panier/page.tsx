@@ -11,6 +11,7 @@ import {
   formaterVariante,
   ArticlePanier,
 } from "@/lib/panier";
+import { ShoppingCart, Trash2, Minus, Plus, Store } from "lucide-react";
 
 export default function PagePanier() {
   const [panier, setPanier] = useState<ArticlePanier[]>([]);
@@ -72,41 +73,44 @@ export default function PagePanier() {
 
   if (chargement) {
     return (
-      <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-        <p>Chargement...</p>
+      <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
+        <p style={{ color: "#57534E", fontWeight: "700" }}>Chargement...</p>
       </div>
     );
   }
 
   if (panier.length === 0) {
     return (
-      <div style={{ padding: "40px 16px", maxWidth: "600px", margin: "0 auto", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-        <h1 style={{ fontSize: "22px", fontWeight: "900", color: "#0F172A", marginBottom: "20px" }}>
+      <div style={{ padding: "40px 16px", maxWidth: "600px", margin: "0 auto", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
+        <h1 style={{ fontSize: "24px", fontWeight: "900", color: "#0F172A", marginBottom: "20px", letterSpacing: "-0.5px" }}>
           Mon panier
         </h1>
         <div style={{
           backgroundColor: "white",
           textAlign: "center",
           padding: "50px 20px",
-          borderRadius: "14px",
-          border: "1px solid #E8DFC8",
+          borderRadius: "24px",
+          border: "1.5px solid #0F172A",
+          boxShadow: "4px 4px 0 #EA580C",
         }}>
-          <p style={{ fontSize: "40px", marginBottom: "12px" }}>🛒</p>
-          <p style={{ fontSize: "14px", fontWeight: "800", marginBottom: "6px", color: "#0F172A" }}>
+          <ShoppingCart size={48} color="#CBD5E1" strokeWidth={1.8} style={{ margin: "0 auto 14px" }} />
+          <p style={{ fontSize: "16px", fontWeight: "900", marginBottom: "6px", color: "#0F172A" }}>
             Votre panier est vide
           </p>
-          <p style={{ color: "#78716C", marginBottom: "20px", fontSize: "12px", fontWeight: "500" }}>
+          <p style={{ color: "#57534E", marginBottom: "22px", fontSize: "12px", fontWeight: "600" }}>
             Découvrez nos boutiques et ajoutez des articles.
           </p>
           <Link href="/" style={{
-            backgroundColor: "#1D4ED8",
+            backgroundColor: "#0F172A",
             color: "white",
-            padding: "10px 20px",
-            borderRadius: "10px",
-            fontWeight: "700",
+            padding: "12px 24px",
+            borderRadius: "24px",
+            fontWeight: "900",
             fontSize: "13px",
             textDecoration: "none",
-            display: "inline-block",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
           }}>
             Voir les boutiques
           </Link>
@@ -116,15 +120,15 @@ export default function PagePanier() {
   }
 
   return (
-    <div style={{ padding: "20px 14px 20px 14px", maxWidth: "600px", margin: "0 auto", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-      <h1 style={{ fontSize: "20px", fontWeight: "900", color: "#0F172A", marginBottom: "4px" }}>
+    <div style={{ padding: "20px 14px 30px 14px", maxWidth: "600px", margin: "0 auto", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
+      <h1 style={{ fontSize: "24px", fontWeight: "900", color: "#0F172A", marginBottom: "4px", letterSpacing: "-0.5px" }}>
         Mon panier
       </h1>
-      <p style={{ color: "#64748b", marginBottom: "18px", fontSize: "11.5px", fontWeight: "600" }}>
+      <p style={{ color: "#57534E", marginBottom: "18px", fontSize: "12px", fontWeight: "700" }}>
         {panier.length} article{panier.length > 1 ? "s" : ""}
       </p>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "16px" }}>
         {panier.map((article) => {
           const enPromo = article.prixPromo !== null && article.prixPromo < article.prix;
           const prixFinal = enPromo ? article.prixPromo! : article.prix;
@@ -134,129 +138,157 @@ export default function PagePanier() {
           return (
             <div key={cleLigne} style={{
               backgroundColor: "white",
-              borderRadius: "12px",
-              padding: "10px",
-              border: "1px solid #E8DFC8",
+              borderRadius: "20px",
+              padding: "12px",
+              border: "1px solid #D4C5A0",
               display: "flex",
-              gap: "10px",
+              gap: "12px",
+              boxShadow: "0 2px 6px rgba(120, 100, 60, 0.06)",
             }}>
               {article.photo ? (
                 <img
                   src={article.photo}
                   alt={article.nom}
                   style={{
-                    width: "70px",
-                    height: "70px",
+                    width: "80px",
+                    height: "80px",
                     objectFit: "contain",
-                    borderRadius: "8px",
+                    borderRadius: "12px",
                     backgroundColor: "#F8FAFC",
                     flexShrink: 0,
+                    padding: "4px",
+                    boxSizing: "border-box",
                   }}
                 />
               ) : (
                 <div style={{
-                  width: "70px",
-                  height: "70px",
+                  width: "80px",
+                  height: "80px",
                   backgroundColor: "#F8FAFC",
-                  borderRadius: "8px",
+                  borderRadius: "12px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "24px",
                   flexShrink: 0,
                 }}>
-                  📦
+                  <ShoppingCart size={24} color="#CBD5E1" strokeWidth={2} />
                 </div>
               )}
 
               <div style={{ flex: 1, minWidth: 0 }}>
-                <h3 style={{ fontSize: "13px", fontWeight: "800", marginBottom: "2px", color: "#0F172A" }}>
+                <h3 style={{
+                  fontSize: "13.5px",
+                  fontWeight: "900",
+                  marginBottom: "4px",
+                  color: "#0F172A",
+                  lineHeight: 1.25,
+                }}>
                   {article.nom}
                 </h3>
 
                 {labelVariante && (
                   <p style={{
                     fontSize: "10.5px",
-                    color: "#1D4ED8",
-                    marginBottom: "2px",
-                    fontWeight: "700",
-                    backgroundColor: "#EFF6FF",
+                    color: "#0F172A",
+                    marginBottom: "4px",
+                    fontWeight: "800",
+                    backgroundColor: "#F5EAD2",
                     display: "inline-block",
                     padding: "2px 8px",
-                    borderRadius: "6px",
+                    borderRadius: "10px",
+                    border: "1px solid #D4C5A0",
                   }}>
                     {labelVariante}
                   </p>
                 )}
 
-                <p style={{ fontSize: "10.5px", color: "#78716C", marginBottom: "6px", fontWeight: "600" }}>
-                  🏪 {article.nomBoutique}
+                <p style={{
+                  fontSize: "10.5px",
+                  color: "#57534E",
+                  marginBottom: "8px",
+                  fontWeight: "700",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                }}>
+                  <Store size={11} strokeWidth={2.5} />
+                  {article.nomBoutique}
                 </p>
 
                 {enPromo ? (
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px", flexWrap: "wrap" }}>
-                    <span style={{ fontSize: "13px", fontWeight: "900", color: "#16a34a" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "8px", flexWrap: "wrap" }}>
+                    <span style={{ fontSize: "15px", fontWeight: "900", color: "#EA580C" }}>
                       {formaterPrix(prixFinal, article.devise)}
                     </span>
-                    <span style={{ fontSize: "10px", color: "#94a3b8", textDecoration: "line-through" }}>
+                    <span style={{ fontSize: "10.5px", color: "#64748B", textDecoration: "line-through", fontWeight: "700" }}>
                       {formaterPrix(article.prix, article.devise)}
                     </span>
                   </div>
                 ) : (
-                  <p style={{ fontSize: "13px", fontWeight: "900", color: "#1D4ED8", marginBottom: "6px" }}>
+                  <p style={{ fontSize: "15px", fontWeight: "900", color: "#EA580C", marginBottom: "8px" }}>
                     {formaterPrix(prixFinal, article.devise)}
                   </p>
                 )}
 
-                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <button
                     onClick={() => modifier(article.produitId, article.quantite - 1, article.varianteId)}
                     style={{
-                      width: "26px",
-                      height: "26px",
-                      borderRadius: "6px",
-                      border: "1px solid #E5E0D5",
+                      width: "28px",
+                      height: "28px",
+                      borderRadius: "8px",
+                      border: "1.5px solid #0F172A",
                       backgroundColor: "white",
                       fontSize: "14px",
-                      fontWeight: "bold",
+                      fontWeight: "900",
                       cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#0F172A",
                     }}
                   >
-                    −
+                    <Minus size={12} strokeWidth={3} />
                   </button>
-                  <span style={{ fontSize: "13px", fontWeight: "800", minWidth: "18px", textAlign: "center" }}>
+                  <span style={{ fontSize: "14px", fontWeight: "900", minWidth: "20px", textAlign: "center", color: "#0F172A" }}>
                     {article.quantite}
                   </span>
                   <button
                     onClick={() => modifier(article.produitId, article.quantite + 1, article.varianteId)}
                     style={{
-                      width: "26px",
-                      height: "26px",
-                      borderRadius: "6px",
-                      border: "1px solid #E5E0D5",
+                      width: "28px",
+                      height: "28px",
+                      borderRadius: "8px",
+                      border: "1.5px solid #0F172A",
                       backgroundColor: "white",
                       fontSize: "14px",
-                      fontWeight: "bold",
+                      fontWeight: "900",
                       cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#0F172A",
                     }}
                   >
-                    +
+                    <Plus size={12} strokeWidth={3} />
                   </button>
                   <button
                     onClick={() => supprimer(article.produitId, article.varianteId)}
                     style={{
                       marginLeft: "auto",
-                      padding: "4px 8px",
-                      fontSize: "11px",
+                      width: "32px",
+                      height: "32px",
                       backgroundColor: "#FEE2E2",
-                      color: "#991B1B",
+                      color: "#DC2626",
                       border: "none",
-                      borderRadius: "6px",
+                      borderRadius: "10px",
                       cursor: "pointer",
-                      fontWeight: "700",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    🗑️
+                    <Trash2 size={14} strokeWidth={2.5} />
                   </button>
                 </div>
               </div>
@@ -267,28 +299,29 @@ export default function PagePanier() {
 
       <div style={{
         backgroundColor: "white",
-        borderRadius: "12px",
-        padding: "14px",
-        border: "1px solid #E8DFC8",
+        borderRadius: "20px",
+        padding: "16px",
+        border: "1px solid #D4C5A0",
         marginBottom: "14px",
+        boxShadow: "0 2px 6px rgba(120, 100, 60, 0.06)",
       }}>
-        <p style={{ fontSize: "12px", fontWeight: "800", color: "#0F172A", marginBottom: "10px" }}>
+        <p style={{ fontSize: "13px", fontWeight: "900", color: "#0F172A", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
           Récapitulatif
         </p>
 
         {(reductionUSD > 0 || reductionFC > 0) && (
           <>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px", fontSize: "11.5px" }}>
-              <span style={{ color: "#78716C", fontWeight: "600" }}>Sous-total</span>
-              <span style={{ fontWeight: "700", color: "#0F172A" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", fontSize: "12px" }}>
+              <span style={{ color: "#57534E", fontWeight: "700" }}>Sous-total</span>
+              <span style={{ fontWeight: "800", color: "#0F172A" }}>
                 {originalUSD > 0 && formaterPrix(originalUSD, "USD")}
                 {originalUSD > 0 && originalFC > 0 && " + "}
                 {originalFC > 0 && formaterPrix(originalFC, "FC")}
               </span>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", fontSize: "11.5px" }}>
-              <span style={{ color: "#16a34a", fontWeight: "600" }}>Réductions</span>
-              <span style={{ color: "#16a34a", fontWeight: "700" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px", fontSize: "12px" }}>
+              <span style={{ color: "#16A34A", fontWeight: "700" }}>Réductions</span>
+              <span style={{ color: "#16A34A", fontWeight: "800" }}>
                 {reductionUSD > 0 && `−${formaterPrix(reductionUSD, "USD")}`}
                 {reductionUSD > 0 && reductionFC > 0 && " + "}
                 {reductionFC > 0 && `−${formaterPrix(reductionFC, "FC")}`}
@@ -300,19 +333,22 @@ export default function PagePanier() {
         <div style={{
           display: "flex",
           justifyContent: "space-between",
-          paddingTop: "10px",
-          borderTop: "1px solid #F1ECE0",
-          marginTop: "6px",
+          alignItems: "center",
+          paddingTop: "12px",
+          borderTop: "1px solid #D4C5A0",
+          marginTop: "4px",
         }}>
-          <span style={{ fontWeight: "900", fontSize: "13px", color: "#0F172A" }}>TOTAL</span>
+          <span style={{ fontWeight: "900", fontSize: "14px", color: "#0F172A", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+            Total
+          </span>
           <div style={{ textAlign: "right" }}>
             {totalUSD > 0 && (
-              <p style={{ fontSize: "15px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.2 }}>
+              <p style={{ fontSize: "18px", fontWeight: "900", color: "#EA580C", lineHeight: 1.2, letterSpacing: "-0.3px" }}>
                 {formaterPrix(totalUSD, "USD")}
               </p>
             )}
             {totalFC > 0 && (
-              <p style={{ fontSize: "15px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.2 }}>
+              <p style={{ fontSize: "18px", fontWeight: "900", color: "#EA580C", lineHeight: 1.2, letterSpacing: "-0.3px" }}>
                 {formaterPrix(totalFC, "FC")}
               </p>
             )}
@@ -325,36 +361,44 @@ export default function PagePanier() {
         style={{
           display: "block",
           width: "100%",
-          backgroundColor: "#1D4ED8",
+          backgroundColor: "#0F172A",
           color: "white",
-          padding: "13px",
-          borderRadius: "12px",
+          padding: "16px",
+          borderRadius: "26px",
           textAlign: "center",
-          fontWeight: "800",
-          fontSize: "13px",
+          fontWeight: "900",
+          fontSize: "14px",
           textDecoration: "none",
           boxSizing: "border-box",
-          marginBottom: "8px",
+          marginBottom: "10px",
+          letterSpacing: "-0.2px",
+          boxShadow: "0 4px 12px rgba(15, 23, 42, 0.20)",
         }}
       >
-        ✅ Passer la commande
+        Passer la commande
       </Link>
 
       <button
         onClick={toutVider}
         style={{
           width: "100%",
-          padding: "10px",
+          padding: "12px",
           backgroundColor: "white",
-          color: "#dc2626",
-          border: "1.5px solid #dc2626",
-          borderRadius: "10px",
-          fontWeight: "700",
-          fontSize: "12px",
+          color: "#DC2626",
+          border: "1.5px solid #DC2626",
+          borderRadius: "26px",
+          fontWeight: "900",
+          fontSize: "12.5px",
           cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "6px",
+          fontFamily: "inherit",
         }}
       >
-        🗑️ Vider le panier
+        <Trash2 size={14} strokeWidth={2.5} />
+        Vider le panier
       </button>
 
       <Link
@@ -362,10 +406,10 @@ export default function PagePanier() {
         style={{
           display: "block",
           textAlign: "center",
-          marginTop: "12px",
-          color: "#78716C",
-          fontSize: "11.5px",
-          fontWeight: "700",
+          marginTop: "14px",
+          color: "#57534E",
+          fontSize: "12px",
+          fontWeight: "800",
           textDecoration: "none",
         }}
       >
@@ -373,4 +417,4 @@ export default function PagePanier() {
       </Link>
     </div>
   );
-                    }
+                }
