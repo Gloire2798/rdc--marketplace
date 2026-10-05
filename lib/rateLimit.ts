@@ -1,6 +1,5 @@
 /**
  * Rate limiting en mémoire (compatible Edge Runtime)
- * Pour : protection volumétrique globale (middleware)
  */
 
 type Entree = {
@@ -8,12 +7,8 @@ type Entree = {
   resetAt: number;
 };
 
-// Cache en mémoire (par instance)
 const cache: Map<string, Entree> = new Map();
 
-/**
- * Configuration des limites
- */
 const LIMITES: Record<string, { limite: number; fenetre: number }> = {
   // Routes sensibles
   "/api/vendeur/connexion": { limite: 5, fenetre: 15 * 60 },
@@ -26,17 +21,16 @@ const LIMITES: Record<string, { limite: number; fenetre: number }> = {
 };
 
 function getLimite(route: string): { limite: number; fenetre: number } {
-  for (const [pattern, config] of Object.entries(LIMITES)) {
+  const cles = Object.keys(LIMITES);
+  for (let i = 0; i < cles.length; i++) {
+    const pattern = cles[i];
     if (pattern !== "default" && route.startsWith(pattern)) {
-      return config;
+      return LIMITES[pattern];
     }
   }
   return LIMITES.default;
 }
 
-/**
- * Vérifie et incrémente le compteur (synchrone, pas de DB)
- */
 export function verifierRateLimitMemoire(
   route: string,
   cle: string
@@ -45,16 +39,15 @@ export function verifierRateLimitMemoire(
   const maintenant = Date.now();
   const cleComplete = `${cle}:${route}`;
 
-  // Nettoyer le cache de temps en temps (évite la fuite mémoire)
+  // Nettoyer le cache de temps en temps
   if (cache.size > 10000) {
-    for (const [k, v] of cache.entries()) {
+    cache.forEach((v, k) => {
       if (v.resetAt < maintenant) cache.delete(k);
-    }
+    });
   }
 
   const entree = cache.get(cleComplete);
 
-  // Pas d'entrée OU expirée → créer
   if (!entree || entree.resetAt < maintenant) {
     cache.set(cleComplete, {
       count: 1,
@@ -63,22 +56,20 @@ export function verifierRateLimitMemoire(
     return { autorise: true };
   }
 
-  // Sous la limite → incrémenter
   if (entree.count < limite) {
     entree.count += 1;
     return { autorise: true };
   }
 
-  // Bloqué
   const secondes = Math.ceil((entree.resetAt - maintenant) / 1000);
   return { autorise: false, retryAfter: secondes };
 }
 
-/**
- * Récupère l'IP
- */
 export function getIP(request: Request): string | null {
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();
   return request.headers.get("x-real-ip") || null;
-              }
+}
+
+// ✅ Alias pour compatibilité avec l'API connexion
+export const verifierRateLimit = verifierRateLimitMemoire;
