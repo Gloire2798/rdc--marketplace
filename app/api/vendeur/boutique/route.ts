@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
 
 export async function PATCH(request: Request) {
   try {
@@ -36,6 +37,9 @@ export async function PATCH(request: Request) {
         photo3: photo3 || null,
       },
     });
+
+    // ✅ Vider le cache de la page d'accueil
+    revalidateTag("accueil");
 
     return NextResponse.json({ succes: true, vendeur: vendeurModifie });
   } catch (error) {
