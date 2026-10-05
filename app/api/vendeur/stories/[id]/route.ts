@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
 
 export async function DELETE(
   request: Request,
@@ -34,6 +35,9 @@ export async function DELETE(
     await prisma.story.delete({
       where: { id },
     });
+
+    // ✅ Vider le cache de la page d'accueil (story supprimée)
+    revalidateTag("accueil");
 
     return NextResponse.json({ succes: true });
   } catch (error) {
