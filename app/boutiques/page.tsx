@@ -2,10 +2,8 @@ import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import CarteBoutique from "@/app/components/CarteBoutique";
+import { ArrowLeft, Store } from "lucide-react";
 
-// ============================================================
-// RÉCUPÉRATION DES BOUTIQUES (avec cache 30 sec)
-// ============================================================
 const getBoutiques = unstable_cache(
   async () => {
     const vendeurs = await prisma.vendeur.findMany({
@@ -45,18 +43,19 @@ export default async function PageBoutiques() {
   const boutiques = await getBoutiques();
 
   return (
-    <div style={{ backgroundColor: "#FAF5E8", minHeight: "100vh", padding: "18px 14px 20px 14px" }}>
+    <div style={{ backgroundColor: "#F5EAD2", minHeight: "100vh", padding: "18px 14px 100px 14px" }}>
+      {/* HEADER */}
       <div style={{ marginBottom: "18px" }}>
         <h1 style={{
-          fontSize: "20px",
+          fontSize: "24px",
           fontWeight: "900",
           color: "#0F172A",
-          marginBottom: "4px",
-          letterSpacing: "-0.4px",
+          marginBottom: "3px",
+          letterSpacing: "-0.5px",
         }}>
           Nos boutiques
         </h1>
-        <p style={{ fontSize: "11.5px", color: "#78716C", fontWeight: "600" }}>
+        <p style={{ fontSize: "11.5px", color: "#57534E", fontWeight: "700" }}>
           {boutiques.length} boutique{boutiques.length > 1 ? "s" : ""} disponible{boutiques.length > 1 ? "s" : ""}
         </p>
       </div>
@@ -65,14 +64,27 @@ export default async function PageBoutiques() {
         <div style={{
           backgroundColor: "white",
           textAlign: "center",
-          padding: "40px 20px",
-          borderRadius: "12px",
-          border: "1px solid #E8DFC8",
+          padding: "50px 20px",
+          borderRadius: "20px",
+          border: "1.5px solid #0F172A",
+          boxShadow: "4px 4px 0 #EA580C",
         }}>
-          <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "6px" }}>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "64px",
+            height: "64px",
+            borderRadius: "50%",
+            backgroundColor: "#F5EAD2",
+            marginBottom: "12px",
+          }}>
+            <Store size={30} color="#EA580C" strokeWidth={2} />
+          </div>
+          <p style={{ fontSize: "14px", fontWeight: "900", marginBottom: "6px", color: "#0F172A" }}>
             Aucune boutique pour le moment
           </p>
-          <p style={{ color: "#78716C", fontSize: "11px" }}>
+          <p style={{ color: "#57534E", fontSize: "11.5px", fontWeight: "700", lineHeight: 1.5 }}>
             Les boutiques apparaîtront ici dès qu&apos;elles seront validées.
           </p>
         </div>
@@ -88,15 +100,19 @@ export default async function PageBoutiques() {
         <Link
           href="/"
           style={{
-            color: "#1D4ED8",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "4px",
+            color: "#0F172A",
             fontSize: "11.5px",
-            fontWeight: "700",
+            fontWeight: "800",
             textDecoration: "none",
           }}
         >
-          ← Retour à l&apos;accueil
+          <ArrowLeft size={12} strokeWidth={2.8} />
+          Retour à l&apos;accueil
         </Link>
       </div>
     </div>
   );
-}
+                         }
