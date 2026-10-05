@@ -40,6 +40,7 @@ export async function PATCH(request: Request) {
 
     // ✅ Vider le cache de la page d'accueil
     revalidateTag("accueil");
+revalidateTag("boutiques");
 
     return NextResponse.json({ succes: true, vendeur: vendeurModifie });
   } catch (error) {
