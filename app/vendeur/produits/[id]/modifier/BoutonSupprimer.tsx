@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Trash2 } from "lucide-react";
 
 export default function BoutonSupprimer({
   produitId,
@@ -47,19 +48,25 @@ export default function BoutonSupprimer({
       disabled={chargement}
       style={{
         width: "100%",
-        backgroundColor: "#dc2626",
-        color: "white",
-        padding: "12px",
-        borderRadius: "8px",
-        border: "none",
-        fontWeight: "600",
-        fontSize: "15px",
-        cursor: "pointer",
+        backgroundColor: "white",
+        color: "#DC2626",
+        padding: "14px",
+        borderRadius: "26px",
+        border: "1.5px solid #DC2626",
+        fontWeight: "900",
+        fontSize: "13px",
+        cursor: chargement ? "not-allowed" : "pointer",
         marginTop: "12px",
         opacity: chargement ? 0.6 : 1,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "6px",
+        fontFamily: "inherit",
       }}
     >
-      {chargement ? "Suppression..." : "🗑️ Supprimer ce produit"}
+      <Trash2 size={15} strokeWidth={2.8} />
+      {chargement ? "Suppression..." : "Supprimer ce produit"}
     </button>
   );
 }
