@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { normaliserTelephone, validerTelephone } from "@/lib/telephone";
 
 export async function POST(request: Request) {
   try {
@@ -14,6 +15,18 @@ export async function POST(request: Request) {
       );
     }
 
+    // ✅ Validation du format du téléphone
+    const validationTel = validerTelephone(telephone);
+    if (!validationTel.valide) {
+      return NextResponse.json(
+        { erreur: validationTel.erreur || "Numéro de téléphone invalide" },
+        { status: 400 }
+      );
+    }
+
+    // ✅ Normalisation du téléphone (stockage uniforme)
+    const telephoneNormalise = normaliserTelephone(telephone);
+
     if (motDePasse.length < 6) {
       return NextResponse.json(
         { erreur: "Le mot de passe doit contenir au moins 6 caractères" },
@@ -23,7 +36,7 @@ export async function POST(request: Request) {
 
     // Vérifier que le téléphone n'est pas déjà utilisé
     const existantTel = await prisma.user.findUnique({
-      where: { telephone },
+      where: { telephone: telephoneNormalise },
     });
 
     if (existantTel) {
@@ -53,7 +66,7 @@ export async function POST(request: Request) {
 
     const user = await prisma.user.create({
       data: {
-        telephone,
+        telephone: telephoneNormalise,
         nom,
         email: emailNettoye,
         role: "ACHETEUR",
@@ -73,4 +86,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
+  }
