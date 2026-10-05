@@ -66,47 +66,45 @@ export default async function FicheProduit({
   return (
     <div style={{
       minHeight: "100vh",
-      backgroundColor: "#F5F5F5",
+      backgroundColor: "#F5EAD2",
       paddingBottom: "30px",
     }}>
-      {/* HEADER BLANC */}
+      {/* BARRE RETOUR discrète */}
       <div style={{
         backgroundColor: "white",
-        padding: "14px 16px",
+        padding: "12px 16px",
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between",
-        position: "sticky",
-        top: 0,
-        zIndex: 50,
-        borderBottom: "1px solid #E5E5E5",
+        gap: "12px",
+        borderBottom: "1.5px solid #D4C5A0",
       }}>
         <Link
           href={`/acheteur/boutique/${produit.vendeur.id}`}
           style={{
             display: "inline-flex",
             alignItems: "center",
-            justifyContent: "center",
-            width: "36px",
-            height: "36px",
-            borderRadius: "50%",
-            border: "2px solid #0F172A",
+            gap: "6px",
             textDecoration: "none",
+            color: "#0F172A",
+            fontSize: "12px",
+            fontWeight: "800",
           }}
         >
-          <ArrowLeft size={16} color="#0F172A" strokeWidth={2.8} />
+          <ArrowLeft size={16} strokeWidth={2.8} />
+          Retour
         </Link>
-
-        <h1 style={{
-          fontSize: "18px",
-          fontWeight: "900",
-          color: "#0F172A",
-          letterSpacing: "-0.3px",
+        <p style={{
+          marginLeft: "auto",
+          fontSize: "11px",
+          fontWeight: "700",
+          color: "#57534E",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          maxWidth: "50%",
         }}>
-          Produit
-        </h1>
-
-        <div style={{ width: "36px" }} />
+          {produit.vendeur.nomBoutique}
+        </p>
       </div>
 
       {/* CONTENU */}
@@ -126,6 +124,7 @@ export default async function FicheProduit({
           borderRadius: "24px",
           padding: "18px 16px",
           marginBottom: "14px",
+          boxShadow: "0 2px 8px rgba(120, 100, 60, 0.08)",
         }}>
           <h2 style={{
             fontSize: "20px",
@@ -157,7 +156,7 @@ export default async function FicheProduit({
               </span>
               <span style={{
                 fontSize: "14px",
-                color: "#94A3B8",
+                color: "#64748B",
                 textDecoration: "line-through",
                 fontWeight: "700",
               }}>
@@ -195,11 +194,12 @@ export default async function FicheProduit({
               display: "flex",
               alignItems: "center",
               gap: "10px",
-              backgroundColor: "#F5F5F5",
+              backgroundColor: "#F5EAD2",
               borderRadius: "14px",
               padding: "10px 12px",
               textDecoration: "none",
               color: "inherit",
+              border: "1px solid #D4C5A0",
             }}
           >
             <div style={{
@@ -217,7 +217,7 @@ export default async function FicheProduit({
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{
                 fontSize: "9.5px",
-                color: "#64748B",
+                color: "#57534E",
                 fontWeight: "700",
                 marginBottom: "1px",
               }}>
@@ -234,7 +234,7 @@ export default async function FicheProduit({
                 {produit.vendeur.nomBoutique}
               </p>
             </div>
-            <ChevronRight size={16} color="#64748B" strokeWidth={2.5} />
+            <ChevronRight size={16} color="#57534E" strokeWidth={2.5} />
           </Link>
         </div>
 
@@ -244,6 +244,7 @@ export default async function FicheProduit({
           borderRadius: "24px",
           padding: "18px 16px",
           marginBottom: "14px",
+          boxShadow: "0 2px 8px rgba(120, 100, 60, 0.08)",
         }}>
           {aVariantes ? (
             <SelecteurVariantes
@@ -268,6 +269,7 @@ export default async function FicheProduit({
             borderRadius: "24px",
             padding: "18px 16px",
             marginBottom: "14px",
+            boxShadow: "0 2px 8px rgba(120, 100, 60, 0.08)",
           }}>
             <h3 style={{
               fontSize: "12px",
@@ -290,7 +292,7 @@ export default async function FicheProduit({
               Description
             </h3>
             <p style={{
-              color: "#334155",
+              color: "#1E293B",
               fontSize: "12.5px",
               fontWeight: "500",
               lineHeight: 1.55,
@@ -303,4 +305,4 @@ export default async function FicheProduit({
       </div>
     </div>
   );
-      }
+        }
