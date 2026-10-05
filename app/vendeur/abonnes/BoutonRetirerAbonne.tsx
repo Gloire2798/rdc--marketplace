@@ -37,21 +37,22 @@ export default function BoutonRetirerAbonne({ abonnementId, nomClient }: Props) 
       <button
         onClick={() => setConfirme(true)}
         style={{
-          padding: "6px 10px",
-          borderRadius: "8px",
-          backgroundColor: "#FEE2E2",
-          color: "#dc2626",
-          border: "1px solid #FECACA",
-          fontWeight: "800",
-          fontSize: "10.5px",
+          padding: "8px 12px",
+          borderRadius: "20px",
+          backgroundColor: "white",
+          color: "#DC2626",
+          border: "1.5px solid #DC2626",
+          fontWeight: "900",
+          fontSize: "11px",
           cursor: "pointer",
           display: "inline-flex",
           alignItems: "center",
           gap: "4px",
           flexShrink: 0,
+          fontFamily: "inherit",
         }}
       >
-        <UserMinus size={11} strokeWidth={2.5} />
+        <UserMinus size={12} strokeWidth={2.8} />
         Retirer
       </button>
     );
@@ -59,15 +60,16 @@ export default function BoutonRetirerAbonne({ abonnementId, nomClient }: Props) 
 
   return (
     <div style={{
-      backgroundColor: "#FEE2E2",
-      border: "1px solid #FECACA",
-      borderRadius: "8px",
-      padding: "8px",
+      backgroundColor: "white",
+      border: "1.5px solid #DC2626",
+      borderRadius: "14px",
+      padding: "8px 10px",
       flexShrink: 0,
+      boxShadow: "2px 2px 0 #DC2626",
     }}>
       <p style={{
-        fontSize: "10px",
-        fontWeight: "700",
+        fontSize: "10.5px",
+        fontWeight: "900",
         color: "#991B1B",
         marginBottom: "6px",
         textAlign: "center",
@@ -75,20 +77,21 @@ export default function BoutonRetirerAbonne({ abonnementId, nomClient }: Props) 
       }}>
         Retirer {nomClient} ?
       </p>
-      <div style={{ display: "flex", gap: "4px" }}>
+      <div style={{ display: "flex", gap: "5px" }}>
         <button
           onClick={retirer}
           disabled={chargement}
           style={{
-            padding: "5px 8px",
-            borderRadius: "6px",
-            backgroundColor: "#dc2626",
+            padding: "6px 12px",
+            borderRadius: "14px",
+            backgroundColor: "#DC2626",
             color: "white",
             border: "none",
-            fontWeight: "800",
-            fontSize: "10px",
+            fontWeight: "900",
+            fontSize: "10.5px",
             cursor: "pointer",
             opacity: chargement ? 0.6 : 1,
+            fontFamily: "inherit",
           }}
         >
           {chargement ? "..." : "Oui"}
@@ -97,14 +100,15 @@ export default function BoutonRetirerAbonne({ abonnementId, nomClient }: Props) 
           onClick={() => setConfirme(false)}
           disabled={chargement}
           style={{
-            padding: "5px 8px",
-            borderRadius: "6px",
+            padding: "6px 12px",
+            borderRadius: "14px",
             backgroundColor: "white",
-            color: "#64748b",
-            border: "1px solid #E2E8F0",
-            fontWeight: "700",
-            fontSize: "10px",
+            color: "#0F172A",
+            border: "1.5px solid #0F172A",
+            fontWeight: "900",
+            fontSize: "10.5px",
             cursor: "pointer",
+            fontFamily: "inherit",
           }}
         >
           Non
@@ -112,4 +116,4 @@ export default function BoutonRetirerAbonne({ abonnementId, nomClient }: Props) 
       </div>
     </div>
   );
-                                               }
+}
