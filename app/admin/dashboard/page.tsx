@@ -30,7 +30,7 @@ export default async function DashboardAdmin() {
   const enAttente = vendeurs.filter((v) => !v.actif);
   const actifs = vendeurs.filter((v) => v.actif);
 
-  // ✅ CORRIGÉ : CA séparé FC et USD (plus de conversion × 2800)
+  // ✅ CA séparé FC et USD
   let chiffreAffairesFC = 0;
   let chiffreAffairesUSD = 0;
 
@@ -58,15 +58,16 @@ export default async function DashboardAdmin() {
   };
 
   const maintenant = new Date();
-  const venteParMois: { mois: string; montant: number }[] = [];
+  // ✅ venteParMois avec FC + USD séparés (pour le graphique multi-lignes)
+  const venteParMois: { mois: string; fc: number; usd: number }[] = [];
   const nomsMois = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
 
-  // ✅ CORRIGÉ : graphique uniquement en FC
   for (let i = 5; i >= 0; i--) {
     const date = new Date(maintenant.getFullYear(), maintenant.getMonth() - i, 1);
     const moisLabel = nomsMois[date.getMonth()];
 
     let montantMoisFC = 0;
+    let montantMoisUSD = 0;
 
     commandes
       .filter((c) => {
@@ -76,13 +77,16 @@ export default async function DashboardAdmin() {
       })
       .forEach((c) => {
         c.items.forEach((item) => {
-          if (item.produit.devise === "FC") {
-            montantMoisFC += item.prixUnitaire * item.quantite;
+          const montant = item.prixUnitaire * item.quantite;
+          if (item.produit.devise === "USD") {
+            montantMoisUSD += montant;
+          } else {
+            montantMoisFC += montant;
           }
         });
       });
 
-    venteParMois.push({ mois: moisLabel, montant: montantMoisFC });
+    venteParMois.push({ mois: moisLabel, fc: montantMoisFC, usd: montantMoisUSD });
   }
 
   const formaterVendeur = (v: typeof vendeurs[0]) => ({
@@ -133,7 +137,6 @@ export default async function DashboardAdmin() {
     },
     {
       label: "Chiffre d'affaires",
-      // ✅ CORRIGÉ : affichage FC + USD séparés
       valeur: (
         <>
           {chiffreAffairesFC > 0 && <span>{formaterCA(chiffreAffairesFC)}</span>}
@@ -337,4 +340,4 @@ export default async function DashboardAdmin() {
       <NavigationBas />
     </>
   );
-      }
+}
