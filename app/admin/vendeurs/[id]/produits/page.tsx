@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import BoutonSupprimerProduit from "./BoutonSupprimerProduit";
+import { ArrowLeft, Package, User, CheckCircle, XCircle } from "lucide-react";
 
 export default async function ProduitsVendeur({
   params,
@@ -39,85 +40,219 @@ export default async function ProduitsVendeur({
   };
 
   return (
-    <div className="container" style={{ padding: "40px 16px" }}>
-      <Link href="/admin/dashboard" style={{ color: "#2563eb", fontSize: "14px" }}>
-        ← Retour à l'admin
+    <div style={{
+      padding: "16px 12px 100px 12px",
+      backgroundColor: "#F5EAD2",
+      minHeight: "100vh",
+      maxWidth: "600px",
+      margin: "0 auto",
+    }}>
+      {/* Lien retour */}
+      <Link
+        href="/admin/dashboard"
+        style={{
+          color: "#0F172A",
+          fontSize: "11px",
+          fontWeight: "800",
+          textDecoration: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "4px",
+        }}
+      >
+        <ArrowLeft size={12} strokeWidth={2.8} />
+        Retour à l&apos;admin
       </Link>
 
-      <div style={{ marginTop: "16px", marginBottom: "32px" }}>
-        <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "4px" }}>
+      {/* Header */}
+      <div style={{ marginTop: "14px", marginBottom: "18px" }}>
+        <h1 style={{
+          fontSize: "22px",
+          fontWeight: "900",
+          color: "#0F172A",
+          marginBottom: "4px",
+          letterSpacing: "-0.4px",
+        }}>
           {vendeur.nomBoutique}
         </h1>
-        <p style={{ color: "#6b7280" }}>
-          Par : {vendeur.user.nom || "Non renseigné"} — {produits.length} produit{produits.length > 1 ? "s" : ""} en ligne
+        <p style={{
+          color: "#57534E",
+          fontSize: "11.5px",
+          fontWeight: "700",
+          display: "flex",
+          alignItems: "center",
+          gap: "5px",
+          flexWrap: "wrap",
+        }}>
+          <User size={11} strokeWidth={2.8} />
+          {vendeur.user.nom || "Non renseigné"}
+          <span style={{ color: "#D4C5A0" }}>·</span>
+          <Package size={11} strokeWidth={2.8} />
+          {produits.length} produit{produits.length > 1 ? "s" : ""} en ligne
         </p>
       </div>
 
+      {/* Liste produits */}
       {produits.length === 0 ? (
-        <div className="card" style={{ textAlign: "center", padding: "60px 20px" }}>
-          <p style={{ fontSize: "48px", marginBottom: "16px" }}>📦</p>
-          <p style={{ fontSize: "18px", fontWeight: "600", marginBottom: "8px" }}>
-            Aucun produit dans cette boutique
+        <div style={{
+          backgroundColor: "white",
+          textAlign: "center",
+          padding: "50px 20px",
+          borderRadius: "20px",
+          border: "1.5px solid #0F172A",
+          boxShadow: "4px 4px 0 #EA580C",
+        }}>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "64px",
+            height: "64px",
+            borderRadius: "50%",
+            backgroundColor: "#F5EAD2",
+            marginBottom: "12px",
+          }}>
+            <Package size={30} color="#EA580C" strokeWidth={2} />
+          </div>
+          <p style={{
+            fontSize: "14px",
+            fontWeight: "900",
+            color: "#0F172A",
+            marginBottom: "4px",
+          }}>
+            Aucun produit
+          </p>
+          <p style={{
+            fontSize: "11.5px",
+            color: "#57534E",
+            fontWeight: "700",
+          }}>
+            Cette boutique n&apos;a pas encore publié de produits.
           </p>
         </div>
       ) : (
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-          gap: "20px",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "10px",
         }}>
           {produits.map((p) => (
-            <div key={p.id} className="card" style={{ padding: "0", overflow: "hidden" }}>
-              {p.photo1 ? (
-                <img
-                  src={p.photo1}
-                  alt={p.nom}
-                  style={{
-                    width: "100%",
-                    height: "200px",
-                    objectFit: "contain",
-                    backgroundColor: "#f3f4f6",
-                    display: "block",
-                  }}
-                />
+            <div key={p.id} style={{
+              backgroundColor: "white",
+              borderRadius: "16px",
+              overflow: "hidden",
+              border: "1.5px solid #0F172A",
+              boxShadow: "2px 2px 0 #EA580C",
+              display: "flex",
+              flexDirection: "column",
+            }}>
+              {/* Photo */}
+              {p.photo1 && p.photo1.startsWith("http") ? (
+                <div style={{
+                  width: "100%",
+                  aspectRatio: "1 / 1",
+                  backgroundColor: "#F8FAFC",
+                  overflow: "hidden",
+                }}>
+                  <img
+                    src={p.photo1}
+                    alt={p.nom}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      display: "block",
+                      padding: "6px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
               ) : (
                 <div style={{
                   width: "100%",
-                  height: "200px",
-                  backgroundColor: "#f3f4f6",
+                  aspectRatio: "1 / 1",
+                  backgroundColor: "#F8FAFC",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "48px",
                 }}>
-                  📦
+                  <Package size={28} color="#CBD5E1" strokeWidth={2} />
                 </div>
               )}
 
-              <div style={{ padding: "16px" }}>
-                <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "4px" }}>
+              {/* Contenu */}
+              <div style={{
+                padding: "10px 10px 12px 10px",
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+              }}>
+                <h3 style={{
+                  fontSize: "12px",
+                  fontWeight: "900",
+                  color: "#0F172A",
+                  marginBottom: "4px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  lineHeight: 1.2,
+                }}>
                   {p.nom}
                 </h3>
+
                 {p.description && (
-                  <p style={{ color: "#6b7280", fontSize: "13px", marginBottom: "8px" }}>
-                    {p.description.length > 60
-                      ? p.description.slice(0, 60) + "..."
-                      : p.description}
+                  <p style={{
+                    color: "#57534E",
+                    fontSize: "10.5px",
+                    fontWeight: "700",
+                    marginBottom: "6px",
+                    overflow: "hidden",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    lineHeight: 1.3,
+                  }}>
+                    {p.description}
                   </p>
                 )}
-                <p style={{ fontSize: "18px", fontWeight: "bold", color: "#2563eb", marginBottom: "8px" }}>
-                  {formaterPrix(p.prix, p.devise)}
-                </p>
+
                 <p style={{
                   fontSize: "13px",
-                  color: p.stock > 0 ? "#16a34a" : "#dc2626",
-                  fontWeight: "600",
-                  marginBottom: "12px",
+                  fontWeight: "900",
+                  color: "#EA580C",
+                  marginBottom: "6px",
+                  letterSpacing: "-0.2px",
                 }}>
-                  {p.stock > 0 ? `✅ ${p.stock} en stock` : "❌ Rupture de stock"}
+                  {formaterPrix(p.prix, p.devise)}
                 </p>
 
-                <BoutonSupprimerProduit produitId={p.id} nomProduit={p.nom} />
+                {/* Stock */}
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "3px",
+                  fontSize: "10.5px",
+                  fontWeight: "900",
+                  color: p.stock > 0 ? "#16A34A" : "#DC2626",
+                  marginBottom: "10px",
+                }}>
+                  {p.stock > 0 ? (
+                    <>
+                      <CheckCircle size={11} strokeWidth={3} />
+                      {p.stock} en stock
+                    </>
+                  ) : (
+                    <>
+                      <XCircle size={11} strokeWidth={3} />
+                      Rupture
+                    </>
+                  )}
+                </div>
+
+                {/* Bouton supprimer */}
+                <div style={{ marginTop: "auto" }}>
+                  <BoutonSupprimerProduit produitId={p.id} nomProduit={p.nom} />
+                </div>
               </div>
             </div>
           ))}
@@ -125,4 +260,4 @@ export default async function ProduitsVendeur({
       )}
     </div>
   );
-        }
+              }
