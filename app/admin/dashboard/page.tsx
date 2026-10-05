@@ -30,13 +30,22 @@ export default async function DashboardAdmin() {
   const enAttente = vendeurs.filter((v) => !v.actif);
   const actifs = vendeurs.filter((v) => v.actif);
 
-  const chiffreAffaires = commandes
+  // ✅ CORRIGÉ : CA séparé FC et USD (plus de conversion × 2800)
+  let chiffreAffairesFC = 0;
+  let chiffreAffairesUSD = 0;
+
+  commandes
     .filter((c) => c.statut !== "ANNULE")
-    .reduce((acc, c) => {
-      const devise = c.items[0]?.produit.devise || "FC";
-      if (devise === "FC") return acc + c.total;
-      return acc + c.total * 2800;
-    }, 0);
+    .forEach((c) => {
+      c.items.forEach((item) => {
+        const montant = item.prixUnitaire * item.quantite;
+        if (item.produit.devise === "USD") {
+          chiffreAffairesUSD += montant;
+        } else {
+          chiffreAffairesFC += montant;
+        }
+      });
+    });
 
   const formaterCA = (montant: number) => {
     if (montant >= 1000000) {
@@ -52,23 +61,28 @@ export default async function DashboardAdmin() {
   const venteParMois: { mois: string; montant: number }[] = [];
   const nomsMois = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
 
+  // ✅ CORRIGÉ : graphique uniquement en FC
   for (let i = 5; i >= 0; i--) {
     const date = new Date(maintenant.getFullYear(), maintenant.getMonth() - i, 1);
     const moisLabel = nomsMois[date.getMonth()];
 
-    const montantMois = commandes
+    let montantMoisFC = 0;
+
+    commandes
       .filter((c) => {
         if (c.statut === "ANNULE") return false;
         const dc = new Date(c.createdAt);
         return dc.getMonth() === date.getMonth() && dc.getFullYear() === date.getFullYear();
       })
-      .reduce((acc, c) => {
-        const devise = c.items[0]?.produit.devise || "FC";
-        if (devise === "FC") return acc + c.total;
-        return acc + c.total * 2800;
-      }, 0);
+      .forEach((c) => {
+        c.items.forEach((item) => {
+          if (item.produit.devise === "FC") {
+            montantMoisFC += item.prixUnitaire * item.quantite;
+          }
+        });
+      });
 
-    venteParMois.push({ mois: moisLabel, montant: montantMois });
+    venteParMois.push({ mois: moisLabel, montant: montantMoisFC });
   }
 
   const formaterVendeur = (v: typeof vendeurs[0]) => ({
@@ -119,7 +133,15 @@ export default async function DashboardAdmin() {
     },
     {
       label: "Chiffre d'affaires",
-      valeur: formaterCA(chiffreAffaires),
+      // ✅ CORRIGÉ : affichage FC + USD séparés
+      valeur: (
+        <>
+          {chiffreAffairesFC > 0 && <span>{formaterCA(chiffreAffairesFC)}</span>}
+          {chiffreAffairesFC > 0 && chiffreAffairesUSD > 0 && <br />}
+          {chiffreAffairesUSD > 0 && <span>{chiffreAffairesUSD.toFixed(2)} $</span>}
+          {chiffreAffairesFC === 0 && chiffreAffairesUSD === 0 && <span>0 FC</span>}
+        </>
+      ),
       Icon: Wallet,
       bg: "#FEF3C7",
       iconColor: "#B45309",
@@ -231,15 +253,15 @@ export default async function DashboardAdmin() {
                   }}>
                     {stat.label}
                   </p>
-                  <p style={{
+                  <div style={{
                     fontSize: "18px",
                     fontWeight: "900",
                     color: "#0F172A",
-                    lineHeight: 1,
+                    lineHeight: 1.1,
                     letterSpacing: "-0.3px",
                   }}>
                     {stat.valeur}
-                  </p>
+                  </div>
                   {stat.badge && (
                     <p style={{
                       fontSize: "9px",
@@ -315,4 +337,4 @@ export default async function DashboardAdmin() {
       <NavigationBas />
     </>
   );
-                       }
+      }
