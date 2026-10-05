@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import NavigationBas from "./NavigationBas";
 import LienVendeur from "./LienVendeur";
 import GraphiqueVentes from "./GraphiqueVentes";
-import { Store, Clock, CheckCircle, Wallet } from "lucide-react";
+import { Store, Clock, CheckCircle, Wallet, Calendar } from "lucide-react";
 
 export default async function DashboardAdmin() {
   const session = await getSession();
@@ -91,50 +91,71 @@ export default async function DashboardAdmin() {
 
   const stats = [
     {
-      label: "Total boutiques",
+      label: "Boutiques",
       valeur: vendeurs.length,
       Icon: Store,
       bg: "#DBEAFE",
       iconColor: "#1D4ED8",
       badge: `+${actifs.length} actives`,
-      badgeColor: "#16a34a",
+      badgeColor: "#16A34A",
     },
     {
       label: "En attente",
       valeur: enAttente.length,
       Icon: Clock,
-      bg: "#FED7AA",
-      iconColor: "#c2410c",
+      bg: "#FEF3C7",
+      iconColor: "#B45309",
       badge: enAttente.length > 0 ? "À traiter" : null,
-      badgeColor: "#c2410c",
+      badgeColor: "#B45309",
     },
     {
-      label: "Boutiques actives",
+      label: "Actives",
       valeur: actifs.length,
       Icon: CheckCircle,
-      bg: "#BBF7D0",
-      iconColor: "#15803d",
-      badge: vendeurs.length > 0 ? `${Math.round((actifs.length / vendeurs.length) * 100)}% du total` : null,
-      badgeColor: "#16a34a",
+      bg: "#DCFCE7",
+      iconColor: "#15803D",
+      badge: vendeurs.length > 0 ? `${Math.round((actifs.length / vendeurs.length) * 100)}%` : null,
+      badgeColor: "#16A34A",
     },
     {
       label: "Chiffre d'affaires",
       valeur: formaterCA(chiffreAffaires),
       Icon: Wallet,
-      bg: "#DBEAFE",
-      iconColor: "#1D4ED8",
-      badge: `${commandes.filter((c) => c.statut !== "ANNULE").length} commandes`,
-      badgeColor: "#334155",
+      bg: "#FEF3C7",
+      iconColor: "#B45309",
+      badge: `${commandes.filter((c) => c.statut !== "ANNULE").length} cmds`,
+      badgeColor: "#57534E",
     },
   ];
+
+  const titreSection = {
+    fontSize: "12px",
+    fontWeight: "900" as const,
+    color: "#0F172A",
+    marginBottom: "10px",
+    display: "flex" as const,
+    alignItems: "center" as const,
+    gap: "8px",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.6px",
+  };
+
+  const traitOrange = {
+    display: "inline-block",
+    width: "3px",
+    height: "13px",
+    backgroundColor: "#EA580C",
+    borderRadius: "2px",
+  };
 
   return (
     <>
       <div style={{
-        backgroundColor: "#F1F5F9",
+        backgroundColor: "#F5EAD2",
         minHeight: "100vh",
         padding: "16px 12px 90px 12px",
       }}>
+        {/* HEADER */}
         <div style={{
           display: "flex",
           justifyContent: "space-between",
@@ -144,26 +165,37 @@ export default async function DashboardAdmin() {
           gap: "8px",
         }}>
           <div>
-            <h1 style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", marginBottom: "2px", letterSpacing: "-0.3px" }}>
+            <h1 style={{
+              fontSize: "22px",
+              fontWeight: "900",
+              color: "#0F172A",
+              marginBottom: "3px",
+              letterSpacing: "-0.4px",
+            }}>
               Tableau de bord
             </h1>
-            <p style={{ fontSize: "11px", color: "#475569", fontWeight: "600" }}>
-              Voici l&apos;activité en temps réel
+            <p style={{ fontSize: "11.5px", color: "#57534E", fontWeight: "700" }}>
+              Activité en temps réel
             </p>
           </div>
           <div style={{
             backgroundColor: "white",
-            border: "1px solid #E2E8F0",
-            borderRadius: "6px",
-            padding: "5px 9px",
+            border: "1px solid #D4C5A0",
+            borderRadius: "12px",
+            padding: "6px 10px",
             fontSize: "10px",
             color: "#0F172A",
-            fontWeight: "700",
+            fontWeight: "800",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
           }}>
-            📅 {dateAujourdhui}
+            <Calendar size={11} strokeWidth={2.8} />
+            {dateAujourdhui}
           </div>
         </div>
 
+        {/* STATS */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
@@ -175,32 +207,45 @@ export default async function DashboardAdmin() {
             return (
               <div key={stat.label} style={{
                 backgroundColor: "white",
-                borderRadius: "10px",
+                borderRadius: "16px",
                 overflow: "hidden",
-                boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
-                border: "1px solid #F1F5F9",
+                border: "1px solid #D4C5A0",
+                boxShadow: "0 2px 6px rgba(120, 100, 60, 0.06)",
               }}>
                 <div style={{
                   backgroundColor: stat.bg,
-                  padding: "6px",
+                  padding: "8px",
                   display: "flex",
                   justifyContent: "center",
                 }}>
-                  <Icon size={14} color={stat.iconColor} strokeWidth={2.5} />
+                  <Icon size={16} color={stat.iconColor} strokeWidth={2.8} />
                 </div>
-                <div style={{ padding: "6px 4px 8px 4px", textAlign: "center" }}>
-                  <p style={{ fontSize: "9.5px", color: "#475569", marginBottom: "2px", fontWeight: "700" }}>
+                <div style={{ padding: "8px 6px 10px 6px", textAlign: "center" }}>
+                  <p style={{
+                    fontSize: "9.5px",
+                    color: "#57534E",
+                    marginBottom: "3px",
+                    fontWeight: "800",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.4px",
+                  }}>
                     {stat.label}
                   </p>
-                  <p style={{ fontSize: "18px", fontWeight: "800", color: "#0F172A", lineHeight: 1 }}>
+                  <p style={{
+                    fontSize: "18px",
+                    fontWeight: "900",
+                    color: "#0F172A",
+                    lineHeight: 1,
+                    letterSpacing: "-0.3px",
+                  }}>
                     {stat.valeur}
                   </p>
                   {stat.badge && (
                     <p style={{
                       fontSize: "9px",
                       color: stat.badgeColor,
-                      fontWeight: "800",
-                      marginTop: "3px",
+                      fontWeight: "900",
+                      marginTop: "4px",
                     }}>
                       {stat.badge}
                     </p>
@@ -213,30 +258,26 @@ export default async function DashboardAdmin() {
 
         <GraphiqueVentes data={venteParMois} />
 
+        {/* BOUTIQUES EN ATTENTE */}
         {enAttente.length > 0 && (
           <>
-            <h2 style={{
-              fontSize: "14px",
-              fontWeight: "800",
-              color: "#0F172A",
-              marginBottom: "8px",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-            }}>
+            <h2 style={titreSection}>
+              <span style={traitOrange} />
               Boutiques en attente
               <span style={{
-                backgroundColor: "#FED7AA",
-                color: "#7c2d12",
+                backgroundColor: "#FEF3C7",
+                color: "#B45309",
                 fontSize: "10px",
-                fontWeight: "800",
-                padding: "2px 7px",
+                fontWeight: "900",
+                padding: "2px 8px",
                 borderRadius: "10px",
+                textTransform: "none",
+                letterSpacing: "0",
               }}>
                 {enAttente.length}
               </span>
             </h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "18px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "20px" }}>
               {enAttente.map((v) => (
                 <LienVendeur key={v.id} vendeur={formaterVendeur(v)} />
               ))}
@@ -244,18 +285,21 @@ export default async function DashboardAdmin() {
           </>
         )}
 
-        <h2 style={{
-          fontSize: "14px",
-          fontWeight: "800",
-          color: "#0F172A",
-          marginBottom: "8px",
-        }}>
-          Boutiques actives
+        {/* BOUTIQUES ACTIVES */}
+        <h2 style={titreSection}>
+          <span style={traitOrange} />
+          Boutiques actives ({actifs.length})
         </h2>
         {actifs.length === 0 ? (
-          <div className="card" style={{ textAlign: "center", padding: "26px 20px" }}>
-            <Store size={28} color="#94a3b8" strokeWidth={1.5} style={{ marginBottom: "6px" }} />
-            <p style={{ fontSize: "11px", color: "#64748b", fontWeight: "600" }}>
+          <div style={{
+            backgroundColor: "white",
+            textAlign: "center",
+            padding: "30px 20px",
+            borderRadius: "16px",
+            border: "1px solid #D4C5A0",
+          }}>
+            <Store size={26} color="#EA580C" strokeWidth={2} style={{ marginBottom: "6px" }} />
+            <p style={{ fontSize: "11.5px", color: "#57534E", fontWeight: "700" }}>
               Aucune boutique active.
             </p>
           </div>
@@ -271,4 +315,4 @@ export default async function DashboardAdmin() {
       <NavigationBas />
     </>
   );
-              }
+                       }
