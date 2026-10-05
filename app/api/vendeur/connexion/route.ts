@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { createSession } from "@/lib/auth";
+import { normaliserTelephone } from "@/lib/telephone";
 
 export async function POST(request: Request) {
   try {
@@ -15,8 +16,11 @@ export async function POST(request: Request) {
       );
     }
 
+    // ✅ Normalisation : peu importe le format saisi
+    const telephoneNormalise = normaliserTelephone(telephone);
+
     const user = await prisma.user.findUnique({
-      where: { telephone },
+      where: { telephone: telephoneNormalise },
       include: { vendeur: true },
     });
 
@@ -54,4 +58,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-        }
+}
