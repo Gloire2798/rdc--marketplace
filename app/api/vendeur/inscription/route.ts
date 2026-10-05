@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { creerNotificationAdmin } from "@/lib/notifications";
 import bcrypt from "bcryptjs";
+import { normaliserTelephone, validerTelephone } from "@/lib/telephone";
 
 export async function POST(request: Request) {
   try {
@@ -27,6 +28,18 @@ export async function POST(request: Request) {
       );
     }
 
+    // ✅ Validation du format du téléphone
+    const validationTel = validerTelephone(telephone);
+    if (!validationTel.valide) {
+      return NextResponse.json(
+        { erreur: validationTel.erreur || "Numéro de téléphone invalide" },
+        { status: 400 }
+      );
+    }
+
+    // ✅ Normalisation du téléphone
+    const telephoneNormalise = normaliserTelephone(telephone);
+
     if (motDePasse.length < 6) {
       return NextResponse.json(
         { erreur: "Le mot de passe doit contenir au moins 6 caractères" },
@@ -41,9 +54,17 @@ export async function POST(request: Request) {
       );
     }
 
+    // ✅ Normalisation des numéros Mobile Money
+    const mpesaNormalise = numMpesa ? normaliserTelephone(numMpesa) : null;
+    const orangeNormalise = numOrange ? normaliserTelephone(numOrange) : null;
+    const airtelNormalise = numAirtel ? normaliserTelephone(numAirtel) : null;
+    const mobileMoneyNormalise = normaliserTelephone(
+      numMobileMoney || numMpesa || numOrange || numAirtel
+    );
+
     // Vérifier le téléphone
     const existantTel = await prisma.user.findUnique({
-      where: { telephone },
+      where: { telephone: telephoneNormalise },
     });
 
     if (existantTel) {
@@ -71,7 +92,7 @@ export async function POST(request: Request) {
 
     const user = await prisma.user.create({
       data: {
-        telephone,
+        telephone: telephoneNormalise,
         email: emailNettoye,
         nom,
         role: "VENDEUR",
@@ -81,12 +102,11 @@ export async function POST(request: Request) {
             nomBoutique,
             description: description || null,
             adresse: adresse || null,
-            telephone,
-            numMobileMoney:
-              numMobileMoney || numMpesa || numOrange || numAirtel,
-            numMpesa: numMpesa || null,
-            numOrange: numOrange || null,
-            numAirtel: numAirtel || null,
+            telephone: telephoneNormalise,
+            numMobileMoney: mobileMoneyNormalise,
+            numMpesa: mpesaNormalise,
+            numOrange: orangeNormalise,
+            numAirtel: airtelNormalise,
             actif: false,
           },
         },
@@ -114,4 +134,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
+         }
