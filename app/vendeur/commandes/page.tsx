@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import CarteCommande from "./CarteCommande";
+import { ArrowLeft, Clock, CheckCircle, Package, PackageX } from "lucide-react";
 
 export default async function MesCommandes() {
   const session = await getSession();
@@ -75,51 +76,116 @@ export default async function MesCommandes() {
   const terminees = commandes.filter((c) => c.statut === "RETIRE");
 
   return (
-    <div className="container" style={{ padding: "40px 16px" }}>
-      <Link href="/vendeur/dashboard" style={{ color: "#2563eb", fontSize: "14px" }}>
-        ← Retour au tableau de bord
+    <div style={{ padding: "16px 12px 100px 12px", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
+      <Link
+        href="/vendeur/dashboard"
+        style={{
+          color: "#0F172A",
+          fontSize: "11px",
+          fontWeight: "800",
+          textDecoration: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "4px",
+        }}
+      >
+        <ArrowLeft size={12} strokeWidth={2.8} />
+        Retour au tableau de bord
       </Link>
 
-      <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px", marginTop: "16px" }}>
+      <h1 style={{
+        fontSize: "22px",
+        fontWeight: "900",
+        color: "#0F172A",
+        marginBottom: "3px",
+        marginTop: "12px",
+        letterSpacing: "-0.4px",
+      }}>
         Mes commandes
       </h1>
-      <p style={{ color: "#6b7280", marginBottom: "32px" }}>
+      <p style={{ color: "#57534E", fontSize: "11.5px", fontWeight: "700", marginBottom: "18px" }}>
         Gérez les commandes de vos clients.
       </p>
 
+      {/* STATS */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
-        gap: "12px",
-        marginBottom: "32px",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        gap: "6px",
+        marginBottom: "20px",
       }}>
-        <div className="card">
-          <p style={{ color: "#6b7280", fontSize: "13px" }}>⏳ En attente</p>
-          <h2 style={{ fontSize: "24px", fontWeight: "bold", color: "#d97706", marginTop: "4px" }}>
+        <div style={{
+          backgroundColor: "white",
+          borderRadius: "14px",
+          padding: "10px 8px",
+          border: "1px solid #D4C5A0",
+          textAlign: "center",
+        }}>
+          <Clock size={16} color="#B45309" strokeWidth={2.8} style={{ marginBottom: "4px" }} />
+          <p style={{ color: "#57534E", fontSize: "9.5px", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.4px", marginBottom: "4px" }}>
+            En attente
+          </p>
+          <h2 style={{ fontSize: "20px", fontWeight: "900", color: "#B45309", lineHeight: 1 }}>
             {enAttente.length}
           </h2>
         </div>
-        <div className="card">
-          <p style={{ color: "#6b7280", fontSize: "13px" }}>✅ Validées</p>
-          <h2 style={{ fontSize: "24px", fontWeight: "bold", color: "#2563eb", marginTop: "4px" }}>
+        <div style={{
+          backgroundColor: "white",
+          borderRadius: "14px",
+          padding: "10px 8px",
+          border: "1px solid #D4C5A0",
+          textAlign: "center",
+        }}>
+          <CheckCircle size={16} color="#1D4ED8" strokeWidth={2.8} style={{ marginBottom: "4px" }} />
+          <p style={{ color: "#57534E", fontSize: "9.5px", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.4px", marginBottom: "4px" }}>
+            Validées
+          </p>
+          <h2 style={{ fontSize: "20px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1 }}>
             {validees.length}
           </h2>
         </div>
-        <div className="card">
-          <p style={{ color: "#6b7280", fontSize: "13px" }}>📦 Terminées</p>
-          <h2 style={{ fontSize: "24px", fontWeight: "bold", color: "#16a34a", marginTop: "4px" }}>
+        <div style={{
+          backgroundColor: "white",
+          borderRadius: "14px",
+          padding: "10px 8px",
+          border: "1px solid #D4C5A0",
+          textAlign: "center",
+        }}>
+          <Package size={16} color="#16A34A" strokeWidth={2.8} style={{ marginBottom: "4px" }} />
+          <p style={{ color: "#57534E", fontSize: "9.5px", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.4px", marginBottom: "4px" }}>
+            Terminées
+          </p>
+          <h2 style={{ fontSize: "20px", fontWeight: "900", color: "#16A34A", lineHeight: 1 }}>
             {terminees.length}
           </h2>
         </div>
       </div>
 
       {commandes.length === 0 ? (
-        <div className="card" style={{ textAlign: "center", padding: "60px 20px" }}>
-          <p style={{ fontSize: "48px", marginBottom: "16px" }}>📦</p>
-          <p style={{ fontSize: "18px", fontWeight: "600", marginBottom: "8px" }}>
-            Aucune commande pour le moment
+        <div style={{
+          backgroundColor: "white",
+          textAlign: "center",
+          padding: "50px 20px",
+          borderRadius: "20px",
+          border: "1.5px solid #0F172A",
+          boxShadow: "4px 4px 0 #EA580C",
+        }}>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "56px",
+            height: "56px",
+            borderRadius: "50%",
+            backgroundColor: "#F5EAD2",
+            marginBottom: "10px",
+          }}>
+            <PackageX size={26} color="#EA580C" strokeWidth={2} />
+          </div>
+          <p style={{ fontSize: "14px", fontWeight: "900", marginBottom: "4px", color: "#0F172A" }}>
+            Aucune commande
           </p>
-          <p style={{ color: "#6b7280" }}>
+          <p style={{ color: "#57534E", fontSize: "11px", fontWeight: "600" }}>
             Vos commandes apparaîtront ici.
           </p>
         </div>
@@ -127,10 +193,21 @@ export default async function MesCommandes() {
         <>
           {enAttente.length > 0 && (
             <>
-              <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "12px", color: "#d97706" }}>
-                ⏳ En attente de validation ({enAttente.length})
+              <h2 style={{
+                fontSize: "12px",
+                fontWeight: "900",
+                marginBottom: "8px",
+                color: "#B45309",
+                textTransform: "uppercase",
+                letterSpacing: "0.6px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}>
+                <span style={{ display: "inline-block", width: "3px", height: "12px", backgroundColor: "#B45309", borderRadius: "2px" }} />
+                En attente ({enAttente.length})
               </h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "32px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "20px" }}>
                 {enAttente.map((c) => (
                   <CarteCommande key={c.id} commande={formaterCommande(c)} />
                 ))}
@@ -140,10 +217,21 @@ export default async function MesCommandes() {
 
           {validees.length > 0 && (
             <>
-              <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "12px", color: "#2563eb" }}>
-                ✅ Validées ({validees.length})
+              <h2 style={{
+                fontSize: "12px",
+                fontWeight: "900",
+                marginBottom: "8px",
+                color: "#1D4ED8",
+                textTransform: "uppercase",
+                letterSpacing: "0.6px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}>
+                <span style={{ display: "inline-block", width: "3px", height: "12px", backgroundColor: "#1D4ED8", borderRadius: "2px" }} />
+                Validées ({validees.length})
               </h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "32px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "20px" }}>
                 {validees.map((c) => (
                   <CarteCommande key={c.id} commande={formaterCommande(c)} />
                 ))}
@@ -153,10 +241,21 @@ export default async function MesCommandes() {
 
           {terminees.length > 0 && (
             <>
-              <h2 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "12px", color: "#16a34a" }}>
-                📦 Terminées ({terminees.length})
+              <h2 style={{
+                fontSize: "12px",
+                fontWeight: "900",
+                marginBottom: "8px",
+                color: "#16A34A",
+                textTransform: "uppercase",
+                letterSpacing: "0.6px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}>
+                <span style={{ display: "inline-block", width: "3px", height: "12px", backgroundColor: "#16A34A", borderRadius: "2px" }} />
+                Terminées ({terminees.length})
               </h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 {terminees.map((c) => (
                   <CarteCommande key={c.id} commande={formaterCommande(c)} />
                 ))}
@@ -167,4 +266,4 @@ export default async function MesCommandes() {
       )}
     </div>
   );
-                           }
+            }
