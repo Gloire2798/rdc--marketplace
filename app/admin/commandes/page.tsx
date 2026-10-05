@@ -1,6 +1,7 @@
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { Clock, CheckCircle, Package, User, Phone, MapPin, Store, Truck } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -35,59 +36,140 @@ export default async function AdminCommandes() {
     return (
       <div key={c.id} style={{
         backgroundColor: "white",
-        borderRadius: "12px",
-        padding: "12px",
-        border: "1px solid #F1F5F9",
-        boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
-        borderLeft: `4px solid ${couleur}`,
-        marginBottom: "8px",
+        borderRadius: "14px",
+        padding: "10px 11px",
+        border: "1px solid #D4C5A0",
+        boxShadow: "0 2px 6px rgba(120, 100, 60, 0.06)",
+        borderLeft: `3px solid ${couleur}`,
+        marginBottom: "6px",
       }}>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-          <div>
-            <p style={{ fontSize: "10.5px", color: "#64748b", fontWeight: "700" }}>
+        {/* En-tête compact */}
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", gap: "6px" }}>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <p style={{
+              fontSize: "9px",
+              color: "#94A3B8",
+              fontWeight: "800",
+              marginBottom: "2px",
+              letterSpacing: "0.2px",
+            }}>
               #{c.id.slice(0, 8)}
             </p>
-            <p style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginTop: "2px" }}>
-              👤 {c.nomClient || c.acheteur?.nom || "Client"}
+            <p style={{
+              fontSize: "12px",
+              fontWeight: "900",
+              color: "#0F172A",
+              marginBottom: "2px",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}>
+              <User size={11} strokeWidth={2.8} />
+              {c.nomClient || c.acheteur?.nom || "Client"}
             </p>
-            <p style={{ fontSize: "11px", color: "#64748b", fontWeight: "600" }}>
-              📞 {c.telephoneClient || c.acheteur?.telephone || "—"}
+            <p style={{
+              fontSize: "10px",
+              color: "#57534E",
+              fontWeight: "700",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+            }}>
+              <Phone size={10} strokeWidth={2.8} />
+              {c.telephoneClient || c.acheteur?.telephone || "—"}
             </p>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <p style={{ fontSize: "15px", fontWeight: "900", color: "#1D4ED8" }}>
+          <div style={{ textAlign: "right", flexShrink: 0 }}>
+            <p style={{
+              fontSize: "13px",
+              fontWeight: "900",
+              color: "#EA580C",
+              letterSpacing: "-0.2px",
+            }}>
               {formaterPrix(c.total, devise)}
             </p>
-            <p style={{ fontSize: "10.5px", color: "#64748b", marginTop: "2px", fontWeight: "600" }}>
-              {c.mode === "LIVRAISON" ? "🚚 Livraison" : "🏪 Retrait"}
+            <p style={{
+              fontSize: "9px",
+              color: "#57534E",
+              marginTop: "3px",
+              fontWeight: "800",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              gap: "3px",
+            }}>
+              {c.mode === "LIVRAISON" ? (
+                <>
+                  <Truck size={9} strokeWidth={2.8} />
+                  Livraison
+                </>
+              ) : (
+                <>
+                  <Store size={9} strokeWidth={2.8} />
+                  Retrait
+                </>
+              )}
             </p>
           </div>
         </div>
 
-        <p style={{ fontSize: "11px", color: "#1E3A5F", fontWeight: "800", marginBottom: "6px" }}>
-          🏪 {c.vendeur.nomBoutique}
+        <p style={{
+          fontSize: "10.5px",
+          color: "#0F172A",
+          fontWeight: "900",
+          marginBottom: "6px",
+          display: "flex",
+          alignItems: "center",
+          gap: "4px",
+        }}>
+          <Store size={11} strokeWidth={2.8} />
+          {c.vendeur.nomBoutique}
         </p>
 
         {c.mode === "LIVRAISON" && c.adresse && (
-          <p style={{ fontSize: "11px", color: "#64748b", marginBottom: "8px" }}>
-            📍 {c.adresse}
+          <p style={{
+            fontSize: "10px",
+            color: "#57534E",
+            marginBottom: "6px",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+            fontWeight: "700",
+          }}>
+            <MapPin size={10} strokeWidth={2.8} />
+            {c.adresse}
           </p>
         )}
 
         <div style={{
-          backgroundColor: "#F9FAFB",
-          borderRadius: "8px",
+          backgroundColor: "#F5EAD2",
+          borderRadius: "10px",
           padding: "6px 8px",
+          border: "1px solid #D4C5A0",
         }}>
           {c.items.map((i, idx) => (
             <div key={idx} style={{
               display: "flex",
               justifyContent: "space-between",
-              fontSize: "11px",
+              fontSize: "10.5px",
               marginBottom: idx < c.items.length - 1 ? "3px" : "0",
+              gap: "6px",
             }}>
-              <span>{i.produit.nom} × {i.quantite}</span>
-              <span style={{ color: "#64748b" }}>
+              <span style={{
+                color: "#0F172A",
+                fontWeight: "800",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                minWidth: 0,
+                flex: 1,
+              }}>
+                {i.produit.nom} × {i.quantite}
+              </span>
+              <span style={{ color: "#57534E", fontWeight: "800", flexShrink: 0 }}>
                 {formaterPrix(i.prixUnitaire * i.quantite, devise)}
               </span>
             </div>
@@ -97,66 +179,111 @@ export default async function AdminCommandes() {
     );
   };
 
+  const titreSection = (couleur: string) => ({
+    fontSize: "11.5px",
+    fontWeight: "900" as const,
+    color: couleur,
+    marginBottom: "8px",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.6px",
+    display: "flex" as const,
+    alignItems: "center" as const,
+    gap: "6px",
+  });
+
+  const traitCouleur = (couleur: string) => ({
+    display: "inline-block",
+    width: "3px",
+    height: "12px",
+    backgroundColor: couleur,
+    borderRadius: "2px",
+  });
+
   return (
-    <div style={{ backgroundColor: "#F3F4F6", minHeight: "100vh", padding: "18px 14px 90px 14px" }}>
+    <div style={{ backgroundColor: "#F5EAD2", minHeight: "100vh", padding: "16px 12px 90px 12px" }}>
       <h1 style={{
-        fontSize: "20px",
+        fontSize: "22px",
         fontWeight: "900",
         color: "#0F172A",
-        marginBottom: "4px",
+        marginBottom: "3px",
         letterSpacing: "-0.4px",
       }}>
         Commandes
       </h1>
-      <p style={{ fontSize: "11.5px", color: "#64748b", fontWeight: "600", marginBottom: "18px" }}>
+      <p style={{ fontSize: "11.5px", color: "#57534E", fontWeight: "700", marginBottom: "16px" }}>
         Toutes les commandes du complexe
       </p>
 
+      {/* STATS COMPACTES */}
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(3, 1fr)",
-        gap: "8px",
-        marginBottom: "18px",
+        gap: "6px",
+        marginBottom: "16px",
       }}>
         <div style={{
           backgroundColor: "white",
-          borderRadius: "10px",
-          padding: "10px",
-          border: "1px solid #F1F5F9",
+          borderRadius: "14px",
+          padding: "10px 6px",
+          border: "1px solid #D4C5A0",
           textAlign: "center",
         }}>
-          <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "700", marginBottom: "3px" }}>
-            ⏳ En attente
+          <Clock size={14} color="#B45309" strokeWidth={2.8} style={{ marginBottom: "4px" }} />
+          <p style={{
+            fontSize: "9px",
+            color: "#57534E",
+            fontWeight: "900",
+            marginBottom: "4px",
+            textTransform: "uppercase",
+            letterSpacing: "0.4px",
+          }}>
+            En attente
           </p>
-          <p style={{ fontSize: "18px", fontWeight: "900", color: "#d97706" }}>
+          <p style={{ fontSize: "18px", fontWeight: "900", color: "#B45309", lineHeight: 1 }}>
             {enAttente.length}
           </p>
         </div>
         <div style={{
           backgroundColor: "white",
-          borderRadius: "10px",
-          padding: "10px",
-          border: "1px solid #F1F5F9",
+          borderRadius: "14px",
+          padding: "10px 6px",
+          border: "1px solid #D4C5A0",
           textAlign: "center",
         }}>
-          <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "700", marginBottom: "3px" }}>
-            ✅ Validées
+          <CheckCircle size={14} color="#1D4ED8" strokeWidth={2.8} style={{ marginBottom: "4px" }} />
+          <p style={{
+            fontSize: "9px",
+            color: "#57534E",
+            fontWeight: "900",
+            marginBottom: "4px",
+            textTransform: "uppercase",
+            letterSpacing: "0.4px",
+          }}>
+            Validées
           </p>
-          <p style={{ fontSize: "18px", fontWeight: "900", color: "#1D4ED8" }}>
+          <p style={{ fontSize: "18px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1 }}>
             {validees.length}
           </p>
         </div>
         <div style={{
           backgroundColor: "white",
-          borderRadius: "10px",
-          padding: "10px",
-          border: "1px solid #F1F5F9",
+          borderRadius: "14px",
+          padding: "10px 6px",
+          border: "1px solid #D4C5A0",
           textAlign: "center",
         }}>
-          <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "700", marginBottom: "3px" }}>
-            📦 Terminées
+          <Package size={14} color="#16A34A" strokeWidth={2.8} style={{ marginBottom: "4px" }} />
+          <p style={{
+            fontSize: "9px",
+            color: "#57534E",
+            fontWeight: "900",
+            marginBottom: "4px",
+            textTransform: "uppercase",
+            letterSpacing: "0.4px",
+          }}>
+            Terminées
           </p>
-          <p style={{ fontSize: "18px", fontWeight: "900", color: "#16a34a" }}>
+          <p style={{ fontSize: "18px", fontWeight: "900", color: "#16A34A", lineHeight: 1 }}>
             {terminees.length}
           </p>
         </div>
@@ -167,13 +294,26 @@ export default async function AdminCommandes() {
           backgroundColor: "white",
           textAlign: "center",
           padding: "40px 20px",
-          borderRadius: "12px",
-          border: "1px solid #F1F5F9",
+          borderRadius: "20px",
+          border: "1.5px solid #0F172A",
+          boxShadow: "4px 4px 0 #EA580C",
         }}>
-          <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "6px" }}>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "56px",
+            height: "56px",
+            borderRadius: "50%",
+            backgroundColor: "#F5EAD2",
+            marginBottom: "10px",
+          }}>
+            <Package size={26} color="#EA580C" strokeWidth={2} />
+          </div>
+          <p style={{ fontSize: "13px", fontWeight: "900", marginBottom: "6px", color: "#0F172A" }}>
             Aucune commande
           </p>
-          <p style={{ color: "#64748b", fontSize: "11px" }}>
+          <p style={{ color: "#57534E", fontSize: "11px", fontWeight: "700" }}>
             Les commandes apparaîtront ici.
           </p>
         </div>
@@ -181,21 +321,23 @@ export default async function AdminCommandes() {
         <>
           {enAttente.length > 0 && (
             <>
-              <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#d97706", marginBottom: "8px", textTransform: "uppercase" }}>
-                ⏳ En attente ({enAttente.length})
+              <h2 style={titreSection("#B45309")}>
+                <span style={traitCouleur("#B45309")} />
+                En attente ({enAttente.length})
               </h2>
-              <div style={{ marginBottom: "18px" }}>
-                {enAttente.map((c) => renderCard(c, "#d97706"))}
+              <div style={{ marginBottom: "16px" }}>
+                {enAttente.map((c) => renderCard(c, "#B45309"))}
               </div>
             </>
           )}
 
           {validees.length > 0 && (
             <>
-              <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#1D4ED8", marginBottom: "8px", textTransform: "uppercase" }}>
-                ✅ Validées ({validees.length})
+              <h2 style={titreSection("#1D4ED8")}>
+                <span style={traitCouleur("#1D4ED8")} />
+                Validées ({validees.length})
               </h2>
-              <div style={{ marginBottom: "18px" }}>
+              <div style={{ marginBottom: "16px" }}>
                 {validees.map((c) => renderCard(c, "#1D4ED8"))}
               </div>
             </>
@@ -203,11 +345,12 @@ export default async function AdminCommandes() {
 
           {terminees.length > 0 && (
             <>
-              <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#16a34a", marginBottom: "8px", textTransform: "uppercase" }}>
-                📦 Terminées ({terminees.length})
+              <h2 style={titreSection("#16A34A")}>
+                <span style={traitCouleur("#16A34A")} />
+                Terminées ({terminees.length})
               </h2>
               <div>
-                {terminees.map((c) => renderCard(c, "#16a34a"))}
+                {terminees.map((c) => renderCard(c, "#16A34A"))}
               </div>
             </>
           )}
