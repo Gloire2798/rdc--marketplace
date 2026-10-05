@@ -2,19 +2,21 @@
 
 import { useState } from "react";
 import {
-  AreaChart,
-  Area,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 import { TrendingUp } from "lucide-react";
 
 interface VenteMois {
   mois: string;
-  montant: number;
+  fc: number;
+  usd: number;
 }
 
 interface GraphiqueVentesProps {
@@ -24,13 +26,19 @@ interface GraphiqueVentesProps {
 export default function GraphiqueVentes({ data }: GraphiqueVentesProps) {
   const [periode, setPeriode] = useState<"semaine" | "mois">("mois");
 
-  const dataFiltree = data.filter((d) => d.montant > 0);
+  // Filtre : si "semaine" → dernier mois uniquement ; sinon → tous les mois avec données
+  const dataFiltree = data.filter((d) => d.fc > 0 || d.usd > 0);
   const dataAffichee = periode === "semaine" ? data.slice(-1) : dataFiltree;
 
-  const formaterMontant = (valeur: number) => {
+  const formaterMontantFC = (valeur: number) => {
     if (valeur >= 1000000) return `${(valeur / 1000000).toFixed(1)}M`;
     if (valeur >= 1000) return `${(valeur / 1000).toFixed(0)}k`;
     return valeur.toString();
+  };
+
+  const formaterMontantUSD = (valeur: number) => {
+    if (valeur >= 1000) return `${(valeur / 1000).toFixed(1)}k`;
+    return valeur.toFixed(0);
   };
 
   return (
@@ -42,6 +50,7 @@ export default function GraphiqueVentes({ data }: GraphiqueVentesProps) {
       border: "1px solid #D4C5A0",
       boxShadow: "0 2px 8px rgba(120, 100, 60, 0.06)",
     }}>
+      {/* HEADER */}
       <div style={{
         display: "flex",
         justifyContent: "space-between",
@@ -136,15 +145,9 @@ export default function GraphiqueVentes({ data }: GraphiqueVentesProps) {
             {dataAffichee.length} mois avec des ventes
           </p>
 
-          <div style={{ width: "100%", height: "180px" }}>
+          <div style={{ width: "100%", height: "220px" }}>
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={dataAffichee} margin={{ top: 10, right: 8, left: -28, bottom: 5 }}>
-                <defs>
-                  <linearGradient id="colorVentes" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#EA580C" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="#EA580C" stopOpacity={0.05} />
-                  </linearGradient>
-                </defs>
+              <LineChart data={dataAffichee} margin={{ top: 10, right: 14, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="4 4" stroke="#D4C5A0" vertical={false} />
                 <XAxis
                   dataKey="mois"
@@ -152,11 +155,22 @@ export default function GraphiqueVentes({ data }: GraphiqueVentesProps) {
                   axisLine={{ stroke: "#D4C5A0" }}
                   tickLine={false}
                 />
+                {/* Axe FC (à gauche) */}
                 <YAxis
-                  tick={{ fontSize: 10, fill: "#57534E", fontWeight: 700 }}
+                  yAxisId="left"
+                  tick={{ fontSize: 10, fill: "#1D4ED8", fontWeight: 700 }}
                   axisLine={false}
                   tickLine={false}
-                  tickFormatter={formaterMontant}
+                  tickFormatter={formaterMontantFC}
+                />
+                {/* Axe USD (à droite) */}
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  tick={{ fontSize: 10, fill: "#16A34A", fontWeight: 700 }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={formaterMontantUSD}
                 />
                 <Tooltip
                   contentStyle={{
@@ -168,24 +182,81 @@ export default function GraphiqueVentes({ data }: GraphiqueVentesProps) {
                     boxShadow: "0 4px 12px rgba(15, 23, 42, 0.25)",
                     color: "white",
                   }}
-                  labelStyle={{ color: "white", fontWeight: "900", marginBottom: "3px" }}
-                  itemStyle={{ color: "#EA580C", fontWeight: "900" }}
-                  formatter={(value: number) => [`${value.toLocaleString("fr-FR")} FC`, "Ventes"]}
+                  labelStyle={{ color: "white", fontWeight: "900", marginBottom: "4px" }}
+                  formatter={(value: number, name: string) => {
+                    if (name === "Ventes FC") {
+                      return [`${value.toLocaleString("fr-FR")} FC`, "Ventes FC"];
+                    }
+                    return [`${value.toFixed(2)} $`, "Ventes USD"];
+                  }}
                 />
-                <Area
+                <Legend
+                  wrapperStyle={{
+                    fontSize: "11px",
+                    fontWeight: "800",
+                    paddingTop: "8px",
+                  }}
+                  iconType="line"
+                  iconSize={14}
+                />
+                <Line
+                  yAxisId="left"
                   type="monotone"
-                  dataKey="montant"
-                  stroke="#EA580C"
+                  dataKey="fc"
+                  name="Ventes FC"
+                  stroke="#1D4ED8"
                   strokeWidth={2.5}
-                  fill="url(#colorVentes)"
-                  dot={{ fill: "#EA580C", r: 4, strokeWidth: 2, stroke: "white" }}
-                  activeDot={{ r: 6, fill: "#EA580C", stroke: "white", strokeWidth: 3 }}
+                  dot={{ fill: "#1D4ED8", r: 4, strokeWidth: 2, stroke: "white" }}
+                  activeDot={{ r: 6, fill: "#1D4ED8", stroke: "white", strokeWidth: 3 }}
                 />
-              </AreaChart>
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="usd"
+                  name="Ventes USD"
+                  stroke="#16A34A"
+                  strokeWidth={2.5}
+                  dot={{ fill: "#16A34A", r: 4, strokeWidth: 2, stroke: "white" }}
+                  activeDot={{ r: 6, fill: "#16A34A", stroke: "white", strokeWidth: 3 }}
+                />
+              </LineChart>
             </ResponsiveContainer>
+          </div>
+
+          {/* LÉGENDE MANUELLE (style premium) */}
+          <div style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "20px",
+            marginTop: "10px",
+            paddingTop: "10px",
+            borderTop: "1px dashed #D4C5A0",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span style={{
+                width: "16px",
+                height: "3px",
+                backgroundColor: "#1D4ED8",
+                borderRadius: "2px",
+              }} />
+              <span style={{ fontSize: "10.5px", fontWeight: "900", color: "#1D4ED8" }}>
+                FC
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span style={{
+                width: "16px",
+                height: "3px",
+                backgroundColor: "#16A34A",
+                borderRadius: "2px",
+              }} />
+              <span style={{ fontSize: "10.5px", fontWeight: "900", color: "#16A34A" }}>
+                USD
+              </span>
+            </div>
           </div>
         </>
       )}
     </div>
   );
-          }
+                }
