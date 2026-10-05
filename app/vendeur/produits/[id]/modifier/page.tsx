@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
 import BoutonSupprimer from "./BoutonSupprimer";
+import { ArrowLeft, Image as ImageIcon, Tag, X, Upload, Clock } from "lucide-react";
 
 interface Produit {
   id: string;
@@ -179,18 +181,55 @@ export default function ModifierProduit() {
 
   const champStyle = {
     width: "100%",
-    padding: "12px",
-    borderRadius: "8px",
-    border: "1px solid #d1d5db",
-    fontSize: "15px",
-    marginBottom: "16px",
+    padding: "12px 14px",
+    borderRadius: "14px",
+    border: "1.5px solid #0F172A",
+    fontSize: "13.5px",
+    fontFamily: "inherit",
+    backgroundColor: "white",
+    outline: "none",
+    color: "#0F172A",
+    fontWeight: "700" as const,
+    boxSizing: "border-box" as const,
   };
 
   const labelStyle = {
-    display: "block",
+    display: "block" as const,
+    fontSize: "11px",
+    fontWeight: "900" as const,
+    color: "#0F172A",
     marginBottom: "6px",
-    fontWeight: "600" as const,
-    fontSize: "14px",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.4px",
+  };
+
+  const titreSection = {
+    fontSize: "12px",
+    fontWeight: "900" as const,
+    color: "#0F172A",
+    marginBottom: "12px",
+    textTransform: "uppercase" as const,
+    letterSpacing: "1px",
+    display: "flex" as const,
+    alignItems: "center" as const,
+    gap: "8px",
+  };
+
+  const traitOrange = {
+    display: "inline-block",
+    width: "3px",
+    height: "14px",
+    backgroundColor: "#EA580C",
+    borderRadius: "2px",
+  };
+
+  const carteStyle = {
+    backgroundColor: "white",
+    borderRadius: "20px",
+    padding: "16px",
+    marginBottom: "14px",
+    border: "1px solid #D4C5A0",
+    boxShadow: "0 2px 8px rgba(120, 100, 60, 0.06)",
   };
 
   const zoneUpload = (
@@ -202,35 +241,60 @@ export default function ModifierProduit() {
     <div style={{ marginBottom: "12px" }}>
       {apercu ? (
         <div style={{ position: "relative", textAlign: "center" }}>
-          <img
-            src={apercu}
-            alt={`Photo ${numero}`}
-            style={{
-              maxWidth: "100%",
-              maxHeight: "200px",
-              borderRadius: "12px",
-              objectFit: "contain",
-              backgroundColor: "#f3f4f6",
-            }}
-          />
+          <div style={{
+            position: "relative",
+            borderRadius: "14px",
+            border: "1.5px solid #0F172A",
+            backgroundColor: "white",
+            overflow: "hidden",
+            padding: "8px",
+            boxSizing: "border-box",
+          }}>
+            <img
+              src={apercu}
+              alt={`Photo ${numero}`}
+              style={{
+                maxWidth: "100%",
+                maxHeight: "200px",
+                borderRadius: "8px",
+                objectFit: "contain",
+                display: "block",
+                margin: "0 auto",
+              }}
+            />
+          </div>
           {enCours && (
-            <p style={{ color: "#6b7280", fontSize: "13px", marginTop: "4px" }}>
-              ⏳ Envoi...
+            <p style={{
+              color: "#57534E",
+              fontSize: "11px",
+              marginTop: "8px",
+              fontWeight: "800",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "4px",
+            }}>
+              <Clock size={12} strokeWidth={2.8} />
+              Envoi en cours...
             </p>
           )}
           {!enCours && (
             <label
               style={{
-                display: "inline-block",
-                marginTop: "4px",
-                padding: "4px 12px",
-                fontSize: "13px",
-                backgroundColor: "#e5e7eb",
-                color: "#374151",
-                borderRadius: "6px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "4px",
+                marginTop: "8px",
+                padding: "8px 14px",
+                fontSize: "11.5px",
+                backgroundColor: "#0F172A",
+                color: "white",
+                borderRadius: "20px",
                 cursor: "pointer",
+                fontWeight: "900",
               }}
             >
+              <Upload size={12} strokeWidth={2.8} />
               Changer
               <input
                 type="file"
@@ -248,15 +312,15 @@ export default function ModifierProduit() {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            border: "2px dashed #d1d5db",
-            borderRadius: "12px",
-            padding: "20px",
+            border: "2px dashed #D4C5A0",
+            borderRadius: "14px",
+            padding: "24px 20px",
             cursor: "pointer",
-            backgroundColor: "#f9fafb",
+            backgroundColor: "#F5EAD2",
           }}
         >
-          <span style={{ fontSize: "28px", marginBottom: "4px" }}>📸</span>
-          <span style={{ fontWeight: "600", fontSize: "13px" }}>
+          <Upload size={26} strokeWidth={2.2} color="#57534E" style={{ marginBottom: "6px" }} />
+          <span style={{ fontWeight: "900", fontSize: "12px", color: "#0F172A" }}>
             Photo {numero} {obligatoire ? "*" : "(optionnelle)"}
           </span>
           <input
@@ -272,8 +336,8 @@ export default function ModifierProduit() {
 
   if (chargement) {
     return (
-      <div className="container" style={{ padding: "60px 16px", textAlign: "center" }}>
-        <p>Chargement...</p>
+      <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
+        <p style={{ color: "#57534E", fontWeight: "700" }}>Chargement...</p>
       </div>
     );
   }
@@ -281,97 +345,151 @@ export default function ModifierProduit() {
   const tousUploades = uploadEnCours.p1 || uploadEnCours.p2 || uploadEnCours.p3;
 
   return (
-    <div className="container" style={{ maxWidth: "600px", padding: "40px 16px" }}>
-      <a href="/vendeur/produits" style={{ color: "#2563eb", fontSize: "14px" }}>
-        ← Retour à mes produits
-      </a>
+    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "16px 14px 40px", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
+      <Link
+        href="/vendeur/produits"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "6px",
+          color: "#0F172A",
+          fontSize: "11.5px",
+          fontWeight: "800",
+          textDecoration: "none",
+          marginBottom: "14px",
+        }}
+      >
+        <ArrowLeft size={14} strokeWidth={2.8} />
+        Retour à mes produits
+      </Link>
 
-      <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px", marginTop: "16px" }}>
+      <h1 style={{ fontSize: "24px", fontWeight: "900", color: "#0F172A", marginBottom: "6px", marginTop: "6px", letterSpacing: "-0.5px" }}>
         Modifier le produit
       </h1>
+      <p style={{ fontSize: "12px", color: "#57534E", fontWeight: "700", marginBottom: "18px" }}>
+        Modifiez les informations ci-dessous.
+      </p>
 
       {erreur && (
-        <div style={{ backgroundColor: "#fee2e2", color: "#991b1b", padding: "12px", borderRadius: "8px", marginBottom: "20px" }}>
+        <div style={{
+          backgroundColor: "#FEE2E2",
+          color: "#991B1B",
+          padding: "12px",
+          borderRadius: "14px",
+          marginBottom: "14px",
+          fontSize: "11.5px",
+          fontWeight: "800",
+          border: "1.5px solid #DC2626",
+        }}>
           {erreur}
         </div>
       )}
 
       <form onSubmit={soumettre}>
-        <label style={labelStyle}>Photos du produit (max 3)</label>
-        <p style={{ color: "#6b7280", fontSize: "13px", marginBottom: "12px" }}>
-          La photo 1 est obligatoire.
-        </p>
+        {/* PHOTOS */}
+        <div style={carteStyle}>
+          <h2 style={titreSection}>
+            <span style={traitOrange} />
+            <ImageIcon size={14} strokeWidth={2.8} color="#EA580C" />
+            Photos du produit (max 3)
+          </h2>
+          <p style={{ fontSize: "11px", color: "#57534E", fontWeight: "700", marginBottom: "12px" }}>
+            La photo 1 est obligatoire.
+          </p>
 
-        {zoneUpload(1, apercu1, uploadEnCours.p1, true)}
-        {zoneUpload(2, apercu2, uploadEnCours.p2, false)}
-        {zoneUpload(3, apercu3, uploadEnCours.p3, false)}
+          {zoneUpload(1, apercu1, uploadEnCours.p1, true)}
+          {zoneUpload(2, apercu2, uploadEnCours.p2, false)}
+          {zoneUpload(3, apercu3, uploadEnCours.p3, false)}
+        </div>
 
-        <label style={labelStyle}>Nom du produit *</label>
-        <input
-          type="text"
-          style={champStyle}
-          value={form.nom}
-          onChange={(e) => changer("nom", e.target.value)}
-          required
-        />
+        {/* INFOS */}
+        <div style={carteStyle}>
+          <h2 style={titreSection}>
+            <span style={traitOrange} />
+            <Tag size={14} strokeWidth={2.8} color="#EA580C" />
+            Informations
+          </h2>
 
-        <label style={labelStyle}>Description (optionnel)</label>
-        <textarea
-          style={{ ...champStyle, minHeight: "80px" }}
-          value={form.description}
-          onChange={(e) => changer("description", e.target.value)}
-        />
+          <label style={labelStyle}>Nom du produit *</label>
+          <input
+            type="text"
+            style={{ ...champStyle, marginBottom: "12px" }}
+            value={form.nom}
+            onChange={(e) => changer("nom", e.target.value)}
+            required
+          />
 
-        <label style={labelStyle}>Prix normal *</label>
-        <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+          <label style={labelStyle}>Description (optionnel)</label>
+          <textarea
+            style={{ ...champStyle, minHeight: "80px", resize: "vertical", marginBottom: "12px" }}
+            value={form.description}
+            onChange={(e) => changer("description", e.target.value)}
+          />
+
+          <label style={labelStyle}>Prix normal *</label>
+          <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+            <input
+              type="number"
+              style={{ ...champStyle, flex: 2 }}
+              value={form.prix}
+              onChange={(e) => changer("prix", e.target.value)}
+              required
+              min="0"
+              step="any"
+            />
+            <select
+              style={{ ...champStyle, flex: 1 }}
+              value={form.devise}
+              onChange={(e) => changer("devise", e.target.value)}
+            >
+              <option value="FC">FC</option>
+              <option value="USD">$</option>
+            </select>
+          </div>
+
+          <label style={labelStyle}>Prix promotionnel (optionnel)</label>
+          <p style={{ fontSize: "11px", color: "#57534E", fontWeight: "600", marginBottom: "8px" }}>
+            Laissez vide si pas de promotion. Doit être inférieur au prix normal.
+          </p>
           <input
             type="number"
-            style={{ ...champStyle, marginBottom: 0, flex: 2 }}
-            value={form.prix}
-            onChange={(e) => changer("prix", e.target.value)}
-            required
+            placeholder="Ex: 20000"
+            style={{ ...champStyle, marginBottom: "12px" }}
+            value={form.prixPromo}
+            onChange={(e) => changer("prixPromo", e.target.value)}
             min="0"
             step="any"
           />
-          <select
-            style={{ ...champStyle, marginBottom: 0, flex: 1 }}
-            value={form.devise}
-            onChange={(e) => changer("devise", e.target.value)}
-          >
-            <option value="FC">FC</option>
-            <option value="USD">$</option>
-          </select>
+
+          <label style={labelStyle}>Stock disponible *</label>
+          <input
+            type="number"
+            style={champStyle}
+            value={form.stock}
+            onChange={(e) => changer("stock", e.target.value)}
+            required
+            min="0"
+          />
         </div>
-
-        <label style={labelStyle}>Prix promotionnel (optionnel)</label>
-        <p style={{ color: "#6b7280", fontSize: "12px", marginBottom: "6px" }}>
-          Laissez vide si pas de promotion. Doit être inférieur au prix normal.
-        </p>
-        <input
-          type="number"
-          placeholder="Ex: 20000"
-          style={champStyle}
-          value={form.prixPromo}
-          onChange={(e) => changer("prixPromo", e.target.value)}
-          min="0"
-          step="any"
-        />
-
-        <label style={labelStyle}>Stock disponible *</label>
-        <input
-          type="number"
-          style={champStyle}
-          value={form.stock}
-          onChange={(e) => changer("stock", e.target.value)}
-          required
-          min="0"
-        />
 
         <button
           type="submit"
           disabled={enregistrement || tousUploades}
-          className="btn btn-primary"
-          style={{ width: "100%", marginTop: "16px", opacity: (enregistrement || tousUploades) ? 0.6 : 1 }}
+          style={{
+            width: "100%",
+            backgroundColor: "#0F172A",
+            color: "white",
+            padding: "16px",
+            borderRadius: "26px",
+            border: "none",
+            fontWeight: "900",
+            fontSize: "14px",
+            cursor: "pointer",
+            opacity: enregistrement || tousUploades ? 0.6 : 1,
+            boxShadow: "0 4px 12px rgba(15, 23, 42, 0.25)",
+            letterSpacing: "-0.2px",
+            fontFamily: "inherit",
+          }}
         >
           {enregistrement ? "Enregistrement..." : tousUploades ? "Envoi des photos..." : "Enregistrer les modifications"}
         </button>
