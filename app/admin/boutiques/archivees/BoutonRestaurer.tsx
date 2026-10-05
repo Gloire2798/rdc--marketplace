@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { RotateCcw, Trash2, AlertTriangle } from "lucide-react";
 
 interface Props {
   vendeurId: string;
@@ -58,34 +59,46 @@ export default function BoutonRestaurer({ vendeurId, nomBoutique }: Props) {
           onClick={() => setAction("restaurer")}
           style={{
             flex: 1,
-            padding: "9px",
-            borderRadius: "8px",
-            backgroundColor: "#DCFCE7",
-            color: "#15803D",
-            border: "1px solid #BBF7D0",
-            fontWeight: "800",
+            padding: "10px",
+            borderRadius: "20px",
+            backgroundColor: "white",
+            color: "#16A34A",
+            border: "1.5px solid #16A34A",
+            fontWeight: "900",
             fontSize: "11px",
             cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "4px",
+            fontFamily: "inherit",
           }}
         >
-          ♻️ Restaurer
+          <RotateCcw size={12} strokeWidth={3} />
+          Restaurer
         </button>
 
         <button
           onClick={() => setAction("supprimer")}
           style={{
             flex: 1,
-            padding: "9px",
-            borderRadius: "8px",
-            backgroundColor: "#FEE2E2",
-            color: "#991B1B",
-            border: "1px solid #FECACA",
-            fontWeight: "800",
+            padding: "10px",
+            borderRadius: "20px",
+            backgroundColor: "white",
+            color: "#DC2626",
+            border: "1.5px solid #DC2626",
+            fontWeight: "900",
             fontSize: "11px",
             cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "4px",
+            fontFamily: "inherit",
           }}
         >
-          🗑️ Supprimer
+          <Trash2 size={12} strokeWidth={3} />
+          Supprimer
         </button>
       </div>
     );
@@ -95,18 +108,20 @@ export default function BoutonRestaurer({ vendeurId, nomBoutique }: Props) {
     return (
       <div
         style={{
-          backgroundColor: "#DCFCE7",
-          border: "1px solid #BBF7D0",
-          borderRadius: "8px",
-          padding: "10px",
+          backgroundColor: "white",
+          border: "1.5px solid #16A34A",
+          borderRadius: "14px",
+          padding: "12px",
+          boxShadow: "3px 3px 0 #16A34A",
         }}
       >
         <p
           style={{
-            fontSize: "11px",
-            fontWeight: "700",
-            color: "#166534",
-            marginBottom: "8px",
+            fontSize: "11.5px",
+            fontWeight: "900",
+            color: "#15803D",
+            marginBottom: "10px",
+            textAlign: "center",
           }}
         >
           Restaurer <strong>{nomBoutique}</strong> ?
@@ -117,32 +132,34 @@ export default function BoutonRestaurer({ vendeurId, nomBoutique }: Props) {
             disabled={chargement}
             style={{
               flex: 1,
-              padding: "8px",
-              borderRadius: "6px",
-              backgroundColor: "#16a34a",
+              padding: "10px",
+              borderRadius: "20px",
+              backgroundColor: "#16A34A",
               color: "white",
               border: "none",
-              fontWeight: "800",
+              fontWeight: "900",
               fontSize: "11px",
               cursor: "pointer",
               opacity: chargement ? 0.6 : 1,
+              fontFamily: "inherit",
             }}
           >
-            {chargement ? "..." : "✅ Oui, restaurer"}
+            {chargement ? "..." : "Oui, restaurer"}
           </button>
           <button
             onClick={() => setAction(null)}
             disabled={chargement}
             style={{
               flex: 1,
-              padding: "8px",
-              borderRadius: "6px",
+              padding: "10px",
+              borderRadius: "20px",
               backgroundColor: "white",
-              color: "#64748b",
-              border: "1px solid #E2E8F0",
-              fontWeight: "700",
+              color: "#0F172A",
+              border: "1.5px solid #0F172A",
+              fontWeight: "900",
               fontSize: "11px",
               cursor: "pointer",
+              fontFamily: "inherit",
             }}
           >
             Annuler
@@ -155,67 +172,90 @@ export default function BoutonRestaurer({ vendeurId, nomBoutique }: Props) {
   return (
     <div
       style={{
-        backgroundColor: "#FEE2E2",
-        border: "2px solid #DC2626",
-        borderRadius: "8px",
-        padding: "10px",
+        backgroundColor: "white",
+        border: "1.5px solid #DC2626",
+        borderRadius: "14px",
+        padding: "12px",
+        boxShadow: "3px 3px 0 #DC2626",
       }}
     >
-      <p
-        style={{
-          fontSize: "12px",
-          fontWeight: "900",
-          color: "#991B1B",
-          marginBottom: "4px",
-        }}
-      >
-        ⚠️ Supprimer définitivement ?
-      </p>
-      <p
-        style={{
-          fontSize: "10.5px",
-          fontWeight: "600",
-          color: "#7F1D1D",
-          marginBottom: "8px",
-          lineHeight: 1.4,
-        }}
-      >
-        <strong>{nomBoutique}</strong> sera supprimée avec ses produits, commandes et données.
-        <br />
-        <strong>Cette action est irréversible.</strong>
-      </p>
+      <div style={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "8px",
+        marginBottom: "10px",
+      }}>
+        <div style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "28px",
+          height: "28px",
+          borderRadius: "50%",
+          backgroundColor: "#FEE2E2",
+          flexShrink: 0,
+        }}>
+          <AlertTriangle size={14} color="#DC2626" strokeWidth={2.8} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p
+            style={{
+              fontSize: "12px",
+              fontWeight: "900",
+              color: "#991B1B",
+              marginBottom: "5px",
+            }}
+          >
+            Supprimer définitivement ?
+          </p>
+          <p
+            style={{
+              fontSize: "10.5px",
+              fontWeight: "700",
+              color: "#7F1D1D",
+              lineHeight: 1.5,
+            }}
+          >
+            <strong>{nomBoutique}</strong> sera supprimée avec ses produits, commandes et données.
+            <br />
+            <strong>Cette action est irréversible.</strong>
+          </p>
+        </div>
+      </div>
       <div style={{ display: "flex", gap: "6px" }}>
         <button
           onClick={() => executer("supprimer")}
           disabled={chargement}
           style={{
             flex: 1,
-            padding: "8px",
-            borderRadius: "6px",
+            padding: "10px",
+            borderRadius: "20px",
             backgroundColor: "#DC2626",
             color: "white",
             border: "none",
-            fontWeight: "800",
+            fontWeight: "900",
             fontSize: "11px",
             cursor: "pointer",
             opacity: chargement ? 0.6 : 1,
+            fontFamily: "inherit",
           }}
         >
-          {chargement ? "..." : "🗑️ Oui, supprimer"}
+          {chargement ? "..." : "Oui, supprimer"}
         </button>
         <button
           onClick={() => setAction(null)}
           disabled={chargement}
           style={{
             flex: 1,
-            padding: "8px",
-            borderRadius: "6px",
+            padding: "10px",
+            borderRadius: "20px",
             backgroundColor: "white",
-            color: "#64748b",
-            border: "1px solid #E2E8F0",
-            fontWeight: "700",
+            color: "#0F172A",
+            border: "1.5px solid #0F172A",
+            fontWeight: "900",
             fontSize: "11px",
             cursor: "pointer",
+            fontFamily: "inherit",
           }}
         >
           Annuler
@@ -223,4 +263,4 @@ export default function BoutonRestaurer({ vendeurId, nomBoutique }: Props) {
       </div>
     </div>
   );
-}
+            }
