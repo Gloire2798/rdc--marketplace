@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { User, Phone, MapPin, Truck, Store, CheckCircle, XCircle, Package, Clock } from "lucide-react";
 
 interface Item {
   nom: string;
@@ -55,75 +56,141 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
   };
 
   const couleurBordure = () => {
-    if (commande.statut === "EN_ATTENTE") return "#d97706";
-    if (commande.statut === "PAYE" || commande.statut === "PRET") return "#2563eb";
-    if (commande.statut === "RETIRE") return "#16a34a";
-    return "#9ca3af";
+    if (commande.statut === "EN_ATTENTE") return "#B45309";
+    if (commande.statut === "PAYE" || commande.statut === "PRET") return "#1D4ED8";
+    if (commande.statut === "RETIRE") return "#16A34A";
+    return "#9CA3AF";
   };
 
   return (
     <div style={{
       backgroundColor: "white",
-      borderRadius: "10px",
-      padding: "10px 12px",
+      borderRadius: "14px",
+      padding: "10px 11px",
       borderLeft: `3px solid ${couleurBordure()}`,
-      boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+      border: "1px solid #D4C5A0",
+      borderLeftWidth: "3px",
+      borderLeftColor: couleurBordure(),
+      boxShadow: "0 2px 6px rgba(120, 100, 60, 0.06)",
     }}>
       {/* En-tête compact */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "6px", marginBottom: "8px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "6px", marginBottom: "6px" }}>
         <div style={{ minWidth: 0, flex: 1 }}>
-          <p style={{ fontSize: "10px", color: "#94a3b8", fontWeight: "700", marginBottom: "1px" }}>
+          <p style={{
+            fontSize: "9px",
+            color: "#94A3B8",
+            fontWeight: "800",
+            marginBottom: "2px",
+            letterSpacing: "0.2px",
+          }}>
             #{commande.id.slice(0, 8)}
           </p>
-          <p style={{ fontSize: "12.5px", fontWeight: "800", color: "#0F172A", marginBottom: "1px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            👤 {commande.nomClient || "Client"}
+          <p style={{
+            fontSize: "12px",
+            fontWeight: "900",
+            color: "#0F172A",
+            marginBottom: "2px",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+          }}>
+            <User size={11} strokeWidth={2.8} />
+            {commande.nomClient || "Client"}
           </p>
-          <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "600" }}>
-            📞 {commande.telephoneClient}
+          <p style={{
+            fontSize: "10px",
+            color: "#57534E",
+            fontWeight: "700",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+          }}>
+            <Phone size={10} strokeWidth={2.8} />
+            {commande.telephoneClient}
           </p>
         </div>
         <div style={{ textAlign: "right", flexShrink: 0 }}>
           {commande.totalUSD > 0 && (
-            <p style={{ fontSize: "13.5px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.15 }}>
+            <p style={{ fontSize: "13px", fontWeight: "900", color: "#EA580C", lineHeight: 1.15, letterSpacing: "-0.2px" }}>
               {formaterPrix(commande.totalUSD, "USD")}
             </p>
           )}
           {commande.totalFC > 0 && (
-            <p style={{ fontSize: "13.5px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.15 }}>
+            <p style={{ fontSize: "13px", fontWeight: "900", color: "#EA580C", lineHeight: 1.15, letterSpacing: "-0.2px" }}>
               {formaterPrix(commande.totalFC, "FC")}
             </p>
           )}
-          <p style={{ fontSize: "9.5px", color: "#64748b", fontWeight: "700", marginTop: "2px" }}>
-            {commande.mode === "LIVRAISON" ? "🚚 Livraison" : "🏪 Retrait"}
+          <p style={{
+            fontSize: "9px",
+            color: "#57534E",
+            fontWeight: "800",
+            marginTop: "3px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            gap: "3px",
+          }}>
+            {commande.mode === "LIVRAISON" ? (
+              <>
+                <Truck size={9} strokeWidth={2.8} />
+                Livraison
+              </>
+            ) : (
+              <>
+                <Store size={9} strokeWidth={2.8} />
+                Retrait
+              </>
+            )}
           </p>
         </div>
       </div>
 
       {commande.mode === "LIVRAISON" && commande.adresse && (
-        <p style={{ fontSize: "10.5px", color: "#64748b", fontWeight: "600", marginBottom: "6px" }}>
-          📍 {commande.adresse}
+        <p style={{
+          fontSize: "10px",
+          color: "#57534E",
+          fontWeight: "700",
+          marginBottom: "6px",
+          display: "flex",
+          alignItems: "center",
+          gap: "4px",
+        }}>
+          <MapPin size={10} strokeWidth={2.8} />
+          {commande.adresse}
         </p>
       )}
 
       {/* Articles compacts */}
       <div style={{
-        backgroundColor: "#F8FAFC",
-        borderRadius: "7px",
+        backgroundColor: "#F5EAD2",
+        borderRadius: "10px",
         padding: "6px 8px",
         marginBottom: "8px",
+        border: "1px solid #D4C5A0",
       }}>
         {commande.items.map((item, index) => (
           <div key={index} style={{
             display: "flex",
             justifyContent: "space-between",
-            fontSize: "11px",
-            marginBottom: index < commande.items.length - 1 ? "2px" : "0",
+            fontSize: "10.5px",
+            marginBottom: index < commande.items.length - 1 ? "3px" : "0",
             gap: "6px",
           }}>
-            <span style={{ color: "#334155", fontWeight: "600", minWidth: 0, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <span style={{
+              color: "#0F172A",
+              fontWeight: "800",
+              minWidth: 0,
+              flex: 1,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}>
               {item.nom} × {item.quantite}
             </span>
-            <span style={{ color: "#64748b", fontWeight: "700", flexShrink: 0 }}>
+            <span style={{ color: "#57534E", fontWeight: "800", flexShrink: 0 }}>
               {formaterPrix(item.prixUnitaire * item.quantite, item.devise)}
             </span>
           </div>
@@ -139,38 +206,50 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
               disabled={chargement}
               style={{
                 flex: 1,
-                minWidth: "90px",
-                backgroundColor: "#16a34a",
+                minWidth: "80px",
+                backgroundColor: "#16A34A",
                 color: "white",
-                padding: "7px",
-                borderRadius: "7px",
+                padding: "8px",
+                borderRadius: "20px",
                 border: "none",
-                fontWeight: "800",
+                fontWeight: "900",
                 fontSize: "11px",
                 cursor: "pointer",
                 opacity: chargement ? 0.6 : 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "4px",
+                fontFamily: "inherit",
               }}
             >
-              ✅ Valider
+              <CheckCircle size={12} strokeWidth={3} />
+              Valider
             </button>
             <button
               onClick={() => changerStatut("ANNULE")}
               disabled={chargement}
               style={{
                 flex: 1,
-                minWidth: "90px",
-                backgroundColor: "#dc2626",
-                color: "white",
-                padding: "7px",
-                borderRadius: "7px",
-                border: "none",
-                fontWeight: "800",
+                minWidth: "80px",
+                backgroundColor: "white",
+                color: "#DC2626",
+                padding: "8px",
+                borderRadius: "20px",
+                border: "1.5px solid #DC2626",
+                fontWeight: "900",
                 fontSize: "11px",
                 cursor: "pointer",
                 opacity: chargement ? 0.6 : 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "4px",
+                fontFamily: "inherit",
               }}
             >
-              ❌ Refuser
+              <XCircle size={12} strokeWidth={3} />
+              Refuser
             </button>
           </>
         )}
@@ -181,66 +260,87 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
             disabled={chargement}
             style={{
               flex: 1,
-              backgroundColor: "#2563eb",
+              backgroundColor: "#0F172A",
               color: "white",
-              padding: "7px",
-              borderRadius: "7px",
+              padding: "8px",
+              borderRadius: "20px",
               border: "none",
-              fontWeight: "800",
+              fontWeight: "900",
               fontSize: "11px",
               cursor: "pointer",
               opacity: chargement ? 0.6 : 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "4px",
+              fontFamily: "inherit",
             }}
           >
-            📦 Marquer comme prêt
+            <Package size={12} strokeWidth={3} />
+            Marquer comme prêt
           </button>
         )}
 
         {commande.statut === "PRET" && (
           <div style={{
             flex: 1,
-            backgroundColor: "#dcfce7",
-            color: "#166534",
-            padding: "7px",
-            borderRadius: "7px",
+            backgroundColor: "#DCFCE7",
+            color: "#15803D",
+            padding: "8px",
+            borderRadius: "20px",
             textAlign: "center",
-            fontWeight: "800",
+            fontWeight: "900",
             fontSize: "11px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "4px",
           }}>
-            ⏳ En attente du client
+            <Clock size={12} strokeWidth={3} />
+            En attente du client
           </div>
         )}
 
         {commande.statut === "RETIRE" && (
           <div style={{
             flex: 1,
-            backgroundColor: "#e5e7eb",
-            color: "#374151",
-            padding: "7px",
-            borderRadius: "7px",
+            backgroundColor: "#DCFCE7",
+            color: "#15803D",
+            padding: "8px",
+            borderRadius: "20px",
             textAlign: "center",
-            fontWeight: "800",
+            fontWeight: "900",
             fontSize: "11px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "4px",
           }}>
-            ✅ Commande terminée
+            <CheckCircle size={12} strokeWidth={3} />
+            Commande terminée
           </div>
         )}
 
         {commande.statut === "ANNULE" && (
           <div style={{
             flex: 1,
-            backgroundColor: "#fee2e2",
-            color: "#991b1b",
-            padding: "7px",
-            borderRadius: "7px",
+            backgroundColor: "#FEE2E2",
+            color: "#991B1B",
+            padding: "8px",
+            borderRadius: "20px",
             textAlign: "center",
-            fontWeight: "800",
+            fontWeight: "900",
             fontSize: "11px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "4px",
           }}>
-            ❌ Commande annulée
+            <XCircle size={12} strokeWidth={3} />
+            Commande annulée
           </div>
         )}
       </div>
     </div>
   );
-      }
+          }
