@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { ArrowLeft, Scan, Check, X, Package, Phone, MapPin, AlertTriangle, MessageCircle } from "lucide-react";
+import { ArrowLeft, Scan, Check, X, Package, Phone, MapPin, AlertTriangle, MessageCircle, Lightbulb, User } from "lucide-react";
 
 interface DetailsCommande {
   id: string;
@@ -169,36 +169,109 @@ export default function ScannerPage() {
     window.open(`https://wa.me/${numero}?text=${message}`, "_blank");
   };
 
-  return (
-    <div style={{ padding: "16px 14px 20px 14px", backgroundColor: "#F3F4F6", minHeight: "100vh" }}>
-      <Link href="/vendeur/dashboard" style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#1D4ED8", fontSize: "11.5px", fontWeight: "700", textDecoration: "none", marginBottom: "14px" }}>
-        <ArrowLeft size={14} strokeWidth={2.5} />
+  const titreSection = {
+    fontSize: "11px",
+    fontWeight: "900" as const,
+    color: "#0F172A",
+    marginBottom: "10px",
+    display: "flex" as const,
+    alignItems: "center" as const,
+    gap: "6px",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.5px",
+  };
+
+  const traitOrange = {
+    display: "inline-block",
+    width: "3px",
+    height: "12px",
+    backgroundColor: "#EA580C",
+    borderRadius: "2px",
+  };  return (
+    <div style={{ padding: "16px 12px 30px 12px", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
+      <Link
+        href="/vendeur/dashboard"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "6px",
+          color: "#0F172A",
+          fontSize: "11px",
+          fontWeight: "800",
+          textDecoration: "none",
+          marginBottom: "14px",
+        }}
+      >
+        <ArrowLeft size={12} strokeWidth={2.8} />
         Retour
       </Link>
 
-      <h1 style={{ fontSize: "20px", fontWeight: "900", color: "#0F172A", marginBottom: "4px" }}>
+      <h1 style={{
+        fontSize: "22px",
+        fontWeight: "900",
+        color: "#0F172A",
+        marginBottom: "3px",
+        letterSpacing: "-0.4px",
+      }}>
         Scanner un QR
       </h1>
-      <p style={{ fontSize: "11.5px", color: "#64748b", fontWeight: "600", marginBottom: "18px" }}>
+      <p style={{ fontSize: "11.5px", color: "#57534E", fontWeight: "700", marginBottom: "18px" }}>
         Scannez le QR du client pour valider le retrait.
       </p>
 
       {erreur && (
-        <div style={{ backgroundColor: "#FEE2E2", color: "#991B1B", padding: "10px 12px", borderRadius: "10px", marginBottom: "14px", fontSize: "11.5px", fontWeight: "600", display: "flex", alignItems: "center", gap: "6px" }}>
-          <AlertTriangle size={14} strokeWidth={2.5} />
+        <div style={{
+          backgroundColor: "#FEE2E2",
+          color: "#991B1B",
+          padding: "12px",
+          borderRadius: "14px",
+          marginBottom: "14px",
+          fontSize: "11.5px",
+          fontWeight: "800",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          border: "1.5px solid #DC2626",
+        }}>
+          <AlertTriangle size={16} strokeWidth={2.8} style={{ flexShrink: 0 }} />
           {erreur}
         </div>
       )}
 
       {erreurSpeciale && (
-        <div style={{ backgroundColor: "#FEF3C7", border: "1px solid #FDE68A", borderRadius: "12px", padding: "14px", marginBottom: "14px" }}>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", marginBottom: "10px" }}>
-            <AlertTriangle size={18} color="#B45309" strokeWidth={2.5} style={{ flexShrink: 0, marginTop: "2px" }} />
-            <div>
-              <p style={{ fontSize: "13px", fontWeight: "900", color: "#78350F", marginBottom: "4px" }}>
+        <div style={{
+          backgroundColor: "white",
+          border: "1.5px solid #0F172A",
+          borderRadius: "20px",
+          padding: "16px",
+          marginBottom: "14px",
+          boxShadow: "4px 4px 0 #EA580C",
+        }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: "14px" }}>
+            <div style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "36px",
+              height: "36px",
+              borderRadius: "50%",
+              backgroundColor: "#FEF3C7",
+              flexShrink: 0,
+            }}>
+              <AlertTriangle size={18} color="#B45309" strokeWidth={2.5} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{
+                fontSize: "13px",
+                fontWeight: "900",
+                color: "#0F172A",
+                marginBottom: "4px",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+              }}>
                 Mauvaise boutique
               </p>
-              <p style={{ fontSize: "11.5px", fontWeight: "600", color: "#78350F", lineHeight: 1.5 }}>
+              <p style={{ fontSize: "11.5px", fontWeight: "700", color: "#57534E", lineHeight: 1.5 }}>
                 {erreurSpeciale.message}
               </p>
             </div>
@@ -216,32 +289,60 @@ export default function ScannerPage() {
                 width: "100%",
                 backgroundColor: "#25D366",
                 color: "white",
-                padding: "11px",
-                borderRadius: "10px",
+                padding: "12px",
+                borderRadius: "24px",
                 border: "none",
-                fontWeight: "800",
+                fontWeight: "900",
                 fontSize: "12.5px",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "8px",
+                boxShadow: "0 4px 12px rgba(37, 211, 102, 0.25)",
+                fontFamily: "inherit",
               }}
             >
-              <MessageCircle size={16} strokeWidth={2.5} />
-              Contacter l'administrateur sur WhatsApp
+              <MessageCircle size={16} strokeWidth={2.8} />
+              Contacter l&apos;administrateur
             </button>
           )}
         </div>
       )}
 
       {valide && resultat && (
-        <div style={{ backgroundColor: "#DCFCE7", color: "#166534", padding: "14px", borderRadius: "12px", marginBottom: "14px", textAlign: "center" }}>
-          <Check size={32} strokeWidth={3} style={{ marginBottom: "6px" }} />
-          <p style={{ fontSize: "14px", fontWeight: "900", marginBottom: "4px" }}>
-            Commande retirée !
+        <div style={{
+          backgroundColor: "white",
+          border: "1.5px solid #16A34A",
+          borderRadius: "20px",
+          padding: "20px 16px",
+          marginBottom: "14px",
+          textAlign: "center",
+          boxShadow: "4px 4px 0 #16A34A",
+        }}>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "64px",
+            height: "64px",
+            borderRadius: "50%",
+            backgroundColor: "#DCFCE7",
+            marginBottom: "10px",
+          }}>
+            <Check size={34} color="#16A34A" strokeWidth={3} />
+          </div>
+          <p style={{
+            fontSize: "15px",
+            fontWeight: "900",
+            marginBottom: "4px",
+            color: "#15803D",
+            textTransform: "uppercase",
+            letterSpacing: "0.5px",
+          }}>
+            Commande retirée
           </p>
-          <p style={{ fontSize: "11px", fontWeight: "600" }}>
+          <p style={{ fontSize: "11.5px", fontWeight: "700", color: "#57534E" }}>
             Le QR est maintenant invalidé.
           </p>
         </div>
@@ -255,13 +356,13 @@ export default function ScannerPage() {
               disabled={chargement}
               style={{
                 width: "100%",
-                backgroundColor: "#1D4ED8",
+                backgroundColor: "#0F172A",
                 color: "white",
-                padding: "14px",
-                borderRadius: "12px",
+                padding: "16px",
+                borderRadius: "26px",
                 border: "none",
-                fontWeight: "800",
-                fontSize: "13px",
+                fontWeight: "900",
+                fontSize: "13.5px",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -269,45 +370,75 @@ export default function ScannerPage() {
                 gap: "8px",
                 marginBottom: "14px",
                 opacity: chargement ? 0.6 : 1,
+                boxShadow: "0 4px 12px rgba(15, 23, 42, 0.25)",
+                letterSpacing: "-0.2px",
+                fontFamily: "inherit",
               }}
             >
-              <Scan size={18} strokeWidth={2.5} />
+              <Scan size={18} strokeWidth={2.8} />
               {chargement ? "Traitement..." : "Démarrer le scan"}
             </button>
           ) : (
             <>
-              <div id="qr-reader" style={{ width: "100%", borderRadius: "12px", overflow: "hidden", marginBottom: "10px", backgroundColor: "#000" }} />
+              <div
+                id="qr-reader"
+                style={{
+                  width: "100%",
+                  borderRadius: "20px",
+                  overflow: "hidden",
+                  marginBottom: "10px",
+                  backgroundColor: "#000",
+                  border: "1.5px solid #0F172A",
+                  boxShadow: "4px 4px 0 #EA580C",
+                }}
+              />
               <button
                 onClick={arreterScanner}
                 style={{
                   width: "100%",
-                  backgroundColor: "#dc2626",
-                  color: "white",
-                  padding: "12px",
-                  borderRadius: "12px",
-                  border: "none",
-                  fontWeight: "800",
+                  backgroundColor: "white",
+                  color: "#DC2626",
+                  padding: "14px",
+                  borderRadius: "24px",
+                  border: "1.5px solid #DC2626",
+                  fontWeight: "900",
                   fontSize: "12.5px",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   gap: "8px",
+                  fontFamily: "inherit",
                 }}
               >
-                <X size={16} strokeWidth={2.5} />
+                <X size={16} strokeWidth={2.8} />
                 Arrêter le scan
               </button>
             </>
           )}
 
-          <div style={{ backgroundColor: "white", borderRadius: "12px", padding: "14px", border: "1px solid #E2E8F0", marginTop: "14px" }}>
-            <p style={{ fontSize: "11px", fontWeight: "800", color: "#0F172A", marginBottom: "6px" }}>
-              💡 Comment ça marche
+          <div style={{
+            backgroundColor: "white",
+            borderRadius: "20px",
+            padding: "16px",
+            border: "1px solid #D4C5A0",
+            marginTop: "14px",
+            boxShadow: "0 2px 8px rgba(120, 100, 60, 0.06)",
+          }}>
+            <p style={titreSection}>
+              <span style={traitOrange} />
+              <Lightbulb size={13} strokeWidth={2.8} color="#EA580C" />
+              Comment ça marche
             </p>
-            <ul style={{ fontSize: "10.5px", color: "#64748b", fontWeight: "500", paddingLeft: "16px", lineHeight: 1.6 }}>
+            <ul style={{
+              fontSize: "11px",
+              color: "#57534E",
+              fontWeight: "700",
+              paddingLeft: "18px",
+              lineHeight: 1.7,
+            }}>
               <li>Demandez le QR au client</li>
-              <li>Cliquez sur "Démarrer le scan"</li>
+              <li>Cliquez sur &quot;Démarrer le scan&quot;</li>
               <li>Pointez la caméra vers le QR</li>
               <li>Vérifiez les infos affichées</li>
               <li>Validez le retrait</li>
@@ -318,92 +449,185 @@ export default function ScannerPage() {
 
       {resultat && !valide && (
         <div>
-          <div style={{ backgroundColor: "white", borderRadius: "12px", padding: "14px", border: "1px solid #E8DFC8", marginBottom: "12px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px", paddingBottom: "10px", borderBottom: "1px solid #F1ECE0" }}>
-              <Package size={18} color="#1D4ED8" strokeWidth={2.5} />
+          <div style={{
+            backgroundColor: "white",
+            borderRadius: "20px",
+            padding: "16px",
+            border: "1px solid #D4C5A0",
+            marginBottom: "12px",
+            boxShadow: "0 2px 8px rgba(120, 100, 60, 0.06)",
+          }}>
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              marginBottom: "14px",
+              paddingBottom: "12px",
+              borderBottom: "1px dashed #D4C5A0",
+            }}>
+              <Package size={18} color="#EA580C" strokeWidth={2.8} />
               <p style={{ fontSize: "13px", fontWeight: "900", color: "#0F172A" }}>
                 Commande #{resultat.id.slice(0, 8)}
               </p>
             </div>
 
-            <div style={{ marginBottom: "12px" }}>
-              <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "700", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+            <div style={{ marginBottom: "14px" }}>
+              <p style={{
+                fontSize: "10px",
+                color: "#57534E",
+                fontWeight: "900",
+                marginBottom: "6px",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+              }}>
                 Client
               </p>
-              <p style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "4px" }}>
-                👤 {resultat.nomClient}
+              <p style={{
+                fontSize: "13.5px",
+                fontWeight: "900",
+                color: "#0F172A",
+                marginBottom: "5px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}>
+                <User size={13} strokeWidth={2.8} />
+                {resultat.nomClient}
               </p>
-              <p style={{ fontSize: "11.5px", color: "#334155", fontWeight: "600", display: "flex", alignItems: "center", gap: "4px", marginBottom: "3px" }}>
-                <Phone size={11} strokeWidth={2.5} />
+              <p style={{
+                fontSize: "11.5px",
+                color: "#57534E",
+                fontWeight: "700",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                marginBottom: "4px",
+              }}>
+                <Phone size={11} strokeWidth={2.8} />
                 {resultat.telephoneClient}
               </p>
               {resultat.adresse && (
-                <p style={{ fontSize: "11.5px", color: "#334155", fontWeight: "600", display: "flex", alignItems: "center", gap: "4px" }}>
-                  <MapPin size={11} strokeWidth={2.5} />
+                <p style={{
+                  fontSize: "11.5px",
+                  color: "#57534E",
+                  fontWeight: "700",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                }}>
+                  <MapPin size={11} strokeWidth={2.8} />
                   {resultat.adresse}
                 </p>
               )}
             </div>
 
-            {/* Totaux séparés par devise */}
-            <div style={{ backgroundColor: "#EFF6FF", borderRadius: "10px", padding: "10px", marginBottom: "12px" }}>
-              <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "700", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+            <div style={{
+              backgroundColor: "#F5EAD2",
+              borderRadius: "14px",
+              padding: "12px",
+              marginBottom: "14px",
+              border: "1px solid #D4C5A0",
+            }}>
+              <p style={{
+                fontSize: "10px",
+                color: "#57534E",
+                fontWeight: "900",
+                marginBottom: "6px",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+              }}>
                 Total
               </p>
               {resultat.totalUSD > 0 && (
-                <p style={{ fontSize: "13px", fontWeight: "900", color: "#0F172A", lineHeight: 1.3 }}>
+                <p style={{ fontSize: "14px", fontWeight: "900", color: "#0F172A", lineHeight: 1.3 }}>
                   {formaterPrix(resultat.totalUSD, "USD")}
                 </p>
               )}
               {resultat.totalFC > 0 && (
-                <p style={{ fontSize: "13px", fontWeight: "900", color: "#0F172A", lineHeight: 1.3, marginBottom: resultat.totalUSD > 0 ? "10px" : "0" }}>
+                <p style={{ fontSize: "14px", fontWeight: "900", color: "#0F172A", lineHeight: 1.3, marginBottom: resultat.totalUSD > 0 ? "10px" : "0" }}>
                   {formaterPrix(resultat.totalFC, "FC")}
                 </p>
               )}
 
-              <div style={{ marginTop: "10px", paddingTop: "8px", borderTop: "1px solid #BFDBFE" }}>
-                <p style={{ fontSize: "10px", color: "#16a34a", fontWeight: "700", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+              <div style={{ marginTop: "10px", paddingTop: "10px", borderTop: "1px solid #D4C5A0" }}>
+                <p style={{
+                  fontSize: "10px",
+                  color: "#15803D",
+                  fontWeight: "900",
+                  marginBottom: "4px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}>
                   Acompte payé
                 </p>
                 {resultat.acompteUSD > 0 && (
-                  <p style={{ fontSize: "12px", fontWeight: "800", color: "#16a34a", lineHeight: 1.3 }}>
+                  <p style={{ fontSize: "12.5px", fontWeight: "900", color: "#15803D", lineHeight: 1.3 }}>
                     {formaterPrix(resultat.acompteUSD, "USD")}
                   </p>
                 )}
                 {resultat.acompteFC > 0 && (
-                  <p style={{ fontSize: "12px", fontWeight: "800", color: "#16a34a", lineHeight: 1.3 }}>
+                  <p style={{ fontSize: "12.5px", fontWeight: "900", color: "#15803D", lineHeight: 1.3 }}>
                     {formaterPrix(resultat.acompteFC, "FC")}
                   </p>
                 )}
               </div>
 
-              <div style={{ marginTop: "10px", paddingTop: "8px", borderTop: "1px solid #BFDBFE" }}>
-                <p style={{ fontSize: "10px", color: "#1D4ED8", fontWeight: "800", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+              <div style={{ marginTop: "10px", paddingTop: "10px", borderTop: "1px solid #D4C5A0" }}>
+                <p style={{
+                  fontSize: "10px",
+                  color: "#EA580C",
+                  fontWeight: "900",
+                  marginBottom: "4px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}>
                   Reste à encaisser
                 </p>
                 {resultat.resteUSD > 0 && (
-                  <p style={{ fontSize: "15px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.3 }}>
+                  <p style={{ fontSize: "17px", fontWeight: "900", color: "#EA580C", lineHeight: 1.2, letterSpacing: "-0.3px" }}>
                     {formaterPrix(resultat.resteUSD, "USD")}
                   </p>
                 )}
                 {resultat.resteFC > 0 && (
-                  <p style={{ fontSize: "15px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.3 }}>
+                  <p style={{ fontSize: "17px", fontWeight: "900", color: "#EA580C", lineHeight: 1.2, letterSpacing: "-0.3px" }}>
                     {formaterPrix(resultat.resteFC, "FC")}
                   </p>
                 )}
               </div>
             </div>
 
-            <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "700", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+            <p style={{
+              fontSize: "10px",
+              color: "#57534E",
+              fontWeight: "900",
+              marginBottom: "8px",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+            }}>
               Articles
             </p>
-            <div style={{ backgroundColor: "#F8FAFC", borderRadius: "8px", padding: "8px 10px", marginBottom: "4px" }}>
+            <div style={{
+              backgroundColor: "#F5EAD2",
+              borderRadius: "12px",
+              padding: "10px 12px",
+              marginBottom: "4px",
+              border: "1px solid #D4C5A0",
+            }}>
               {resultat.items.map((item, idx) => (
-                <div key={idx} style={{ display: "flex", justifyContent: "space-between", fontSize: "11.5px", marginBottom: idx < resultat.items.length - 1 ? "4px" : "0", gap: "8px" }}>
-                  <span style={{ color: "#334155", fontWeight: "600", minWidth: 0, flex: 1 }}>
+                <div
+                  key={idx}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: "11.5px",
+                    marginBottom: idx < resultat.items.length - 1 ? "5px" : "0",
+                    gap: "8px",
+                  }}
+                >
+                  <span style={{ color: "#0F172A", fontWeight: "800", minWidth: 0, flex: 1 }}>
                     {item.nom} × {item.quantite}
                   </span>
-                  <span style={{ color: "#64748b", fontWeight: "700", flexShrink: 0 }}>
+                  <span style={{ color: "#57534E", fontWeight: "800", flexShrink: 0 }}>
                     {formaterPrix(item.prixUnitaire * item.quantite, item.devise)}
                   </span>
                 </div>
@@ -416,20 +640,23 @@ export default function ScannerPage() {
             disabled={chargement}
             style={{
               width: "100%",
-              backgroundColor: "#16a34a",
+              backgroundColor: "#16A34A",
               color: "white",
-              padding: "13px",
-              borderRadius: "12px",
+              padding: "16px",
+              borderRadius: "26px",
               border: "none",
-              fontWeight: "800",
-              fontSize: "13px",
+              fontWeight: "900",
+              fontSize: "14px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: "8px",
-              marginBottom: "8px",
+              marginBottom: "10px",
               opacity: chargement ? 0.6 : 1,
+              boxShadow: "0 4px 12px rgba(22, 163, 74, 0.25)",
+              letterSpacing: "-0.2px",
+              fontFamily: "inherit",
             }}
           >
             <Check size={16} strokeWidth={3} />
@@ -446,13 +673,14 @@ export default function ScannerPage() {
             style={{
               width: "100%",
               backgroundColor: "white",
-              color: "#64748b",
-              padding: "12px",
-              borderRadius: "12px",
-              border: "1.5px solid #E2E8F0",
-              fontWeight: "700",
-              fontSize: "12px",
+              color: "#0F172A",
+              padding: "14px",
+              borderRadius: "26px",
+              border: "1.5px solid #0F172A",
+              fontWeight: "900",
+              fontSize: "12.5px",
               cursor: "pointer",
+              fontFamily: "inherit",
             }}
           >
             Annuler
@@ -470,14 +698,16 @@ export default function ScannerPage() {
           }}
           style={{
             width: "100%",
-            backgroundColor: "#1D4ED8",
+            backgroundColor: "#0F172A",
             color: "white",
-            padding: "13px",
-            borderRadius: "12px",
+            padding: "16px",
+            borderRadius: "26px",
             border: "none",
-            fontWeight: "800",
-            fontSize: "13px",
+            fontWeight: "900",
+            fontSize: "13.5px",
             cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(15, 23, 42, 0.25)",
+            fontFamily: "inherit",
           }}
         >
           Scanner une autre commande
@@ -485,4 +715,4 @@ export default function ScannerPage() {
       )}
     </div>
   );
-            }
+    }
