@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { envoyerEmail, templateCode } from "@/lib/email";
+import { normaliserTelephone } from "@/lib/telephone";
 
 export async function POST(request: Request) {
   try {
@@ -14,8 +15,11 @@ export async function POST(request: Request) {
       );
     }
 
+    // ✅ Normalisation : peu importe le format saisi
+    const telephoneNormalise = normaliserTelephone(telephone);
+
     const user = await prisma.user.findUnique({
-      where: { telephone },
+      where: { telephone: telephoneNormalise },
     });
 
     if (!user) {
@@ -98,4 +102,4 @@ function masquerEmail(email: string) {
   const [local, domain] = email.split("@");
   if (local.length <= 2) return `${local[0]}***@${domain}`;
   return `${local.slice(0, 2)}***@${domain}`;
-          }
+}
