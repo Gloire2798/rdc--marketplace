@@ -51,7 +51,7 @@ export default function Header() {
     return (
       <header style={{
         backgroundColor: "white",
-        borderBottom: "2px solid #E2E8F0",
+        borderBottom: "2px solid #D4C5A0",
         padding: "12px 16px",
         display: "flex",
         justifyContent: "space-between",
@@ -69,7 +69,7 @@ export default function Header() {
           />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontSize: "16px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1 }}>GK Sensei</span>
-            <span style={{ fontSize: "10.5px", color: "#64748b", fontWeight: "700" }}>Espace Admin</span>
+            <span style={{ fontSize: "10.5px", color: "#57534E", fontWeight: "700" }}>Espace Admin</span>
           </div>
         </Link>
         <div style={{ display: "flex", gap: "16px", alignItems: "center", color: "#0F172A" }}>
@@ -87,7 +87,7 @@ export default function Header() {
     return (
       <header style={{
         backgroundColor: "white",
-        borderBottom: "2px solid #E2E8F0",
+        borderBottom: "2px solid #D4C5A0",
         padding: "12px 16px",
         display: "flex",
         justifyContent: "space-between",
@@ -105,7 +105,7 @@ export default function Header() {
           />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontSize: "16px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1 }}>GK Sensei</span>
-            <span style={{ fontSize: "10.5px", color: "#64748b", fontWeight: "700" }}>Espace vendeur</span>
+            <span style={{ fontSize: "10.5px", color: "#57534E", fontWeight: "700" }}>Espace vendeur</span>
           </div>
         </Link>
         <div style={{ display: "flex", gap: "16px", alignItems: "center", color: "#0F172A" }}>
@@ -123,7 +123,7 @@ export default function Header() {
     return (
       <header style={{
         backgroundColor: "white",
-        borderBottom: "2px solid #E2E8F0",
+        borderBottom: "2px solid #D4C5A0",
         padding: "12px 16px",
         display: "flex",
         justifyContent: "space-between",
@@ -140,7 +140,7 @@ export default function Header() {
           />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontSize: "16px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1 }}>GK Sensei</span>
-            <span style={{ fontSize: "10.5px", color: "#64748b", fontWeight: "700" }}>Mon compte</span>
+            <span style={{ fontSize: "10.5px", color: "#57534E", fontWeight: "700" }}>Mon compte</span>
           </div>
         </Link>
         <div style={{ display: "flex", gap: "16px", alignItems: "center", color: "#0F172A" }}>
@@ -178,12 +178,12 @@ export default function Header() {
   // HEADER PUBLIC
   return (
     <header style={{
-      backgroundColor: "#FAF5E8",
+      backgroundColor: "#F5EAD2",
       padding: "14px 16px",
       position: "sticky",
       top: 0,
       zIndex: 50,
-      borderBottom: "1px solid #E8DFC8",
+      borderBottom: "1.5px solid #D4C5A0",
     }}>
       <div style={{
         display: "flex",
@@ -210,7 +210,7 @@ export default function Header() {
             <span style={{ fontSize: "18px", fontWeight: "900", color: "#0F172A", lineHeight: 1.1, letterSpacing: "-0.3px" }}>
               GK Sensei
             </span>
-            <span style={{ fontSize: "11.5px", color: "#78716C", fontWeight: "700" }}>
+            <span style={{ fontSize: "11.5px", color: "#57534E", fontWeight: "700" }}>
               Complexe Commercial
             </span>
           </div>
@@ -246,4 +246,4 @@ export default function Header() {
       </div>
     </header>
   );
-                  }
+            }
