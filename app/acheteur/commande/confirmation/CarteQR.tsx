@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
+import { Clock, CheckCircle, Package, Store, XCircle } from "lucide-react";
 
 interface Props {
   commandeId: string;
@@ -70,14 +71,24 @@ export default function CarteQR({ commandeId, index, total }: Props) {
     return (
       <div style={{
         backgroundColor: "white",
-        borderRadius: "12px",
+        borderRadius: "20px",
         padding: "20px",
         marginBottom: "14px",
-        border: "1px solid #E8DFC8",
+        border: "1.5px solid #0F172A",
         textAlign: "center",
+        boxShadow: "4px 4px 0 #EA580C",
       }}>
-        <p style={{ fontSize: "11px", color: "#64748b", fontWeight: "600" }}>
-          ⏳ Chargement du QR {index + 1}...
+        <p style={{
+          fontSize: "11px",
+          color: "#57534E",
+          fontWeight: "700",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "6px",
+        }}>
+          <Clock size={13} strokeWidth={2.5} />
+          Chargement du QR {index + 1}...
         </p>
       </div>
     );
@@ -86,65 +97,98 @@ export default function CarteQR({ commandeId, index, total }: Props) {
   if (!data) return null;
 
   const configStatut = {
-    EN_ATTENTE: { titre: "⏳ En attente", bg: "#FEF3C7", color: "#78350F" },
-    PAYE: { titre: "✅ Payé", bg: "#DBEAFE", color: "#1E40AF" },
-    PRET: { titre: "🟢 Prêt", bg: "#DCFCE7", color: "#15803D" },
-    RETIRE: { titre: "🎉 Retiré", bg: "#DBEAFE", color: "#1E40AF" },
+    EN_ATTENTE: {
+      titre: "En attente",
+      bg: "#FEF3C7",
+      color: "#78350F",
+      Icon: Clock,
+    },
+    PAYE: {
+      titre: "Payé",
+      bg: "#DBEAFE",
+      color: "#1E40AF",
+      Icon: CheckCircle,
+    },
+    PRET: {
+      titre: "Prêt",
+      bg: "#DCFCE7",
+      color: "#15803D",
+      Icon: Package,
+    },
+    RETIRE: {
+      titre: "Retiré",
+      bg: "#DBEAFE",
+      color: "#1E40AF",
+      Icon: CheckCircle,
+    },
   };
-  const conf = configStatut[data.statut as keyof typeof configStatut] || configStatut.EN_ATTENTE;
+  const conf =
+    configStatut[data.statut as keyof typeof configStatut] ||
+    configStatut.EN_ATTENTE;
+  const IconeStatut = conf.Icon;
 
   const numeroOrdre = index + 1;
 
   return (
     <div style={{
       backgroundColor: "white",
-      borderRadius: "12px",
-      padding: "14px",
+      borderRadius: "20px",
+      padding: "16px 14px",
       marginBottom: "14px",
-      border: "1px solid #E8DFC8",
+      border: "1.5px solid #0F172A",
+      boxShadow: "4px 4px 0 #EA580C",
       textAlign: "center",
     }}>
+      {/* HEADER CARTE */}
       <div style={{
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        marginBottom: "10px",
-        paddingBottom: "8px",
-        borderBottom: "1px solid #F1ECE0",
+        marginBottom: "12px",
+        paddingBottom: "10px",
+        borderBottom: "1px dashed #D4C5A0",
         gap: "6px",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "6px", minWidth: 0, flex: 1 }}>
           <span style={{
-            fontSize: "10px",
+            fontSize: "10.5px",
             fontWeight: "900",
-            backgroundColor: "#1D4ED8",
+            backgroundColor: "#0F172A",
             color: "white",
-            padding: "3px 8px",
+            padding: "4px 9px",
             borderRadius: "10px",
             flexShrink: 0,
           }}>
             #{numeroOrdre}
           </span>
           <p style={{
-            fontSize: "10.5px",
-            color: "#64748b",
-            fontWeight: "700",
+            fontSize: "11px",
+            color: "#0F172A",
+            fontWeight: "800",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
           }}>
-            🏪 {data.nomBoutique || "Boutique"}
+            <Store size={11} strokeWidth={2.5} />
+            {data.nomBoutique || "Boutique"}
           </p>
         </div>
         <span style={{
-          fontSize: "9.5px",
-          fontWeight: "800",
+          fontSize: "10px",
+          fontWeight: "900",
           backgroundColor: conf.bg,
           color: conf.color,
-          padding: "3px 8px",
+          padding: "4px 10px",
           borderRadius: "10px",
           flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          gap: "4px",
         }}>
+          <IconeStatut size={11} strokeWidth={2.8} />
           {conf.titre}
         </span>
       </div>
@@ -152,9 +196,9 @@ export default function CarteQR({ commandeId, index, total }: Props) {
       {total > 1 && (
         <p style={{
           fontSize: "10px",
-          fontWeight: "800",
-          color: "#1E3A5F",
-          marginBottom: "8px",
+          fontWeight: "900",
+          color: "#57534E",
+          marginBottom: "10px",
           textTransform: "uppercase",
           letterSpacing: "0.5px",
         }}>
@@ -163,12 +207,33 @@ export default function CarteQR({ commandeId, index, total }: Props) {
       )}
 
       {data.statut === "RETIRE" && data.retireAt ? (
-        <div style={{ padding: "16px 8px" }}>
-          <p style={{ fontSize: "32px", marginBottom: "6px" }}>✅</p>
-          <p style={{ fontSize: "12.5px", fontWeight: "800", color: "#15803D", marginBottom: "3px" }}>
+        <div style={{ padding: "20px 8px" }}>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "64px",
+            height: "64px",
+            borderRadius: "50%",
+            backgroundColor: "#DCFCE7",
+            border: "2px solid #16A34A",
+            marginBottom: "10px",
+          }}>
+            <CheckCircle size={34} color="#16A34A" strokeWidth={2.5} />
+          </div>
+          <p style={{
+            fontSize: "13px",
+            fontWeight: "900",
+            color: "#15803D",
+            marginBottom: "4px",
+          }}>
             Commande retirée
           </p>
-          <p style={{ fontSize: "10px", color: "#64748b", fontWeight: "600" }}>
+          <p style={{
+            fontSize: "10.5px",
+            color: "#57534E",
+            fontWeight: "700",
+          }}>
             {new Date(data.retireAt).toLocaleDateString("fr-FR", {
               day: "numeric",
               month: "long",
@@ -183,18 +248,22 @@ export default function CarteQR({ commandeId, index, total }: Props) {
             src={data.qrImage}
             alt="QR Code"
             style={{
-              width: "190px",
-              height: "190px",
+              width: "200px",
+              height: "200px",
               display: "block",
               margin: "0 auto",
               backgroundColor: "white",
+              borderRadius: "12px",
+              padding: "6px",
+              boxSizing: "border-box",
+              border: "1px solid #D4C5A0",
             }}
           />
           <p style={{
-            fontSize: "9.5px",
-            color: "#64748b",
-            marginTop: "8px",
-            fontWeight: "600",
+            fontSize: "10px",
+            color: "#57534E",
+            marginTop: "10px",
+            fontWeight: "700",
           }}>
             Présentez ce QR au vendeur de {data.nomBoutique || "cette boutique"}.
           </p>
