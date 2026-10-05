@@ -5,12 +5,10 @@ import { verifierRateLimitMemoire, getIP } from "@/lib/rateLimit";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Uniquement les routes API
   if (!pathname.startsWith("/api/")) {
     return NextResponse.next();
   }
 
-  // Ignorer certaines routes
   if (
     pathname.startsWith("/api/cron/") ||
     pathname.startsWith("/api/flush-cache")
@@ -18,10 +16,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Récupérer l'IP
   const ip = getIP(request) || "unknown";
-
-  // Vérifier la limite globale
   const resultat = verifierRateLimitMemoire(pathname, ip);
 
   if (!resultat.autorise) {
