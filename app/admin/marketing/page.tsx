@@ -27,7 +27,7 @@ interface TextePret {
 const textesPrets: TextePret[] = [
   {
     id: "presentation",
-    titre: "📢 Présentation courte",
+    titre: "Présentation courte",
     texte: `🛍️ Découvrez GK Sensei — le complexe commercial en ligne de Kinshasa !
 
 Toutes vos boutiques préférées réunies en un seul endroit. Commandez, payez par Mobile Money et retirez en boutique.
@@ -36,7 +36,7 @@ Toutes vos boutiques préférées réunies en un seul endroit. Commandez, payez 
   },
   {
     id: "vendeurs",
-    titre: "🏪 Pour recruter des vendeurs",
+    titre: "Pour recruter des vendeurs",
     texte: `🏪 Vous vendez des produits à Kinshasa ?
 
 Rejoignez GK Sensei et ouvrez votre boutique en ligne en quelques minutes. Seulement 25 000 FC d'inscription + 15 000 FC/mois. Zéro commission sur vos ventes !
@@ -45,7 +45,7 @@ Rejoignez GK Sensei et ouvrez votre boutique en ligne en quelques minutes. Seule
   },
   {
     id: "clients",
-    titre: "👥 Pour attirer des clients",
+    titre: "Pour attirer des clients",
     texte: `✨ Marre de chercher vos boutiques préférées ?
 
 Sur GK Sensei, tout est réuni : mode, électronique, accessoires... Commandez en 2 clics et payez avec M-Pesa, Orange Money ou Airtel Money.
@@ -54,7 +54,7 @@ Sur GK Sensei, tout est réuni : mode, électronique, accessoires... Commandez e
   },
   {
     id: "whatsapp_statut",
-    titre: "📱 Statut WhatsApp",
+    titre: "Statut WhatsApp",
     texte: `🛒 GK Sensei — Le commerce en un clic
 
 Commandez en ligne, payez par Mobile Money, retirez en boutique.
@@ -92,31 +92,61 @@ export default function MarketingPage() {
     );
   };
 
+  const titreSection = {
+    fontSize: "11px",
+    fontWeight: "900" as const,
+    color: "#0F172A",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.6px",
+    marginBottom: "12px",
+    display: "flex" as const,
+    alignItems: "center" as const,
+    gap: "8px",
+  };
+
+  const traitOrange = {
+    display: "inline-block",
+    width: "3px",
+    height: "13px",
+    backgroundColor: "#EA580C",
+    borderRadius: "2px",
+  };
+
+  const carteStyle = {
+    backgroundColor: "white",
+    borderRadius: "20px",
+    padding: "16px",
+    border: "1px solid #D4C5A0",
+    marginBottom: "14px",
+    boxShadow: "0 2px 8px rgba(120, 100, 60, 0.06)",
+  };
+
   return (
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: "#F1F5F9",
+        backgroundColor: "#F5EAD2",
         padding: "16px 12px 90px",
       }}
     >
-      {/* En-tête */}
-      <div style={{ marginBottom: "16px" }}>
+      {/* HEADER */}
+      <div style={{ marginBottom: "18px" }}>
         <h1
           style={{
-            fontSize: "20px",
-            fontWeight: "800",
+            fontSize: "22px",
+            fontWeight: "900",
             color: "#0F172A",
+            marginBottom: "3px",
+            letterSpacing: "-0.4px",
           }}
         >
           Marketing
         </h1>
         <p
           style={{
-            fontSize: "11px",
-            color: "#64748B",
-            fontWeight: "600",
-            marginTop: "3px",
+            fontSize: "11.5px",
+            color: "#57534E",
+            fontWeight: "700",
           }}
         >
           Outils pour faire connaître GK Sensei
@@ -131,89 +161,74 @@ export default function MarketingPage() {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "10px",
-          backgroundColor: "#1D4ED8",
+          gap: "12px",
+          backgroundColor: "#0F172A",
           color: "white",
-          padding: "14px",
-          borderRadius: "12px",
+          padding: "16px",
+          borderRadius: "20px",
           textDecoration: "none",
-          marginBottom: "16px",
+          marginBottom: "14px",
+          boxShadow: "0 4px 12px rgba(15, 23, 42, 0.20)",
         }}
       >
         <div
           style={{
-            width: "38px",
-            height: "38px",
-            borderRadius: "10px",
-            backgroundColor: "rgba(255,255,255,0.2)",
+            width: "42px",
+            height: "42px",
+            borderRadius: "14px",
+            backgroundColor: "rgba(234, 88, 12, 0.20)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
           }}
         >
-          <BarChart3 size={20} strokeWidth={2.5} />
+          <BarChart3 size={22} color="#EA580C" strokeWidth={2.8} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ fontSize: "13px", fontWeight: "800" }}>
-            📊 Voir mes statistiques
+          <p style={{
+            fontSize: "13.5px",
+            fontWeight: "900",
+            letterSpacing: "-0.2px",
+          }}>
+            Voir mes statistiques
           </p>
-          <p style={{ fontSize: "10.5px", opacity: 0.9, fontWeight: "600" }}>
+          <p style={{
+            fontSize: "10.5px",
+            opacity: 0.85,
+            fontWeight: "700",
+          }}>
             Visiteurs, sources, comportement
           </p>
         </div>
-        <ExternalLink size={16} strokeWidth={2.5} />
+        <ExternalLink size={16} strokeWidth={2.8} />
       </a>
 
       {/* Lien du site */}
-      <div
-        style={{
-          backgroundColor: "white",
-          borderRadius: "12px",
-          padding: "14px",
-          border: "1px solid #E2E8F0",
-          marginBottom: "16px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            marginBottom: "10px",
-          }}
-        >
-          <LinkIcon size={14} color="#1D4ED8" strokeWidth={2.5} />
-          <p
-            style={{
-              fontSize: "11px",
-              fontWeight: "800",
-              color: "#0F172A",
-              textTransform: "uppercase",
-              letterSpacing: "0.3px",
-            }}
-          >
-            Lien de votre site
-          </p>
-        </div>
+      <div style={carteStyle}>
+        <p style={titreSection}>
+          <span style={traitOrange} />
+          <LinkIcon size={13} strokeWidth={2.8} color="#EA580C" />
+          Lien de votre site
+        </p>
 
         <div
           style={{
             display: "flex",
             alignItems: "center",
             gap: "6px",
-            backgroundColor: "#F8FAFC",
-            border: "1px solid #E2E8F0",
-            borderRadius: "8px",
-            padding: "10px",
+            backgroundColor: "#F5EAD2",
+            border: "1px solid #D4C5A0",
+            borderRadius: "14px",
+            padding: "10px 12px",
           }}
         >
           <span
             style={{
               flex: 1,
               fontSize: "11.5px",
-              fontWeight: "600",
-              color: "#334155",
+              fontWeight: "800",
+              color: "#0F172A",
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -225,43 +240,42 @@ export default function MarketingPage() {
           <button
             onClick={() => copier(SITE_URL, "site")}
             style={{
-              padding: "6px 10px",
+              padding: "8px 12px",
               fontSize: "10.5px",
-              backgroundColor: copie === "site" ? "#16a34a" : "#E2E8F0",
-              color: copie === "site" ? "white" : "#334155",
+              backgroundColor: copie === "site" ? "#16A34A" : "#0F172A",
+              color: "white",
               border: "none",
-              borderRadius: "6px",
+              borderRadius: "14px",
               cursor: "pointer",
-              fontWeight: "700",
+              fontWeight: "900",
               flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              fontFamily: "inherit",
             }}
           >
-            {copie === "site" ? <Check size={12} /> : <Copy size={12} />}
+            {copie === "site" ? (
+              <>
+                <Check size={12} strokeWidth={3} />
+                Copié
+              </>
+            ) : (
+              <>
+                <Copy size={12} strokeWidth={2.8} />
+                Copier
+              </>
+            )}
           </button>
         </div>
       </div>
 
       {/* Boutons de partage */}
-      <div
-        style={{
-          backgroundColor: "white",
-          borderRadius: "12px",
-          padding: "14px",
-          border: "1px solid #E2E8F0",
-          marginBottom: "16px",
-        }}
-      >
-        <p
-          style={{
-            fontSize: "11px",
-            fontWeight: "800",
-            color: "#0F172A",
-            textTransform: "uppercase",
-            letterSpacing: "0.3px",
-            marginBottom: "10px",
-          }}
-        >
-          📱 Partage rapide
+      <div style={carteStyle}>
+        <p style={titreSection}>
+          <span style={traitOrange} />
+          <MessageCircle size={13} strokeWidth={2.8} color="#EA580C" />
+          Partage rapide
         </p>
 
         <div style={{ display: "flex", gap: "8px" }}>
@@ -277,16 +291,17 @@ export default function MarketingPage() {
               flexDirection: "column",
               alignItems: "center",
               gap: "6px",
-              padding: "12px 6px",
+              padding: "14px 6px",
               backgroundColor: "#25D366",
               color: "white",
               border: "none",
-              borderRadius: "10px",
+              borderRadius: "16px",
               cursor: "pointer",
-              fontWeight: "700",
+              fontWeight: "900",
+              fontFamily: "inherit",
             }}
           >
-            <MessageCircle size={18} strokeWidth={2.5} />
+            <MessageCircle size={20} strokeWidth={2.8} />
             <span style={{ fontSize: "10.5px" }}>WhatsApp</span>
           </button>
 
@@ -298,16 +313,17 @@ export default function MarketingPage() {
               flexDirection: "column",
               alignItems: "center",
               gap: "6px",
-              padding: "12px 6px",
+              padding: "14px 6px",
               backgroundColor: "#1877F2",
               color: "white",
               border: "none",
-              borderRadius: "10px",
+              borderRadius: "16px",
               cursor: "pointer",
-              fontWeight: "700",
+              fontWeight: "900",
+              fontFamily: "inherit",
             }}
           >
-            <Facebook size={18} strokeWidth={2.5} />
+            <Facebook size={20} strokeWidth={2.8} />
             <span style={{ fontSize: "10.5px" }}>Facebook</span>
           </button>
 
@@ -319,70 +335,49 @@ export default function MarketingPage() {
               flexDirection: "column",
               alignItems: "center",
               gap: "6px",
-              padding: "12px 6px",
-              backgroundColor: "#000000",
+              padding: "14px 6px",
+              backgroundColor: "#0F172A",
               color: "white",
               border: "none",
-              borderRadius: "10px",
+              borderRadius: "16px",
               cursor: "pointer",
-              fontWeight: "700",
+              fontWeight: "900",
+              fontFamily: "inherit",
             }}
           >
-            <Twitter size={18} strokeWidth={2.5} />
+            <Twitter size={20} strokeWidth={2.8} />
             <span style={{ fontSize: "10.5px" }}>X / Twitter</span>
           </button>
         </div>
       </div>
 
       {/* Textes prêts */}
-      <div
-        style={{
-          backgroundColor: "white",
-          borderRadius: "12px",
-          padding: "14px",
-          border: "1px solid #E2E8F0",
-          marginBottom: "16px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            marginBottom: "12px",
-          }}
-        >
-          <Megaphone size={14} color="#1D4ED8" strokeWidth={2.5} />
-          <p
-            style={{
-              fontSize: "11px",
-              fontWeight: "800",
-              color: "#0F172A",
-              textTransform: "uppercase",
-              letterSpacing: "0.3px",
-            }}
-          >
-            Textes prêts à publier
-          </p>
-        </div>
+      <div style={carteStyle}>
+        <p style={titreSection}>
+          <span style={traitOrange} />
+          <Megaphone size={13} strokeWidth={2.8} color="#EA580C" />
+          Textes prêts à publier
+        </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {textesPrets.map((t) => (
             <div
               key={t.id}
               style={{
-                backgroundColor: "#F8FAFC",
-                border: "1px solid #E2E8F0",
-                borderRadius: "10px",
-                padding: "10px",
+                backgroundColor: "#F5EAD2",
+                border: "1px solid #D4C5A0",
+                borderRadius: "14px",
+                padding: "12px",
               }}
             >
               <p
                 style={{
-                  fontSize: "11px",
-                  fontWeight: "800",
+                  fontSize: "11.5px",
+                  fontWeight: "900",
                   color: "#0F172A",
                   marginBottom: "6px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.4px",
                 }}
               >
                 {t.titre}
@@ -390,11 +385,11 @@ export default function MarketingPage() {
               <p
                 style={{
                   fontSize: "11px",
-                  color: "#475569",
-                  lineHeight: 1.5,
-                  fontWeight: "500",
+                  color: "#57534E",
+                  lineHeight: 1.55,
+                  fontWeight: "700",
                   whiteSpace: "pre-line",
-                  marginBottom: "8px",
+                  marginBottom: "10px",
                 }}
               >
                 {t.texte}
@@ -409,18 +404,28 @@ export default function MarketingPage() {
                     alignItems: "center",
                     justifyContent: "center",
                     gap: "5px",
-                    padding: "7px",
-                    backgroundColor: copie === t.id ? "#16a34a" : "white",
-                    color: copie === t.id ? "white" : "#1D4ED8",
-                    border: "1px solid #E2E8F0",
-                    borderRadius: "6px",
+                    padding: "9px",
+                    backgroundColor: copie === t.id ? "#16A34A" : "#0F172A",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "20px",
                     cursor: "pointer",
-                    fontWeight: "700",
+                    fontWeight: "900",
                     fontSize: "10.5px",
+                    fontFamily: "inherit",
                   }}
                 >
-                  {copie === t.id ? <Check size={12} /> : <Copy size={12} />}
-                  {copie === t.id ? "Copié" : "Copier"}
+                  {copie === t.id ? (
+                    <>
+                      <Check size={12} strokeWidth={3} />
+                      Copié
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={12} strokeWidth={2.8} />
+                      Copier
+                    </>
+                  )}
                 </button>
 
                 <button
@@ -431,17 +436,18 @@ export default function MarketingPage() {
                     alignItems: "center",
                     justifyContent: "center",
                     gap: "5px",
-                    padding: "7px",
+                    padding: "9px",
                     backgroundColor: "#25D366",
                     color: "white",
                     border: "none",
-                    borderRadius: "6px",
+                    borderRadius: "20px",
                     cursor: "pointer",
-                    fontWeight: "700",
+                    fontWeight: "900",
                     fontSize: "10.5px",
+                    fontFamily: "inherit",
                   }}
                 >
-                  <MessageCircle size={12} strokeWidth={2.5} />
+                  <MessageCircle size={12} strokeWidth={2.8} />
                   Partager
                 </button>
               </div>
@@ -453,54 +459,49 @@ export default function MarketingPage() {
       {/* Conseils */}
       <div
         style={{
-          backgroundColor: "#FEF3C7",
-          border: "1px solid #FDE68A",
-          borderRadius: "12px",
-          padding: "14px",
+          backgroundColor: "white",
+          border: "1.5px solid #0F172A",
+          borderRadius: "20px",
+          padding: "16px",
+          boxShadow: "4px 4px 0 #EA580C",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            marginBottom: "10px",
-          }}
-        >
-          <Lightbulb size={14} color="#B45309" strokeWidth={2.5} />
-          <p
-            style={{
-              fontSize: "11px",
-              fontWeight: "800",
-              color: "#78350F",
-              textTransform: "uppercase",
-              letterSpacing: "0.3px",
-            }}
-          >
-            Conseils pour être connu
-          </p>
-        </div>
+        <p style={{
+          fontSize: "11px",
+          fontWeight: "900",
+          color: "#0F172A",
+          textTransform: "uppercase",
+          letterSpacing: "0.6px",
+          marginBottom: "12px",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+        }}>
+          <span style={traitOrange} />
+          <Lightbulb size={13} strokeWidth={2.8} color="#EA580C" />
+          Conseils pour être connu
+        </p>
 
         <ul
           style={{
-            fontSize: "11px",
-            color: "#78350F",
-            fontWeight: "500",
-            lineHeight: 1.6,
-            paddingLeft: "16px",
+            fontSize: "11.5px",
+            color: "#0F172A",
+            fontWeight: "700",
+            lineHeight: 1.7,
+            paddingLeft: "18px",
             display: "flex",
             flexDirection: "column",
-            gap: "4px",
+            gap: "5px",
           }}
         >
-          <li>📱 Partage le lien dans tes statuts WhatsApp</li>
-          <li>👥 Ajoute le lien dans ta bio Facebook / Instagram / TikTok</li>
-          <li>🏪 Demande à tes vendeurs de partager leur boutique</li>
-          <li>🎁 Offre un petit cadeau aux 10 premiers clients</li>
-          <li>📸 Poste les nouveautés de tes boutiques chaque semaine</li>
-          <li>🤝 Contacte des influenceurs de Kinshasa pour un partenariat</li>
+          <li>Partage le lien dans tes statuts WhatsApp</li>
+          <li>Ajoute le lien dans ta bio Facebook / Instagram / TikTok</li>
+          <li>Demande à tes vendeurs de partager leur boutique</li>
+          <li>Offre un petit cadeau aux 10 premiers clients</li>
+          <li>Poste les nouveautés de tes boutiques chaque semaine</li>
+          <li>Contacte des influenceurs de Kinshasa pour un partenariat</li>
         </ul>
       </div>
     </div>
   );
-    }
+}
