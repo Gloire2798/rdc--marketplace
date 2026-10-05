@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import FormulaireBoutique from "./FormulaireBoutique";
+import { ArrowLeft } from "lucide-react";
 
 export default async function PageBoutiqueVendeur() {
   const session = await getSession();
@@ -20,15 +21,34 @@ export default async function PageBoutiqueVendeur() {
   }
 
   return (
-    <div className="container" style={{ padding: "20px 14px" }}>
-      <Link href="/vendeur/dashboard" style={{ color: "#1D4ED8", fontSize: "12px", fontWeight: "700" }}>
-        ← Retour au tableau de bord
+    <div style={{ padding: "16px 12px 100px 12px", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
+      <Link
+        href="/vendeur/dashboard"
+        style={{
+          color: "#0F172A",
+          fontSize: "11px",
+          fontWeight: "800",
+          textDecoration: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "4px",
+        }}
+      >
+        <ArrowLeft size={12} strokeWidth={2.8} />
+        Retour au tableau de bord
       </Link>
 
-      <h1 style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", marginTop: "12px", marginBottom: "4px" }}>
+      <h1 style={{
+        fontSize: "22px",
+        fontWeight: "900",
+        color: "#0F172A",
+        marginTop: "12px",
+        marginBottom: "3px",
+        letterSpacing: "-0.4px",
+      }}>
         Ma boutique
       </h1>
-      <p style={{ fontSize: "12px", color: "#64748b", marginBottom: "20px", fontWeight: "600" }}>
+      <p style={{ fontSize: "11.5px", color: "#57534E", marginBottom: "18px", fontWeight: "700" }}>
         Gérez les informations et photos de votre boutique
       </p>
 
