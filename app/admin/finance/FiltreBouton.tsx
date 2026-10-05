@@ -10,23 +10,24 @@ interface Props {
 }
 
 export default function FiltreBouton({ actif, onClick, label, couleur }: Props) {
-  let bgActif = "#1D4ED8";
-  if (couleur === "red") bgActif = "#dc2626";
-  if (couleur === "green") bgActif = "#16a34a";
+  // Toutes les couleurs actives passent en NOIR pour la cohérence charte
+  const bgActif = "#0F172A";
 
   return (
     <button
       onClick={onClick}
       style={{
-        padding: "6px 12px",
+        padding: "8px 14px",
         borderRadius: "20px",
         fontSize: "11px",
-        fontWeight: "700",
+        fontWeight: "900",
         whiteSpace: "nowrap",
-        border: actif ? "1px solid transparent" : "1px solid #E2E8F0",
+        border: actif ? "1.5px solid #0F172A" : "1.5px solid #D4C5A0",
         backgroundColor: actif ? bgActif : "white",
-        color: actif ? "white" : "#475569",
+        color: actif ? "white" : "#57534E",
         cursor: "pointer",
+        fontFamily: "inherit",
+        boxShadow: actif ? "2px 2px 0 #EA580C" : "none",
       }}
     >
       {label}
