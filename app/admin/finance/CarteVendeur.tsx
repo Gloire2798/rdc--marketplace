@@ -18,7 +18,6 @@ function getMoisLisible(periode: string): string {
   return `Loyer ${moisNoms[parseInt(mois) - 1]} ${annee}`;
 }
 
-// Date d'échéance = 5 du mois SUIVANT la période
 function getDateEcheance(periode: string): string {
   if (periode === "INSCRIPTION") return "";
   const [annee, mois] = periode.split("-").map(Number);
@@ -38,43 +37,38 @@ interface Props {
 }
 
 export default function CarteVendeur({ vendeur, moisActuel, enCours, onMarquerPaye, onToutMarquerPaye }: Props) {
-  // ----- Inscription -----
   const inscription = vendeur.paiementsFinance.find((p) => p.type === "INSCRIPTION");
   const inscriptionPayee = inscription?.statut === "PAYE";
 
-  // ----- Tous les loyers, triés du plus récent au plus ancien -----
   const loyers = vendeur.paiementsFinance
     .filter((p) => p.type === "LOYER")
     .sort((a, b) => b.periode.localeCompare(a.periode));
 
-  // ----- Loyers impayés -----
   const loyersImpayes = loyers.filter((l) => l.statut === "IMPAYE");
 
-  // ----- Total dû -----
   const totalDu =
     (inscriptionPayee ? 0 : FRAIS_INSCRIPTION) +
     loyersImpayes.reduce((sum, l) => sum + LOYER_MENSUEL, 0);
 
   const toutPaye = inscriptionPayee && loyersImpayes.length === 0;
-  const bordCouleur = toutPaye ? "#16a34a" : "#dc2626";
+  const bordCouleur = toutPaye ? "#16A34A" : "#DC2626";
 
-  // Nombre de mois de retard
   const moisDeRetard = loyersImpayes.length;
   const enRetardCritique = moisDeRetard >= 2;
 
   return (
     <div style={{
       backgroundColor: "white",
-      borderRadius: "10px",
-      border: "1px solid #E2E8F0",
-      borderLeft: `4px solid ${bordCouleur}`,
-      boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+      borderRadius: "16px",
+      border: "1px solid #D4C5A0",
+      borderLeft: `3px solid ${bordCouleur}`,
+      boxShadow: "0 2px 6px rgba(120, 100, 60, 0.06)",
       overflow: "hidden",
     }}>
       {/* En-tête */}
       <div style={{
-        padding: "12px 14px 10px 14px",
-        borderBottom: "1px solid #F1F5F9",
+        padding: "12px 12px 10px 12px",
+        borderBottom: "1px dashed #D4C5A0",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "flex-start",
@@ -82,10 +76,10 @@ export default function CarteVendeur({ vendeur, moisActuel, enCours, onMarquerPa
       }}>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "3px" }}>
-            <Store size={13} color="#1D4ED8" strokeWidth={2.5} />
+            <Store size={13} color="#EA580C" strokeWidth={2.8} />
             <h3 style={{
               fontSize: "13px",
-              fontWeight: "800",
+              fontWeight: "900",
               color: "#0F172A",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -96,8 +90,8 @@ export default function CarteVendeur({ vendeur, moisActuel, enCours, onMarquerPa
           </div>
           <p style={{
             fontSize: "10.5px",
-            color: "#64748b",
-            fontWeight: "600",
+            color: "#57534E",
+            fontWeight: "700",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -106,14 +100,14 @@ export default function CarteVendeur({ vendeur, moisActuel, enCours, onMarquerPa
           </p>
           <p style={{
             fontSize: "10px",
-            color: "#94a3b8",
-            fontWeight: "600",
+            color: "#57534E",
+            fontWeight: "700",
             display: "flex",
             alignItems: "center",
             gap: "3px",
             marginTop: "2px",
           }}>
-            <Phone size={9} />
+            <Phone size={9} strokeWidth={2.8} />
             {vendeur.telephone}
           </p>
         </div>
@@ -123,55 +117,62 @@ export default function CarteVendeur({ vendeur, moisActuel, enCours, onMarquerPa
             display: "inline-flex",
             alignItems: "center",
             gap: "3px",
-            padding: "3px 8px",
+            padding: "4px 10px",
             borderRadius: "12px",
             backgroundColor: "#DCFCE7",
-            color: "#15803d",
-            fontSize: "9px",
-            fontWeight: "800",
+            color: "#15803D",
+            fontSize: "9.5px",
+            fontWeight: "900",
             whiteSpace: "nowrap",
+            border: "1px solid #16A34A",
+            textTransform: "uppercase",
+            letterSpacing: "0.3px",
           }}>
-            <CheckCircle size={10} strokeWidth={2.5} />
-            À JOUR
+            <CheckCircle size={10} strokeWidth={3} />
+            À jour
           </span>
         ) : enRetardCritique ? (
           <span style={{
             display: "inline-flex",
             alignItems: "center",
             gap: "3px",
-            padding: "3px 8px",
+            padding: "4px 10px",
             borderRadius: "12px",
             backgroundColor: "#DC2626",
             color: "white",
-            fontSize: "9px",
-            fontWeight: "800",
+            fontSize: "9.5px",
+            fontWeight: "900",
             whiteSpace: "nowrap",
+            textTransform: "uppercase",
+            letterSpacing: "0.3px",
           }}>
-            <AlertCircle size={10} strokeWidth={2.5} />
-            {moisDeRetard} MOIS
+            <AlertCircle size={10} strokeWidth={3} />
+            {moisDeRetard} mois
           </span>
         ) : (
           <span style={{
             display: "inline-flex",
             alignItems: "center",
             gap: "3px",
-            padding: "3px 8px",
+            padding: "4px 10px",
             borderRadius: "12px",
             backgroundColor: "#FEE2E2",
-            color: "#b91c1c",
-            fontSize: "9px",
-            fontWeight: "800",
+            color: "#B91C1C",
+            fontSize: "9.5px",
+            fontWeight: "900",
             whiteSpace: "nowrap",
+            border: "1px solid #DC2626",
+            textTransform: "uppercase",
+            letterSpacing: "0.3px",
           }}>
-            <AlertCircle size={10} strokeWidth={2.5} />
-            IMPAYÉ
+            <AlertCircle size={10} strokeWidth={3} />
+            Impayé
           </span>
         )}
       </div>
 
-      {/* Toutes les lignes de paiement */}
-      <div style={{ padding: "10px 14px", display: "flex", flexDirection: "column", gap: "8px" }}>
-        {/* Inscription */}
+      {/* Lignes de paiement */}
+      <div style={{ padding: "10px 12px", display: "flex", flexDirection: "column", gap: "8px" }}>
         <LignePaiement
           label="Inscription"
           montant={FRAIS_INSCRIPTION}
@@ -181,7 +182,6 @@ export default function CarteVendeur({ vendeur, moisActuel, enCours, onMarquerPa
           onMarquer={() => onMarquerPaye(vendeur.id, "INSCRIPTION", "INSCRIPTION")}
         />
 
-        {/* Tous les loyers (payés ET impayés) */}
         {loyers.map((l) => {
           const estImpaye = l.statut !== "PAYE";
           const estAncien = l.periode !== moisActuel;
@@ -200,27 +200,27 @@ export default function CarteVendeur({ vendeur, moisActuel, enCours, onMarquerPa
           );
         })}
 
-        {/* Si aucun loyer enregistré */}
         {loyers.length === 0 && (
           <div style={{
             fontSize: "10.5px",
-            color: "#94a3b8",
-            fontWeight: "600",
+            color: "#57534E",
+            fontWeight: "700",
             textAlign: "center",
             padding: "8px",
-            backgroundColor: "#F8FAFC",
-            borderRadius: "8px",
+            backgroundColor: "#F5EAD2",
+            borderRadius: "10px",
+            border: "1px solid #D4C5A0",
           }}>
             Aucun loyer enregistré
           </div>
         )}
       </div>
 
-      {/* Total + action globale */}
+      {/* Total + action */}
       <div style={{
-        padding: "10px 14px",
-        backgroundColor: "#F8FAFC",
-        borderTop: "1px solid #F1F5F9",
+        padding: "10px 12px",
+        backgroundColor: "#F5EAD2",
+        borderTop: "1px solid #D4C5A0",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
@@ -229,18 +229,19 @@ export default function CarteVendeur({ vendeur, moisActuel, enCours, onMarquerPa
         <div>
           <p style={{
             fontSize: "9.5px",
-            fontWeight: "700",
-            color: "#64748b",
+            fontWeight: "900",
+            color: "#57534E",
             textTransform: "uppercase",
-            letterSpacing: "0.3px",
+            letterSpacing: "0.4px",
           }}>
             Total dû
           </p>
           <p style={{
             fontSize: "15px",
-            fontWeight: "800",
-            color: toutPaye ? "#15803d" : "#b91c1c",
+            fontWeight: "900",
+            color: toutPaye ? "#16A34A" : "#DC2626",
             lineHeight: 1.1,
+            letterSpacing: "-0.3px",
           }}>
             {formatFC(totalDu)}
           </p>
@@ -251,12 +252,12 @@ export default function CarteVendeur({ vendeur, moisActuel, enCours, onMarquerPa
             onClick={() => onToutMarquerPaye(vendeur)}
             disabled={enCours !== null && enCours.startsWith(vendeur.id)}
             style={{
-              padding: "8px 12px",
-              borderRadius: "8px",
-              backgroundColor: "#1D4ED8",
+              padding: "8px 14px",
+              borderRadius: "20px",
+              backgroundColor: "#0F172A",
               color: "white",
               fontSize: "11px",
-              fontWeight: "800",
+              fontWeight: "900",
               border: "none",
               display: "inline-flex",
               alignItems: "center",
@@ -264,10 +265,11 @@ export default function CarteVendeur({ vendeur, moisActuel, enCours, onMarquerPa
               cursor: "pointer",
               opacity: enCours !== null && enCours.startsWith(vendeur.id) ? 0.6 : 1,
               whiteSpace: "nowrap",
+              fontFamily: "inherit",
             }}
           >
             <Check size={12} strokeWidth={3} />
-            Tout marquer payé
+            Tout payé
           </button>
         )}
       </div>
@@ -297,21 +299,21 @@ function LignePaiement({
       <div style={{ minWidth: 0, flex: 1 }}>
         <p style={{
           fontSize: "12px",
-          fontWeight: "700",
-          color: enRetard ? "#dc2626" : "#0F172A",
+          fontWeight: "900",
+          color: enRetard ? "#DC2626" : "#0F172A",
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
         }}>
           {label}
         </p>
-        <p style={{ fontSize: "10.5px", fontWeight: "600", color: "#64748b" }}>
+        <p style={{ fontSize: "10.5px", fontWeight: "700", color: "#57534E" }}>
           {formatFC(montant)}
           {sousLabel && (
             <span style={{
               marginLeft: "6px",
-              color: enRetard ? "#dc2626" : "#94a3b8",
-              fontWeight: "700",
+              color: enRetard ? "#DC2626" : "#94A3B8",
+              fontWeight: "800",
             }}>
               · {sousLabel}
             </span>
@@ -324,13 +326,14 @@ function LignePaiement({
           display: "inline-flex",
           alignItems: "center",
           gap: "3px",
-          padding: "3px 8px",
+          padding: "4px 9px",
           borderRadius: "12px",
           backgroundColor: "#DCFCE7",
-          color: "#15803d",
+          color: "#15803D",
           fontSize: "10px",
-          fontWeight: "800",
+          fontWeight: "900",
           whiteSpace: "nowrap",
+          border: "1px solid #16A34A",
         }}>
           <Check size={10} strokeWidth={3} />
           Payé
@@ -343,22 +346,23 @@ function LignePaiement({
             display: "inline-flex",
             alignItems: "center",
             gap: "3px",
-            padding: "5px 10px",
-            borderRadius: "14px",
-            backgroundColor: enRetard ? "#FEF2F2" : "#FEF3C7",
-            color: enRetard ? "#b91c1c" : "#92400e",
+            padding: "6px 11px",
+            borderRadius: "16px",
+            backgroundColor: enRetard ? "white" : "#0F172A",
+            color: enRetard ? "#DC2626" : "white",
             fontSize: "10px",
-            fontWeight: "800",
-            border: enRetard ? "1px solid #FECACA" : "1px solid #FDE68A",
+            fontWeight: "900",
+            border: enRetard ? "1.5px solid #DC2626" : "none",
             cursor: "pointer",
             opacity: enCours ? 0.6 : 1,
             whiteSpace: "nowrap",
+            fontFamily: "inherit",
           }}
         >
-          {enCours ? <Loader2 size={10} /> : <XCircle size={10} strokeWidth={2.5} />}
+          {enCours ? <Loader2 size={10} /> : <Check size={10} strokeWidth={3} />}
           {enCours ? "..." : "Marquer payé"}
         </button>
       )}
     </div>
   );
-                }
+      }
