@@ -71,8 +71,8 @@ export default function MenuBurger() {
           top: 0,
           left: 0,
           bottom: 0,
-          width: "270px",
-          maxWidth: "80%",
+          width: "280px",
+          maxWidth: "82%",
           backgroundColor: "#0F172A",
           color: "white",
           zIndex: 1000,
@@ -83,16 +83,30 @@ export default function MenuBurger() {
           flexDirection: "column",
         }}
       >
+        {/* HEADER MENU */}
         <div style={{
-          padding: "18px 16px",
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          padding: "20px 18px",
+          borderBottom: "1px solid rgba(255,255,255,0.12)",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
         }}>
           <div>
-            <p style={{ fontSize: "16px", fontWeight: "800" }}>GK Sensei</p>
-            <p style={{ fontSize: "11px", color: "#94a3b8", marginTop: "2px", fontWeight: "600" }}>
+            <p style={{
+              fontSize: "16px",
+              fontWeight: "900",
+              letterSpacing: "-0.3px",
+            }}>
+              GK Sensei
+            </p>
+            <p style={{
+              fontSize: "11px",
+              color: "#94A3B8",
+              marginTop: "3px",
+              fontWeight: "700",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+            }}>
               Espace vendeur
             </p>
           </div>
@@ -105,6 +119,7 @@ export default function MenuBurger() {
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
+              padding: "4px",
             }}
             aria-label="Fermer le menu"
           >
@@ -112,9 +127,11 @@ export default function MenuBurger() {
           </button>
         </div>
 
-        <nav style={{ flex: 1, padding: "10px 0" }}>
+        {/* NAVIGATION */}
+        <nav style={{ flex: 1, padding: "12px 0" }}>
           {liensMenu.map((lien) => {
-            const actif = pathname === lien.href || pathname.startsWith(lien.href + "/");
+            const actif =
+              pathname === lien.href || pathname.startsWith(lien.href + "/");
             const Icon = lien.Icon;
             return (
               <Link
@@ -125,23 +142,28 @@ export default function MenuBurger() {
                   display: "flex",
                   alignItems: "center",
                   gap: "12px",
-                  padding: "13px 18px",
-                  color: actif ? "white" : "#cbd5e1",
+                  padding: "14px 18px",
+                  color: actif ? "white" : "#CBD5E1",
                   textDecoration: "none",
                   fontSize: "14px",
-                  fontWeight: "700",
-                  borderLeft: actif ? "3px solid #3B82F6" : "3px solid transparent",
-                  backgroundColor: actif ? "rgba(59, 130, 246, 0.15)" : "transparent",
+                  fontWeight: "800",
+                  borderLeft: actif ? "3px solid #EA580C" : "3px solid transparent",
+                  backgroundColor: actif ? "rgba(234, 88, 12, 0.15)" : "transparent",
+                  transition: "all 0.15s ease",
                 }}
               >
-                <Icon size={18} strokeWidth={2.5} />
+                <Icon size={18} strokeWidth={2.5} color={actif ? "#EA580C" : "#CBD5E1"} />
                 <span>{lien.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div style={{ padding: "10px 0", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+        {/* DÉCONNEXION */}
+        <div style={{
+          padding: "12px 0",
+          borderTop: "1px solid rgba(255,255,255,0.12)",
+        }}>
           <Link
             href="/deconnexion"
             onClick={() => setOuvert(false)}
@@ -149,11 +171,11 @@ export default function MenuBurger() {
               display: "flex",
               alignItems: "center",
               gap: "12px",
-              padding: "13px 18px",
-              color: "#f87171",
+              padding: "14px 18px",
+              color: "#F87171",
               textDecoration: "none",
               fontSize: "14px",
-              fontWeight: "700",
+              fontWeight: "800",
             }}
           >
             <LogOut size={18} strokeWidth={2.5} />
@@ -163,4 +185,4 @@ export default function MenuBurger() {
       </div>
     </>
   );
-}
+                         }
