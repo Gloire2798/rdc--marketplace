@@ -1,46 +1,38 @@
-import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import CarteBoutique from "@/app/components/CarteBoutique";
 import { ArrowLeft, Store } from "lucide-react";
 
-const getBoutiques = unstable_cache(
-  async () => {
-    const vendeurs = await prisma.vendeur.findMany({
-      where: { actif: true },
-      select: {
-        id: true,
-        nomBoutique: true,
-        description: true,
-        adresse: true,
-        photoCouverture: true,
-        photo2: true,
-        photo3: true,
-        _count: { select: { produits: true } },
-      },
-      orderBy: { createdAt: "desc" },
-    });
-
-    return vendeurs.map((v) => ({
-      id: v.id,
-      nomBoutique: v.nomBoutique,
-      description: v.description,
-      adresse: v.adresse,
-      photoCouverture: v.photoCouverture,
-      photo2: v.photo2,
-      photo3: v.photo3,
-      nombreProduits: v._count.produits,
-    }));
-  },
-  ["boutiques-liste"],
-  {
-    revalidate: 30,
-    tags: ["boutiques"],
-  }
-);
+// ✅ Pas de cache : toujours frais
+export const dynamic = "force-dynamic";
 
 export default async function PageBoutiques() {
-  const boutiques = await getBoutiques();
+  // Requête directe, pas de cache
+  const vendeurs = await prisma.vendeur.findMany({
+    where: { actif: true },
+    select: {
+      id: true,
+      nomBoutique: true,
+      description: true,
+      adresse: true,
+      photoCouverture: true,
+      photo2: true,
+      photo3: true,
+      _count: { select: { produits: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const boutiques = vendeurs.map((v) => ({
+    id: v.id,
+    nomBoutique: v.nomBoutique,
+    description: v.description,
+    adresse: v.adresse,
+    photoCouverture: v.photoCouverture,
+    photo2: v.photo2,
+    photo3: v.photo3,
+    nombreProduits: v._count.produits,
+  }));
 
   return (
     <div style={{ backgroundColor: "#F5EAD2", minHeight: "100vh", padding: "18px 14px 100px 14px" }}>
@@ -115,4 +107,4 @@ export default async function PageBoutiques() {
       </div>
     </div>
   );
-                         }
+}
