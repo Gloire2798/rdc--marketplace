@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import CarteQR from "./CarteQR";
+import { CheckCircle, Package, AlertTriangle, Store } from "lucide-react";
 
 function ContenuConfirmation() {
   const searchParams = useSearchParams();
@@ -21,23 +22,37 @@ function ContenuConfirmation() {
 
   return (
     <div style={{
-      padding: "20px 14px",
+      padding: "20px 14px 30px 14px",
       maxWidth: "500px",
       margin: "0 auto",
-      backgroundColor: "#FAF5E8",
+      backgroundColor: "#F5EAD2",
       minHeight: "100vh",
     }}>
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
-        <p style={{ fontSize: "48px", marginBottom: "10px" }}>🎉</p>
+        <div style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "80px",
+          height: "80px",
+          borderRadius: "50%",
+          backgroundColor: "#DCFCE7",
+          border: "2px solid #16A34A",
+          marginBottom: "14px",
+        }}>
+          <CheckCircle size={44} color="#16A34A" strokeWidth={2.5} />
+        </div>
+
         <h1 style={{
-          fontSize: "20px",
+          fontSize: "22px",
           fontWeight: "900",
           color: "#0F172A",
-          marginBottom: "4px",
+          marginBottom: "6px",
+          letterSpacing: "-0.4px",
         }}>
           {estMulti ? "Commandes enregistrées !" : "Commande enregistrée !"}
         </h1>
-        <p style={{ color: "#64748b", fontSize: "12px", fontWeight: "600" }}>
+        <p style={{ color: "#57534E", fontSize: "12.5px", fontWeight: "700" }}>
           {estMulti
             ? `Vos ${commandesIds.length} commandes ont été transmises aux vendeurs.`
             : "Votre commande a été transmise au vendeur."}
@@ -46,17 +61,28 @@ function ContenuConfirmation() {
 
       {estMulti && (
         <div style={{
-          backgroundColor: "#FEF3C7",
-          color: "#78350F",
-          padding: "10px 12px",
-          borderRadius: "10px",
+          backgroundColor: "white",
+          color: "#0F172A",
+          padding: "12px 14px",
+          borderRadius: "16px",
           marginBottom: "14px",
-          border: "1px solid #FDE68A",
+          border: "1.5px solid #0F172A",
+          boxShadow: "4px 4px 0 #EA580C",
         }}>
-          <p style={{ fontWeight: "800", fontSize: "11.5px", marginBottom: "3px" }}>
-            📦 {commandesIds.length} commandes à retirer
+          <p style={{
+            fontWeight: "900",
+            fontSize: "12px",
+            marginBottom: "4px",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            textTransform: "uppercase",
+            letterSpacing: "0.5px",
+          }}>
+            <Package size={14} strokeWidth={2.8} color="#EA580C" />
+            {commandesIds.length} commandes à retirer
           </p>
-          <p style={{ fontSize: "10.5px", fontWeight: "500", lineHeight: 1.4 }}>
+          <p style={{ fontSize: "11px", fontWeight: "600", lineHeight: 1.5, color: "#57534E" }}>
             Chaque commande a son propre QR. Présentez-les au bon vendeur dans l&apos;ordre indiqué.
           </p>
         </div>
@@ -65,13 +91,14 @@ function ContenuConfirmation() {
       {commandesIds.length === 0 && (
         <div style={{
           backgroundColor: "white",
-          borderRadius: "12px",
+          borderRadius: "20px",
           padding: "30px 16px",
           textAlign: "center",
-          border: "1px solid #E8DFC8",
+          border: "1.5px solid #0F172A",
+          boxShadow: "4px 4px 0 #EA580C",
         }}>
-          <p style={{ fontSize: "40px", marginBottom: "12px" }}>⚠️</p>
-          <p style={{ fontSize: "14px", fontWeight: "800", color: "#0F172A" }}>
+          <AlertTriangle size={40} color="#EA580C" strokeWidth={2} style={{ margin: "0 auto 12px" }} />
+          <p style={{ fontSize: "14px", fontWeight: "900", color: "#0F172A" }}>
             Aucune commande trouvée
           </p>
         </div>
@@ -84,25 +111,29 @@ function ContenuConfirmation() {
           index={index}
           total={commandesIds.length}
         />
-      ))}
-
-      <Link
+      ))}      <Link
         href="/"
         style={{
-          display: "block",
-          backgroundColor: "#1D4ED8",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "6px",
+          backgroundColor: "#0F172A",
           color: "white",
-          padding: "12px",
-          borderRadius: "10px",
+          padding: "16px",
+          borderRadius: "26px",
           textAlign: "center",
           textDecoration: "none",
-          fontWeight: "800",
-          fontSize: "12.5px",
-          marginBottom: "8px",
+          fontWeight: "900",
+          fontSize: "13px",
+          marginBottom: "12px",
           marginTop: "16px",
+          letterSpacing: "-0.2px",
+          boxShadow: "0 4px 12px rgba(15, 23, 42, 0.20)",
         }}
       >
-        🏪 Retour à l&apos;accueil
+        <Store size={16} strokeWidth={2.8} />
+        Retour à l&apos;accueil
       </Link>
 
       <Link
@@ -110,13 +141,14 @@ function ContenuConfirmation() {
         style={{
           display: "block",
           textAlign: "center",
-          color: "#1D4ED8",
-          fontSize: "11.5px",
-          fontWeight: "700",
+          color: "#0F172A",
+          fontSize: "12.5px",
+          fontWeight: "800",
           textDecoration: "none",
+          padding: "8px",
         }}
       >
-        Voir mes commandes
+        Voir mes commandes →
       </Link>
     </div>
   );
@@ -126,12 +158,17 @@ export default function PageConfirmation() {
   return (
     <Suspense
       fallback={
-        <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-          <p>Chargement...</p>
+        <div style={{
+          padding: "60px 16px",
+          textAlign: "center",
+          backgroundColor: "#F5EAD2",
+          minHeight: "100vh",
+        }}>
+          <p style={{ color: "#57534E", fontWeight: "700" }}>Chargement...</p>
         </div>
       }
     >
       <ContenuConfirmation />
     </Suspense>
   );
-        }
+          }
