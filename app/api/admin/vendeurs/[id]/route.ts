@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
-import { revalidateTag } from "next/cache"; // ✅ AJOUT
+import { revalidateTag } from "next/cache";
 
 // PATCH : Modifier une boutique (ex: valider / désactiver)
 export async function PATCH(
@@ -44,8 +44,9 @@ export async function PATCH(
       data,
     });
 
-    // ✅ AJOUT : Vider le cache de la page d'accueil
+    // ✅ Vider le cache des pages qui affichent les boutiques
     revalidateTag("accueil");
+    revalidateTag("boutiques");
 
     return NextResponse.json({ succes: true, vendeur });
   } catch (error) {
@@ -142,8 +143,9 @@ export async function DELETE(
       });
     });
 
-    // ✅ AJOUT : Vider le cache de la page d'accueil
+    // ✅ Vider le cache des pages qui affichent les boutiques
     revalidateTag("accueil");
+    revalidateTag("boutiques");
 
     return NextResponse.json({
       succes: true,
@@ -156,4 +158,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-                }
+          }
