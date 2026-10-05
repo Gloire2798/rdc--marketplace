@@ -21,12 +21,12 @@ export default function NavigationBas() {
       left: 0,
       right: 0,
       backgroundColor: "white",
-      borderTop: "1px solid #E2E8F0",
+      borderTop: "1.5px solid #D4C5A0",
       display: "flex",
       justifyContent: "space-around",
       padding: "6px 0 8px 0",
       zIndex: 100,
-      boxShadow: "0 -2px 8px rgba(15, 23, 42, 0.06)",
+      boxShadow: "0 -2px 8px rgba(120, 100, 60, 0.10)",
     }}>
       {onglets.map((onglet) => {
         const actif = pathname === onglet.href;
@@ -44,12 +44,12 @@ export default function NavigationBas() {
               gap: "2px",
               textDecoration: "none",
               color: estDeconnexion
-                ? "#dc2626"
+                ? "#DC2626"
                 : actif
-                ? "#1D4ED8"
-                : "#94a3b8",
+                ? "#EA580C"
+                : "#94A3B8",
               fontSize: "9px",
-              fontWeight: actif || estDeconnexion ? "800" : "600",
+              fontWeight: actif || estDeconnexion ? "900" : "700",
               padding: "3px 6px",
               position: "relative",
               flex: 1,
@@ -61,13 +61,13 @@ export default function NavigationBas() {
                 top: "-6px",
                 left: "50%",
                 transform: "translateX(-50%)",
-                width: "16px",
-                height: "2.5px",
-                backgroundColor: "#1D4ED8",
+                width: "18px",
+                height: "3px",
+                backgroundColor: "#EA580C",
                 borderRadius: "2px",
               }} />
             )}
-            <Icon size={18} strokeWidth={actif || estDeconnexion ? 2.6 : 2.1} />
+            <Icon size={18} strokeWidth={actif || estDeconnexion ? 2.8 : 2.1} />
             <span>{onglet.label}</span>
           </Link>
         );
