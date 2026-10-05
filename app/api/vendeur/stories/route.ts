@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
 
 const LIMITE_STORIES = 10;
 
@@ -57,6 +58,9 @@ export async function POST(request: Request) {
       },
     });
 
+    // ✅ Vider le cache de la page d'accueil (nouvelles stories)
+    revalidateTag("accueil");
+
     return NextResponse.json({
       succes: true,
       story: {
@@ -71,4 +75,4 @@ export async function POST(request: Request) {
     console.error("Erreur création story:", error);
     return NextResponse.json({ erreur: "Erreur serveur" }, { status: 500 });
   }
-  }
+      }
