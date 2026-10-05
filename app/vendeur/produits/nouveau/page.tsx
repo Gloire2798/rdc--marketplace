@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Plus, X, Upload, Check, AlertCircle } from "lucide-react";
+import { ArrowLeft, Plus, X, Upload, Check, AlertCircle, RefreshCw, Tag, Palette, Image as ImageIcon } from "lucide-react";
 
 interface Attribut {
   id: string;
@@ -239,62 +239,90 @@ export default function NouveauProduit() {
 
   const labelStyle = {
     display: "block" as const,
-    fontSize: "11.5px",
-    fontWeight: "800" as const,
-    color: "#334155",
-    marginBottom: "5px",
+    fontSize: "11px",
+    fontWeight: "900" as const,
+    color: "#0F172A",
+    marginBottom: "6px",
     textTransform: "uppercase" as const,
-    letterSpacing: "0.3px",
+    letterSpacing: "0.4px",
   };
 
   const inputStyle = {
     width: "100%",
-    padding: "10px 12px",
-    borderRadius: "10px",
-    border: "1px solid #E5E0D5",
+    padding: "12px 14px",
+    borderRadius: "14px",
+    border: "1.5px solid #0F172A",
     fontSize: "13px",
     fontFamily: "inherit",
-    backgroundColor: "#FEFCF8",
+    backgroundColor: "white",
     outline: "none",
     color: "#0F172A",
-    fontWeight: "600" as const,
+    fontWeight: "700" as const,
     boxSizing: "border-box" as const,
   };
 
   const btnSmallStyle = {
-    padding: "6px 10px",
-    borderRadius: "8px",
-    backgroundColor: "#1D4ED8",
+    padding: "10px 14px",
+    borderRadius: "10px",
+    backgroundColor: "#0F172A",
     color: "white",
     border: "none",
-    fontSize: "11px",
-    fontWeight: "800" as const,
+    fontSize: "11.5px",
+    fontWeight: "900" as const,
     cursor: "pointer",
+    flexShrink: 0,
   };
 
-  return (
-    <div style={{ padding: "16px 14px 40px", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
+  const titreSection = {
+    fontSize: "12px",
+    fontWeight: "900" as const,
+    color: "#0F172A",
+    marginBottom: "12px",
+    textTransform: "uppercase" as const,
+    letterSpacing: "1px",
+    display: "flex" as const,
+    alignItems: "center" as const,
+    gap: "8px",
+  };
+
+  const traitOrange = {
+    display: "inline-block",
+    width: "3px",
+    height: "14px",
+    backgroundColor: "#EA580C",
+    borderRadius: "2px",
+  };
+
+  const carteStyle = {
+    backgroundColor: "white",
+    borderRadius: "20px",
+    padding: "16px",
+    marginBottom: "14px",
+    border: "1px solid #D4C5A0",
+    boxShadow: "0 2px 8px rgba(120, 100, 60, 0.06)",
+  };  return (
+    <div style={{ padding: "16px 14px 40px", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
       <Link
         href="/vendeur/produits"
         style={{
           display: "inline-flex",
           alignItems: "center",
           gap: "6px",
-          color: "#1D4ED8",
+          color: "#0F172A",
           fontSize: "11.5px",
-          fontWeight: "700",
+          fontWeight: "800",
           textDecoration: "none",
           marginBottom: "14px",
         }}
       >
-        <ArrowLeft size={14} strokeWidth={2.5} />
+        <ArrowLeft size={14} strokeWidth={2.8} />
         Retour à mes produits
       </Link>
 
-      <h1 style={{ fontSize: "22px", fontWeight: "900", color: "#0F172A", marginBottom: "4px" }}>
+      <h1 style={{ fontSize: "24px", fontWeight: "900", color: "#0F172A", marginBottom: "4px", letterSpacing: "-0.5px" }}>
         Ajouter un produit
       </h1>
-      <p style={{ fontSize: "12px", color: "#64748b", fontWeight: "600", marginBottom: "20px" }}>
+      <p style={{ fontSize: "12px", color: "#57534E", fontWeight: "700", marginBottom: "20px" }}>
         Remplissez les informations ci-dessous.
       </p>
 
@@ -302,16 +330,17 @@ export default function NouveauProduit() {
         <div style={{
           backgroundColor: "#FEE2E2",
           color: "#991B1B",
-          padding: "10px 12px",
-          borderRadius: "10px",
+          padding: "12px",
+          borderRadius: "14px",
           marginBottom: "14px",
           fontSize: "11.5px",
-          fontWeight: "700",
+          fontWeight: "800",
           display: "flex",
           alignItems: "center",
           gap: "6px",
+          border: "1.5px solid #DC2626",
         }}>
-          <AlertCircle size={14} />
+          <AlertCircle size={14} strokeWidth={2.8} />
           {erreur}
         </div>
       )}
@@ -320,27 +349,30 @@ export default function NouveauProduit() {
         <div style={{
           backgroundColor: "#DCFCE7",
           color: "#166534",
-          padding: "10px 12px",
-          borderRadius: "10px",
+          padding: "12px",
+          borderRadius: "14px",
           marginBottom: "14px",
           fontSize: "11.5px",
-          fontWeight: "700",
+          fontWeight: "800",
           display: "flex",
           alignItems: "center",
           gap: "6px",
+          border: "1.5px solid #16A34A",
         }}>
-          <Check size={14} />
+          <Check size={14} strokeWidth={2.8} />
           {succes}
         </div>
       )}
 
       <form onSubmit={soumettre}>
         {/* PHOTOS */}
-        <div style={{ backgroundColor: "white", borderRadius: "14px", padding: "16px", marginBottom: "14px", border: "1px solid #E8DFC8" }}>
-          <p style={{ fontSize: "12.5px", fontWeight: "800", color: "#0F172A", marginBottom: "10px" }}>
-            📷 Photos du produit (max 3)
-          </p>
-          <p style={{ fontSize: "10.5px", color: "#64748b", fontWeight: "500", marginBottom: "12px" }}>
+        <div style={carteStyle}>
+          <h2 style={titreSection}>
+            <span style={traitOrange} />
+            <ImageIcon size={14} strokeWidth={2.8} color="#EA580C" />
+            Photos du produit (max 3)
+          </h2>
+          <p style={{ fontSize: "11px", color: "#57534E", fontWeight: "700", marginBottom: "12px" }}>
             La photo 1 est obligatoire.
           </p>
 
@@ -350,9 +382,9 @@ export default function NouveauProduit() {
               return (
                 <label key={i} style={{
                   aspectRatio: "1",
-                  borderRadius: "10px",
-                  border: photo ? "1px solid #E5E0D5" : "2px dashed #CBD5E1",
-                  backgroundColor: "#F8FAFC",
+                  borderRadius: "14px",
+                  border: photo ? "1.5px solid #0F172A" : "2px dashed #D4C5A0",
+                  backgroundColor: "#F5EAD2",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -362,7 +394,7 @@ export default function NouveauProduit() {
                 }}>
                   {photo ? (
                     <>
-                      <img src={photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      <img src={photo} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", padding: "4px", boxSizing: "border-box", backgroundColor: "white" }} />
                       <button
                         type="button"
                         onClick={(e) => {
@@ -375,27 +407,25 @@ export default function NouveauProduit() {
                           position: "absolute",
                           top: "4px",
                           right: "4px",
-                          width: "22px",
-                          height: "22px",
+                          width: "24px",
+                          height: "24px",
                           borderRadius: "50%",
-                          backgroundColor: "#dc2626",
+                          backgroundColor: "#DC2626",
                           color: "white",
                           border: "none",
-                          fontSize: "11px",
-                          fontWeight: "900",
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                         }}
                       >
-                        <X size={12} />
+                        <X size={13} strokeWidth={3} />
                       </button>
                     </>
                   ) : (
-                    <div style={{ textAlign: "center", color: "#94a3b8" }}>
-                      <Upload size={20} style={{ marginBottom: "4px" }} />
-                      <p style={{ fontSize: "9.5px", fontWeight: "700" }}>Photo {i}</p>
+                    <div style={{ textAlign: "center", color: "#57534E" }}>
+                      <Upload size={20} strokeWidth={2.5} style={{ marginBottom: "4px" }} />
+                      <p style={{ fontSize: "9.5px", fontWeight: "900" }}>Photo {i}</p>
                     </div>
                   )}
                   <input
@@ -414,10 +444,12 @@ export default function NouveauProduit() {
         </div>
 
         {/* INFOS DE BASE */}
-        <div style={{ backgroundColor: "white", borderRadius: "14px", padding: "16px", marginBottom: "14px", border: "1px solid #E8DFC8" }}>
-          <p style={{ fontSize: "12.5px", fontWeight: "800", color: "#0F172A", marginBottom: "12px" }}>
-            📝 Informations
-          </p>
+        <div style={carteStyle}>
+          <h2 style={titreSection}>
+            <span style={traitOrange} />
+            <Tag size={14} strokeWidth={2.8} color="#EA580C" />
+            Informations
+          </h2>
 
           <label style={labelStyle}>Nom du produit *</label>
           <input
@@ -434,7 +466,7 @@ export default function NouveauProduit() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Décrivez votre produit..."
-            style={{ ...inputStyle, minHeight: "70px", resize: "vertical", marginBottom: "12px" }}
+            style={{ ...inputStyle, minHeight: "80px", resize: "vertical", marginBottom: "12px" }}
           />
 
           <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "8px", marginBottom: "12px" }}>
@@ -474,11 +506,15 @@ export default function NouveauProduit() {
             step="any"
             style={inputStyle}
           />
-        </div>        {/* CHOIX : AVEC OU SANS VARIANTES */}
-        <div style={{ backgroundColor: "white", borderRadius: "14px", padding: "16px", marginBottom: "14px", border: "1px solid #E8DFC8" }}>
-          <p style={{ fontSize: "12.5px", fontWeight: "800", color: "#0F172A", marginBottom: "12px" }}>
-            🎨 Ce produit a-t-il des variantes ?
-          </p>
+        </div>
+
+        {/* CHOIX : AVEC OU SANS VARIANTES */}
+        <div style={carteStyle}>
+          <h2 style={titreSection}>
+            <span style={traitOrange} />
+            <Palette size={14} strokeWidth={2.8} color="#EA580C" />
+            Variantes du produit
+          </h2>
 
           <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
             <button
@@ -490,14 +526,15 @@ export default function NouveauProduit() {
               }}
               style={{
                 flex: 1,
-                padding: "10px",
-                borderRadius: "10px",
-                border: !avecVariantes ? "2px solid #1D4ED8" : "1px solid #E5E0D5",
-                backgroundColor: !avecVariantes ? "#EFF6FF" : "white",
-                fontWeight: "700",
+                padding: "12px",
+                borderRadius: "14px",
+                border: !avecVariantes ? "2px solid #0F172A" : "1.5px solid #D4C5A0",
+                backgroundColor: !avecVariantes ? "#0F172A" : "white",
+                color: !avecVariantes ? "white" : "#0F172A",
+                fontWeight: "900",
                 fontSize: "12px",
                 cursor: "pointer",
-                color: !avecVariantes ? "#1D4ED8" : "#64748b",
+                transition: "all 0.15s ease",
               }}
             >
               Non (stock simple)
@@ -507,14 +544,15 @@ export default function NouveauProduit() {
               onClick={() => setAvecVariantes(true)}
               style={{
                 flex: 1,
-                padding: "10px",
-                borderRadius: "10px",
-                border: avecVariantes ? "2px solid #1D4ED8" : "1px solid #E5E0D5",
-                backgroundColor: avecVariantes ? "#EFF6FF" : "white",
-                fontWeight: "700",
+                padding: "12px",
+                borderRadius: "14px",
+                border: avecVariantes ? "2px solid #0F172A" : "1.5px solid #D4C5A0",
+                backgroundColor: avecVariantes ? "#0F172A" : "white",
+                color: avecVariantes ? "white" : "#0F172A",
+                fontWeight: "900",
                 fontSize: "12px",
                 cursor: "pointer",
-                color: avecVariantes ? "#1D4ED8" : "#64748b",
+                transition: "all 0.15s ease",
               }}
             >
               Oui (taille, couleur...)
@@ -541,14 +579,14 @@ export default function NouveauProduit() {
                 <div
                   key={attr.id}
                   style={{
-                    backgroundColor: "#F8FAFC",
-                    borderRadius: "12px",
-                    padding: "12px",
+                    backgroundColor: "#F5EAD2",
+                    borderRadius: "16px",
+                    padding: "14px",
                     marginBottom: "10px",
-                    border: "1px solid #E2E8F0",
+                    border: "1px solid #D4C5A0",
                   }}
                 >
-                  <div style={{ display: "flex", gap: "8px", marginBottom: "8px", alignItems: "center" }}>
+                  <div style={{ display: "flex", gap: "8px", marginBottom: "10px", alignItems: "center" }}>
                     <input
                       type="text"
                       value={attr.nom}
@@ -560,11 +598,11 @@ export default function NouveauProduit() {
                       type="button"
                       onClick={() => supprimerAttribut(attr.id)}
                       style={{
-                        width: "34px",
-                        height: "34px",
-                        borderRadius: "10px",
+                        width: "38px",
+                        height: "38px",
+                        borderRadius: "12px",
                         backgroundColor: "#FEE2E2",
-                        color: "#991B1B",
+                        color: "#DC2626",
                         border: "none",
                         cursor: "pointer",
                         display: "flex",
@@ -573,11 +611,11 @@ export default function NouveauProduit() {
                         flexShrink: 0,
                       }}
                     >
-                      <X size={14} />
+                      <X size={14} strokeWidth={3} />
                     </button>
                   </div>
 
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", marginBottom: "8px" }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "10px" }}>
                     {attr.valeurs.map((v) => (
                       <span
                         key={v}
@@ -585,12 +623,12 @@ export default function NouveauProduit() {
                           display: "inline-flex",
                           alignItems: "center",
                           gap: "4px",
-                          padding: "4px 8px",
+                          padding: "5px 10px",
                           borderRadius: "20px",
-                          backgroundColor: "#EFF6FF",
-                          color: "#1D4ED8",
+                          backgroundColor: "#0F172A",
+                          color: "white",
                           fontSize: "11px",
-                          fontWeight: "700",
+                          fontWeight: "900",
                         }}
                       >
                         {v}
@@ -600,14 +638,14 @@ export default function NouveauProduit() {
                           style={{
                             background: "none",
                             border: "none",
-                            color: "#1D4ED8",
+                            color: "white",
                             cursor: "pointer",
                             display: "flex",
                             alignItems: "center",
                             padding: 0,
                           }}
                         >
-                          <X size={10} />
+                          <X size={11} strokeWidth={3} />
                         </button>
                       </span>
                     ))}
@@ -645,13 +683,13 @@ export default function NouveauProduit() {
                 onClick={ajouterAttribut}
                 style={{
                   width: "100%",
-                  padding: "10px",
-                  borderRadius: "10px",
+                  padding: "12px",
+                  borderRadius: "14px",
                   backgroundColor: "white",
-                  color: "#1D4ED8",
-                  border: "1.5px dashed #1D4ED8",
+                  color: "#0F172A",
+                  border: "2px dashed #0F172A",
                   fontSize: "12px",
-                  fontWeight: "800",
+                  fontWeight: "900",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -660,7 +698,7 @@ export default function NouveauProduit() {
                   marginBottom: "12px",
                 }}
               >
-                <Plus size={14} strokeWidth={2.5} />
+                <Plus size={14} strokeWidth={3} />
                 Ajouter un attribut
               </button>
 
@@ -671,24 +709,37 @@ export default function NouveauProduit() {
                     onClick={genererCombinaisons}
                     style={{
                       width: "100%",
-                      padding: "12px",
-                      borderRadius: "10px",
-                      backgroundColor: "#1D4ED8",
+                      padding: "14px",
+                      borderRadius: "14px",
+                      backgroundColor: "#EA580C",
                       color: "white",
                       border: "none",
-                      fontSize: "12px",
-                      fontWeight: "800",
+                      fontSize: "12.5px",
+                      fontWeight: "900",
                       cursor: "pointer",
                       marginBottom: "12px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                      boxShadow: "0 4px 12px rgba(234, 88, 12, 0.25)",
                     }}
                   >
-                    🔄 Générer les combinaisons
+                    <RefreshCw size={14} strokeWidth={3} />
+                    Générer les combinaisons
                   </button>
                 )}
 
               {combinaisons.length > 0 && (
                 <div>
-                  <p style={{ fontSize: "11.5px", fontWeight: "800", color: "#0F172A", marginBottom: "8px" }}>
+                  <p style={{
+                    fontSize: "11px",
+                    fontWeight: "900",
+                    color: "#0F172A",
+                    marginBottom: "10px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}>
                     Stock par combinaison ({combinaisons.length})
                   </p>
                   <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
@@ -699,13 +750,13 @@ export default function NouveauProduit() {
                           display: "flex",
                           alignItems: "center",
                           gap: "8px",
-                          padding: "8px 10px",
-                          borderRadius: "10px",
-                          backgroundColor: "#F8FAFC",
-                          border: "1px solid #E2E8F0",
+                          padding: "10px 12px",
+                          borderRadius: "12px",
+                          backgroundColor: "#F5EAD2",
+                          border: "1px solid #D4C5A0",
                         }}
                       >
-                        <span style={{ flex: 1, fontSize: "11px", fontWeight: "700", color: "#334155" }}>
+                        <span style={{ flex: 1, fontSize: "11px", fontWeight: "800", color: "#0F172A" }}>
                           {Object.entries(c.valeurs)
                             .map(([k, v]) => `${k}: ${v}`)
                             .join(" · ")}
@@ -718,20 +769,21 @@ export default function NouveauProduit() {
                           style={{
                             width: "70px",
                             padding: "6px 8px",
-                            borderRadius: "8px",
-                            border: "1px solid #E5E0D5",
+                            borderRadius: "10px",
+                            border: "1.5px solid #0F172A",
                             fontSize: "12px",
-                            fontWeight: "700",
+                            fontWeight: "900",
                             textAlign: "center",
                             backgroundColor: "white",
                             outline: "none",
+                            color: "#0F172A",
                           }}
                         />
                       </div>
                     ))}
                   </div>
-                  <p style={{ fontSize: "10.5px", color: "#64748b", marginTop: "8px", textAlign: "right" }}>
-                    Stock total : <strong style={{ color: "#15803d" }}>{combinaisons.reduce((s, c) => s + c.stock, 0)}</strong>
+                  <p style={{ fontSize: "11px", color: "#57534E", marginTop: "10px", textAlign: "right", fontWeight: "800" }}>
+                    Stock total : <strong style={{ color: "#EA580C" }}>{combinaisons.reduce((s, c) => s + c.stock, 0)}</strong>
                   </p>
                 </div>
               )}
@@ -744,15 +796,18 @@ export default function NouveauProduit() {
           disabled={chargement || uploadEnCours}
           style={{
             width: "100%",
-            backgroundColor: "#1D4ED8",
+            backgroundColor: "#0F172A",
             color: "white",
-            padding: "14px",
-            borderRadius: "12px",
+            padding: "16px",
+            borderRadius: "26px",
             border: "none",
-            fontWeight: "800",
+            fontWeight: "900",
             fontSize: "14px",
             cursor: "pointer",
             opacity: chargement || uploadEnCours ? 0.6 : 1,
+            boxShadow: "0 4px 12px rgba(15, 23, 42, 0.25)",
+            letterSpacing: "-0.2px",
+            fontFamily: "inherit",
           }}
         >
           {chargement ? "Création..." : uploadEnCours ? "Upload en cours..." : "Créer le produit"}
@@ -760,4 +815,4 @@ export default function NouveauProduit() {
       </form>
     </div>
   );
-                    }
+                }
