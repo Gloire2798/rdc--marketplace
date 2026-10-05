@@ -51,27 +51,33 @@ export default async function DashboardVendeur() {
 
   const maintenant = new Date();
   const nomsMois = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
-  const venteParMois: { mois: string; montant: number }[] = [];
+  // ✅ FC + USD séparés (plus de mélange × 2800)
+  const venteParMois: { mois: string; fc: number; usd: number }[] = [];
 
   for (let i = 5; i >= 0; i--) {
     const date = new Date(maintenant.getFullYear(), maintenant.getMonth() - i, 1);
     const moisLabel = nomsMois[date.getMonth()];
 
-    const montantMois = commandesValidees
+    let montantMoisFC = 0;
+    let montantMoisUSD = 0;
+
+    commandesValidees
       .filter((c) => {
         const dc = new Date(c.createdAt);
         return dc.getMonth() === date.getMonth() && dc.getFullYear() === date.getFullYear();
       })
-      .reduce((acc, c) => {
-        return acc + c.items.reduce((sum, item) => {
-          const devise = item.produit.devise;
+      .forEach((c) => {
+        c.items.forEach((item) => {
           const montant = item.prixUnitaire * item.quantite;
-          if (devise === "USD") return sum + montant * 2800;
-          return sum + montant;
-        }, 0);
-      }, 0);
+          if (item.produit.devise === "USD") {
+            montantMoisUSD += montant;
+          } else {
+            montantMoisFC += montant;
+          }
+        });
+      });
 
-    venteParMois.push({ mois: moisLabel, montant: montantMois });
+    venteParMois.push({ mois: moisLabel, fc: montantMoisFC, usd: montantMoisUSD });
   }
 
   const ventesParProduit = new Map<string, {
@@ -399,4 +405,4 @@ export default async function DashboardVendeur() {
       <NavigationBas />
     </>
   );
-                  }
+                         }
