@@ -1,31 +1,50 @@
-import { MessageCircle, Construction } from "lucide-react";
+import { MessageCircle, Construction, Mail, Ticket, Phone, HelpCircle } from "lucide-react";
 
 export default function SupportPage() {
+  const listeStyle = {
+    fontSize: "11.5px",
+    color: "#0F172A",
+    fontWeight: "700",
+    lineHeight: 1.8,
+    paddingLeft: "0",
+    listStyle: "none",
+    display: "flex" as const,
+    flexDirection: "column" as const,
+    gap: "6px",
+  };
+
+  const itemStyle = {
+    display: "flex" as const,
+    alignItems: "center" as const,
+    gap: "8px",
+  };
+
   return (
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: "#F1F5F9",
+        backgroundColor: "#F5EAD2",
         padding: "16px 12px 90px",
       }}
     >
-      {/* En-tête */}
-      <div style={{ marginBottom: "16px" }}>
+      {/* HEADER */}
+      <div style={{ marginBottom: "18px" }}>
         <h1
           style={{
-            fontSize: "20px",
-            fontWeight: "800",
+            fontSize: "22px",
+            fontWeight: "900",
             color: "#0F172A",
+            letterSpacing: "-0.4px",
+            marginBottom: "3px",
           }}
         >
           Support
         </h1>
         <p
           style={{
-            fontSize: "11px",
-            color: "#64748B",
-            fontWeight: "600",
-            marginTop: "3px",
+            fontSize: "11.5px",
+            color: "#57534E",
+            fontWeight: "700",
           }}
         >
           Aide et assistance
@@ -36,33 +55,35 @@ export default function SupportPage() {
       <div
         style={{
           backgroundColor: "white",
-          borderRadius: "12px",
+          borderRadius: "20px",
           padding: "40px 20px",
-          border: "1px solid #E2E8F0",
+          border: "1.5px solid #0F172A",
+          boxShadow: "4px 4px 0 #EA580C",
           textAlign: "center",
         }}
       >
         <div
           style={{
-            width: "60px",
-            height: "60px",
+            width: "64px",
+            height: "64px",
             borderRadius: "50%",
-            backgroundColor: "#DBEAFE",
+            backgroundColor: "#F5EAD2",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             margin: "0 auto 16px auto",
           }}
         >
-          <Construction size={28} color="#1D4ED8" strokeWidth={2.5} />
+          <Construction size={30} color="#EA580C" strokeWidth={2.2} />
         </div>
 
         <p
           style={{
             fontSize: "15px",
-            fontWeight: "800",
+            fontWeight: "900",
             color: "#0F172A",
             marginBottom: "6px",
+            letterSpacing: "-0.2px",
           }}
         >
           Page en construction
@@ -71,8 +92,8 @@ export default function SupportPage() {
         <p
           style={{
             fontSize: "11.5px",
-            color: "#64748B",
-            fontWeight: "600",
+            color: "#57534E",
+            fontWeight: "700",
             lineHeight: 1.5,
             marginBottom: "20px",
           }}
@@ -82,29 +103,30 @@ export default function SupportPage() {
 
         <div
           style={{
-            backgroundColor: "#F8FAFC",
-            border: "1px solid #E2E8F0",
-            borderRadius: "10px",
+            backgroundColor: "#F5EAD2",
+            border: "1px solid #D4C5A0",
+            borderRadius: "14px",
             padding: "14px",
             textAlign: "left",
           }}
         >
-          <ul
-            style={{
-              fontSize: "11.5px",
-              color: "#475569",
-              fontWeight: "600",
-              lineHeight: 1.8,
-              paddingLeft: "16px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "4px",
-            }}
-          >
-            <li>📩 Les messages reçus des vendeurs et clients</li>
-            <li>🎫 La gestion des tickets d&apos;assistance</li>
-            <li>📞 Un contact WhatsApp direct</li>
-            <li>❓ Une FAQ pour les questions fréquentes</li>
+          <ul style={listeStyle}>
+            <li style={itemStyle}>
+              <Mail size={13} strokeWidth={2.8} color="#EA580C" />
+              Les messages reçus des vendeurs et clients
+            </li>
+            <li style={itemStyle}>
+              <Ticket size={13} strokeWidth={2.8} color="#EA580C" />
+              La gestion des tickets d&apos;assistance
+            </li>
+            <li style={itemStyle}>
+              <Phone size={13} strokeWidth={2.8} color="#EA580C" />
+              Un contact WhatsApp direct
+            </li>
+            <li style={itemStyle}>
+              <HelpCircle size={13} strokeWidth={2.8} color="#EA580C" />
+              Une FAQ pour les questions fréquentes
+            </li>
           </ul>
         </div>
       </div>
@@ -112,33 +134,47 @@ export default function SupportPage() {
       {/* Contact rapide */}
       <div
         style={{
-          backgroundColor: "#FEF3C7",
-          border: "1px solid #FDE68A",
-          borderRadius: "12px",
+          backgroundColor: "white",
+          border: "1.5px solid #0F172A",
+          borderRadius: "16px",
           padding: "14px",
           marginTop: "14px",
           display: "flex",
           alignItems: "center",
-          gap: "10px",
+          gap: "12px",
+          boxShadow: "3px 3px 0 #16A34A",
         }}
       >
-        <MessageCircle size={20} color="#B45309" strokeWidth={2.5} />
+        <div style={{
+          width: "40px",
+          height: "40px",
+          borderRadius: "12px",
+          backgroundColor: "#DCFCE7",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}>
+          <MessageCircle size={20} color="#16A34A" strokeWidth={2.8} />
+        </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <p
             style={{
-              fontSize: "11.5px",
-              fontWeight: "800",
-              color: "#78350F",
-              marginBottom: "2px",
+              fontSize: "12px",
+              fontWeight: "900",
+              color: "#0F172A",
+              marginBottom: "3px",
+              textTransform: "uppercase",
+              letterSpacing: "0.4px",
             }}
           >
             En attendant
           </p>
           <p
             style={{
-              fontSize: "10.5px",
-              fontWeight: "600",
-              color: "#78350F",
+              fontSize: "11px",
+              fontWeight: "700",
+              color: "#57534E",
               lineHeight: 1.4,
             }}
           >
@@ -148,4 +184,4 @@ export default function SupportPage() {
       </div>
     </div>
   );
-          }
+              }
