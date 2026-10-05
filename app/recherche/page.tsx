@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, Camera, X, Loader2 } from "lucide-react";
+import { Search, Camera, X, Loader2, Package, Store, SearchX, MapPin } from "lucide-react";
 
 interface ProduitResultat {
   id: string;
@@ -84,26 +84,47 @@ function ContenuRecherche() {
 
   const aResultats = produits.length > 0 || boutiques.length > 0;
 
+  const titreSection = {
+    fontSize: "12px",
+    fontWeight: "900" as const,
+    color: "#0F172A",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.8px",
+    marginBottom: "10px",
+    display: "flex" as const,
+    alignItems: "center" as const,
+    gap: "8px",
+  };
+
+  const traitOrange = {
+    display: "inline-block",
+    width: "3px",
+    height: "13px",
+    backgroundColor: "#EA580C",
+    borderRadius: "2px",
+  };
+
   return (
     <div style={{
-      padding: "16px 14px 100px 14px",
-      backgroundColor: "#FAF5E8",
+      padding: "16px 12px 100px 12px",
+      backgroundColor: "#F5EAD2",
       minHeight: "100vh",
       maxWidth: "600px",
       margin: "0 auto",
     }}>
+      {/* BARRE DE RECHERCHE */}
       <form onSubmit={soumettre} style={{ marginBottom: "18px" }}>
         <div style={{
           display: "flex",
           alignItems: "center",
           gap: "8px",
           backgroundColor: "white",
-          borderRadius: "14px",
+          borderRadius: "20px",
           padding: "10px 14px",
-          border: "1px solid #E8DFC8",
-          boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)",
+          border: "1.5px solid #0F172A",
+          boxShadow: "2px 2px 0 #EA580C",
         }}>
-          <Search size={18} color="#64748B" strokeWidth={2.4} />
+          <Search size={18} color="#0F172A" strokeWidth={2.8} />
           <input
             type="text"
             value={q}
@@ -115,10 +136,11 @@ function ContenuRecherche() {
               border: "none",
               outline: "none",
               backgroundColor: "transparent",
-              fontSize: "14px",
-              fontWeight: "600",
+              fontSize: "13.5px",
+              fontWeight: "700",
               color: "#0F172A",
               fontFamily: "inherit",
+              minWidth: 0,
             }}
           />
           {q && (
@@ -131,73 +153,99 @@ function ContenuRecherche() {
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
-                color: "#94a3b8",
+                color: "#57534E",
                 padding: "2px",
               }}
             >
-              <X size={16} />
+              <X size={16} strokeWidth={2.8} />
             </button>
           )}
           <button
             type="button"
-            onClick={() => alert("📷 Recherche par image : bientôt disponible !")}
+            onClick={() => alert("Recherche par image : bientôt disponible !")}
             style={{
-              background: "#EFF6FF",
+              background: "#0F172A",
               border: "none",
-              borderRadius: "8px",
-              padding: "6px 8px",
+              borderRadius: "12px",
+              padding: "7px 9px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              color: "#1D4ED8",
+              color: "white",
             }}
             aria-label="Rechercher par photo"
           >
-            <Camera size={16} strokeWidth={2.4} />
+            <Camera size={15} strokeWidth={2.8} />
           </button>
         </div>
       </form>
 
+      {/* CHARGEMENT */}
       {chargement && (
         <div style={{ textAlign: "center", padding: "40px 0" }}>
-          <Loader2 size={28} color="#1D4ED8" style={{ animation: "spin 1s linear infinite" }} />
-          <p style={{ marginTop: "8px", fontSize: "11.5px", color: "#64748B", fontWeight: "600" }}>
+          <Loader2
+            size={28}
+            color="#EA580C"
+            strokeWidth={2.8}
+            style={{ animation: "spin 1s linear infinite" }}
+          />
+          <p style={{
+            marginTop: "10px",
+            fontSize: "11.5px",
+            color: "#57534E",
+            fontWeight: "800",
+          }}>
             Recherche...
           </p>
         </div>
       )}
 
+      {/* AUCUN RÉSULTAT */}
       {!chargement && aCherche && !aResultats && (
         <div style={{
           backgroundColor: "white",
-          borderRadius: "12px",
+          borderRadius: "20px",
           padding: "40px 20px",
           textAlign: "center",
-          border: "1px solid #E8DFC8",
+          border: "1.5px solid #0F172A",
+          boxShadow: "4px 4px 0 #EA580C",
         }}>
-          <p style={{ fontSize: "36px", marginBottom: "10px" }}>🔍</p>
-          <p style={{ fontSize: "14px", fontWeight: "800", color: "#0F172A", marginBottom: "4px" }}>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "56px",
+            height: "56px",
+            borderRadius: "50%",
+            backgroundColor: "#F5EAD2",
+            marginBottom: "10px",
+          }}>
+            <SearchX size={26} color="#EA580C" strokeWidth={2.2} />
+          </div>
+          <p style={{
+            fontSize: "14px",
+            fontWeight: "900",
+            color: "#0F172A",
+            marginBottom: "4px",
+          }}>
             Aucun résultat
           </p>
-          <p style={{ fontSize: "11.5px", color: "#64748B", fontWeight: "500" }}>
+          <p style={{ fontSize: "11.5px", color: "#57534E", fontWeight: "700" }}>
             Essayez un autre mot-clé
           </p>
         </div>
       )}
 
+      {/* RÉSULTATS */}
       {!chargement && aResultats && (
         <>
+          {/* BOUTIQUES */}
           {boutiques.length > 0 && (
             <>
-              <h2 style={{
-                fontSize: "12px",
-                fontWeight: "800",
-                color: "#0F172A",
-                textTransform: "uppercase",
-                letterSpacing: "0.4px",
-                marginBottom: "8px",
-              }}>
-                🏪 Boutiques ({boutiques.length})
+              <h2 style={titreSection}>
+                <span style={traitOrange} />
+                <Store size={14} strokeWidth={2.8} color="#EA580C" />
+                Boutiques ({boutiques.length})
               </h2>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "20px" }}>
                 {boutiques.map((b) => (
@@ -209,62 +257,89 @@ function ContenuRecherche() {
                       alignItems: "center",
                       gap: "10px",
                       backgroundColor: "white",
-                      borderRadius: "12px",
+                      borderRadius: "16px",
                       padding: "10px",
-                      border: "1px solid #E8DFC8",
+                      border: "1px solid #D4C5A0",
                       textDecoration: "none",
                       color: "inherit",
+                      boxShadow: "0 2px 6px rgba(120, 100, 60, 0.06)",
                     }}
                   >
-                    {b.logo ? (
-                      <img src={b.logo} alt={b.nomBoutique} style={{
-                        width: "44px",
-                        height: "44px",
-                        borderRadius: "10px",
-                        objectFit: "cover",
-                        flexShrink: 0,
-                      }} />
+                    {b.logo && b.logo.startsWith("http") ? (
+                      <img
+                        src={b.logo}
+                        alt={b.nomBoutique}
+                        style={{
+                          width: "44px",
+                          height: "44px",
+                          borderRadius: "12px",
+                          objectFit: "contain",
+                          flexShrink: 0,
+                          backgroundColor: "#F5EAD2",
+                          padding: "3px",
+                          boxSizing: "border-box",
+                          border: "1px solid #D4C5A0",
+                        }}
+                      />
                     ) : (
                       <div style={{
                         width: "44px",
                         height: "44px",
-                        borderRadius: "10px",
-                        backgroundColor: "#EFF6FF",
+                        borderRadius: "12px",
+                        backgroundColor: "#0F172A",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: "18px",
                         flexShrink: 0,
+                        fontWeight: "900",
+                        color: "white",
                       }}>
-                        🏪
+                        {(b.nomBoutique || "?").trim().charAt(0).toUpperCase()}
                       </div>
                     )}
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "2px" }}>
+                      <p style={{
+                        fontSize: "13px",
+                        fontWeight: "900",
+                        color: "#0F172A",
+                        marginBottom: "3px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}>
                         {b.nomBoutique}
                       </p>
                       {b.adresse && (
-                        <p style={{ fontSize: "10px", color: "#94a3b8", fontWeight: "600" }}>
-                          📍 {b.adresse}
+                        <p style={{
+                          fontSize: "10.5px",
+                          color: "#57534E",
+                          fontWeight: "700",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}>
+                          <MapPin size={10} strokeWidth={2.8} />
+                          {b.adresse}
                         </p>
                       )}
                     </div>
-                    <span style={{ color: "#94a3b8", fontWeight: "900" }}>›</span>
                   </Link>
                 ))}
               </div>
             </>
-          )}          {produits.length > 0 && (
+          )}
+
+          {/* PRODUITS */}
+          {produits.length > 0 && (
             <>
-              <h2 style={{
-                fontSize: "12px",
-                fontWeight: "800",
-                color: "#0F172A",
-                textTransform: "uppercase",
-                letterSpacing: "0.4px",
-                marginBottom: "8px",
-              }}>
-                📦 Produits ({produits.length})
+              <h2 style={titreSection}>
+                <span style={traitOrange} />
+                <Package size={14} strokeWidth={2.8} color="#EA580C" />
+                Produits ({produits.length})
               </h2>
               <div style={{
                 display: "grid",
@@ -279,19 +354,20 @@ function ContenuRecherche() {
                       href={`/acheteur/produit/${p.id}`}
                       style={{
                         backgroundColor: "white",
-                        borderRadius: "10px",
+                        borderRadius: "14px",
                         overflow: "hidden",
                         textDecoration: "none",
                         color: "inherit",
-                        border: "1px solid #E8DFC8",
+                        border: "1.5px solid #0F172A",
                         display: "flex",
                         flexDirection: "column",
+                        boxShadow: "2px 2px 0 #EA580C",
                       }}
                     >
-                      {p.photo1 ? (
+                      {p.photo1 && p.photo1.startsWith("http") ? (
                         <div style={{
                           width: "100%",
-                          height: "120px",
+                          aspectRatio: "1 / 1",
                           backgroundColor: "#F8FAFC",
                           overflow: "hidden",
                         }}>
@@ -301,57 +377,64 @@ function ContenuRecherche() {
                             style={{
                               width: "100%",
                               height: "100%",
-                              objectFit: "cover",
+                              objectFit: "contain",
+                              display: "block",
+                              padding: "5px",
+                              boxSizing: "border-box",
                             }}
                           />
                         </div>
                       ) : (
                         <div style={{
                           width: "100%",
-                          height: "120px",
+                          aspectRatio: "1 / 1",
                           backgroundColor: "#F8FAFC",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          fontSize: "28px",
                         }}>
-                          📦
+                          <Package size={26} color="#CBD5E1" strokeWidth={2} />
                         </div>
                       )}
                       <div style={{ padding: "8px 10px" }}>
                         <p style={{
                           fontSize: "11.5px",
-                          fontWeight: "700",
+                          fontWeight: "900",
                           color: "#0F172A",
-                          marginBottom: "2px",
+                          marginBottom: "3px",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
+                          lineHeight: 1.2,
                         }}>
                           {p.nom}
                         </p>
                         <p style={{
                           fontSize: "10px",
-                          color: "#64748b",
-                          fontWeight: "600",
-                          marginBottom: "4px",
+                          color: "#57534E",
+                          fontWeight: "700",
+                          marginBottom: "5px",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "3px",
                         }}>
-                          🏪 {p.nomBoutique}
+                          <Store size={9} strokeWidth={2.8} />
+                          {p.nomBoutique}
                         </p>
                         {enPromo ? (
-                          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                            <span style={{ fontSize: "12px", fontWeight: "900", color: "#16a34a" }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
+                            <span style={{ fontSize: "12.5px", fontWeight: "900", color: "#EA580C", lineHeight: 1.1 }}>
                               {formaterPrix(p.prixPromo!, p.devise)}
                             </span>
-                            <span style={{ fontSize: "9.5px", color: "#94a3b8", textDecoration: "line-through" }}>
+                            <span style={{ fontSize: "9.5px", color: "#94A3B8", textDecoration: "line-through", fontWeight: "700", lineHeight: 1.1 }}>
                               {formaterPrix(p.prix, p.devise)}
                             </span>
                           </div>
                         ) : (
-                          <p style={{ fontSize: "12px", fontWeight: "900", color: "#1D4ED8" }}>
+                          <p style={{ fontSize: "12.5px", fontWeight: "900", color: "#EA580C" }}>
                             {formaterPrix(p.prix, p.devise)}
                           </p>
                         )}
@@ -365,19 +448,42 @@ function ContenuRecherche() {
         </>
       )}
 
+      {/* ÉTAT INITIAL (rien tapé) */}
       {!chargement && !aCherche && (
         <div style={{
           backgroundColor: "white",
-          borderRadius: "12px",
+          borderRadius: "20px",
           padding: "40px 20px",
           textAlign: "center",
-          border: "1px solid #E8DFC8",
+          border: "1.5px solid #0F172A",
+          boxShadow: "4px 4px 0 #EA580C",
         }}>
-          <p style={{ fontSize: "40px", marginBottom: "10px" }}>🔍</p>
-          <p style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "4px" }}>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "64px",
+            height: "64px",
+            borderRadius: "50%",
+            backgroundColor: "#F5EAD2",
+            marginBottom: "12px",
+          }}>
+            <Search size={30} color="#EA580C" strokeWidth={2.2} />
+          </div>
+          <p style={{
+            fontSize: "14px",
+            fontWeight: "900",
+            color: "#0F172A",
+            marginBottom: "6px",
+          }}>
             Que cherchez-vous ?
           </p>
-          <p style={{ fontSize: "11.5px", color: "#64748B", fontWeight: "500" }}>
+          <p style={{
+            fontSize: "11.5px",
+            color: "#57534E",
+            fontWeight: "700",
+            lineHeight: 1.5,
+          }}>
             Tapez le nom d&apos;un produit ou d&apos;une boutique
           </p>
         </div>
@@ -397,12 +503,17 @@ export default function PageRecherche() {
   return (
     <Suspense
       fallback={
-        <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-          <p>Chargement...</p>
+        <div style={{
+          padding: "60px 16px",
+          textAlign: "center",
+          backgroundColor: "#F5EAD2",
+          minHeight: "100vh",
+        }}>
+          <p style={{ color: "#57534E", fontWeight: "700" }}>Chargement...</p>
         </div>
       }
     >
       <ContenuRecherche />
     </Suspense>
   );
-                      }
+      }
