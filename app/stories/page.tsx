@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { ArrowLeft, Camera } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -29,18 +30,18 @@ export default async function PageStories() {
   const liste = Array.from(storiesUniques.values());
 
   return (
-    <div style={{ backgroundColor: "#FAF5E8", minHeight: "100vh", padding: "18px 14px 20px 14px" }}>
+    <div style={{ backgroundColor: "#F5EAD2", minHeight: "100vh", padding: "18px 14px 100px 14px" }}>
       <div style={{ marginBottom: "18px" }}>
         <h1 style={{
-          fontSize: "20px",
+          fontSize: "24px",
           fontWeight: "900",
           color: "#0F172A",
-          marginBottom: "4px",
-          letterSpacing: "-0.4px",
+          marginBottom: "3px",
+          letterSpacing: "-0.5px",
         }}>
           Stories
         </h1>
-        <p style={{ fontSize: "11.5px", color: "#78716C", fontWeight: "600" }}>
+        <p style={{ fontSize: "11.5px", color: "#57534E", fontWeight: "700" }}>
           {liste.length} story{liste.length > 1 ? "s" : ""} active{liste.length > 1 ? "s" : ""}
         </p>
       </div>
@@ -49,14 +50,37 @@ export default async function PageStories() {
         <div style={{
           backgroundColor: "white",
           textAlign: "center",
-          padding: "40px 20px",
-          borderRadius: "12px",
-          border: "1px solid #E8DFC8",
+          padding: "50px 20px",
+          borderRadius: "20px",
+          border: "1.5px solid #0F172A",
+          boxShadow: "4px 4px 0 #EA580C",
         }}>
-          <p style={{ fontSize: "13px", fontWeight: "700", marginBottom: "6px" }}>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "64px",
+            height: "64px",
+            borderRadius: "50%",
+            backgroundColor: "#F5EAD2",
+            marginBottom: "12px",
+          }}>
+            <Camera size={28} color="#EA580C" strokeWidth={2.2} />
+          </div>
+          <p style={{
+            fontSize: "15px",
+            fontWeight: "900",
+            marginBottom: "6px",
+            color: "#0F172A",
+          }}>
             Aucune story active
           </p>
-          <p style={{ color: "#78716C", fontSize: "11px" }}>
+          <p style={{
+            color: "#57534E",
+            fontSize: "11.5px",
+            fontWeight: "600",
+            lineHeight: 1.5,
+          }}>
             Les stories de nos boutiques apparaîtront ici.
           </p>
         </div>
@@ -64,7 +88,7 @@ export default async function PageStories() {
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "8px",
+          gap: "10px",
         }}>
           {liste.map((story) => (
             <Link
@@ -76,20 +100,22 @@ export default async function PageStories() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: "5px",
+                gap: "6px",
               }}
             >
+              {/* Cercle story : dégradé orange → jaune (charte GK) */}
               <div style={{
                 width: "100%",
                 aspectRatio: "1 / 1",
-                borderRadius: "12px",
+                borderRadius: "16px",
                 padding: "3px",
-                background: "linear-gradient(135deg, #F97316 0%, #EC4899 50%, #8B5CF6 100%)",
+                background: "linear-gradient(135deg, #EA580C 0%, #F59E0B 100%)",
+                boxShadow: "0 2px 6px rgba(234, 88, 12, 0.20)",
               }}>
                 <div style={{
                   width: "100%",
                   height: "100%",
-                  borderRadius: "10px",
+                  borderRadius: "13px",
                   overflow: "hidden",
                   backgroundColor: "white",
                   padding: "2px",
@@ -100,16 +126,19 @@ export default async function PageStories() {
                     style={{
                       width: "100%",
                       height: "100%",
-                      borderRadius: "8px",
+                      borderRadius: "11px",
                       objectFit: "cover",
+                      display: "block",
                     }}
                   />
                 </div>
               </div>
+
+              {/* Nom boutique */}
               <span style={{
-                fontSize: "10px",
-                fontWeight: "700",
-                color: "#334155",
+                fontSize: "10.5px",
+                fontWeight: "900",
+                color: "#0F172A",
                 textAlign: "center",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -127,15 +156,19 @@ export default async function PageStories() {
         <Link
           href="/"
           style={{
-            color: "#1D4ED8",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "4px",
+            color: "#0F172A",
             fontSize: "11.5px",
-            fontWeight: "700",
+            fontWeight: "800",
             textDecoration: "none",
           }}
         >
-          ← Retour à l&apos;accueil
+          <ArrowLeft size={12} strokeWidth={2.8} />
+          Retour à l&apos;accueil
         </Link>
       </div>
     </div>
   );
-      }
+              }
