@@ -181,47 +181,94 @@ export default function FinancePage() {
 
   const stats = [
     { label: "Inscriptions", valeur: formatFC(inscriptionsEncaissees), Icon: Wallet, bg: "#DBEAFE", iconColor: "#1D4ED8", valueColor: "#0F172A" },
-    { label: "Loyers", valeur: formatFC(loyersEncaissees), Icon: Wallet, bg: "#FED7AA", iconColor: "#c2410c", valueColor: "#0F172A" },
-    { label: "Total encaissé", valeur: formatFC(totalCollecte), Icon: TrendingUp, bg: "#BBF7D0", iconColor: "#15803d", valueColor: "#15803d" },
-    { label: "À collecter", valeur: formatFC(totalACollecter), Icon: TrendingDown, bg: "#FECACA", iconColor: "#b91c1c", valueColor: "#b91c1c" },
+    { label: "Loyers", valeur: formatFC(loyersEncaissees), Icon: Wallet, bg: "#FEF3C7", iconColor: "#B45309", valueColor: "#0F172A" },
+    { label: "Encaissé", valeur: formatFC(totalCollecte), Icon: TrendingUp, bg: "#DCFCE7", iconColor: "#16A34A", valueColor: "#16A34A" },
+    { label: "À collecter", valeur: formatFC(totalACollecter), Icon: TrendingDown, bg: "#FEE2E2", iconColor: "#DC2626", valueColor: "#DC2626" },
   ];
 
   return (
-    <div style={{ backgroundColor: "#F1F5F9", minHeight: "100vh", padding: "16px 12px 90px 12px" }}>
+    <div style={{ backgroundColor: "#F5EAD2", minHeight: "100vh", padding: "16px 12px 90px 12px" }}>
       {toast && (
-        <div style={{ position: "fixed", top: "16px", left: "50%", transform: "translateX(-50%)", zIndex: 50, backgroundColor: toast.type === "ok" ? "#16a34a" : "#dc2626", color: "white", padding: "10px 16px", borderRadius: "10px", fontSize: "12.5px", fontWeight: "700", display: "flex", alignItems: "center", gap: "6px", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}>
-          {toast.type === "ok" ? <Check size={14} /> : <XCircle size={14} />}
+        <div style={{
+          position: "fixed",
+          top: "16px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 50,
+          backgroundColor: toast.type === "ok" ? "#16A34A" : "#DC2626",
+          color: "white",
+          padding: "10px 16px",
+          borderRadius: "20px",
+          fontSize: "12px",
+          fontWeight: "900",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.20)",
+        }}>
+          {toast.type === "ok" ? <Check size={14} strokeWidth={3} /> : <XCircle size={14} strokeWidth={3} />}
           {toast.message}
         </div>
       )}
 
-      <div style={{ marginBottom: "16px" }}>
-        <h1 style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A", marginBottom: "2px", letterSpacing: "-0.3px" }}>
+      <div style={{ marginBottom: "18px" }}>
+        <h1 style={{
+          fontSize: "22px",
+          fontWeight: "900",
+          color: "#0F172A",
+          marginBottom: "3px",
+          letterSpacing: "-0.4px",
+        }}>
           Finance
         </h1>
-        <p style={{ fontSize: "11px", color: "#475569", fontWeight: "600" }}>
-          Gestion des frais d'inscription et des loyers
+        <p style={{ fontSize: "11.5px", color: "#57534E", fontWeight: "700" }}>
+          Gestion des frais d&apos;inscription et des loyers
         </p>
       </div>
 
+      {/* STATS */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "16px" }}>
         {stats.map((stat) => {
           const Icon = stat.Icon;
           return (
-            <div key={stat.label} style={{ backgroundColor: "white", borderRadius: "10px", overflow: "hidden", boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)", border: "1px solid #F1F5F9" }}>
-              <div style={{ backgroundColor: stat.bg, padding: "6px", display: "flex", justifyContent: "center" }}>
-                <Icon size={14} color={stat.iconColor} strokeWidth={2.5} />
+            <div key={stat.label} style={{
+              backgroundColor: "white",
+              borderRadius: "16px",
+              overflow: "hidden",
+              boxShadow: "0 2px 6px rgba(120, 100, 60, 0.06)",
+              border: "1px solid #D4C5A0",
+            }}>
+              <div style={{ backgroundColor: stat.bg, padding: "8px", display: "flex", justifyContent: "center" }}>
+                <Icon size={16} color={stat.iconColor} strokeWidth={2.8} />
               </div>
-              <div style={{ padding: "6px 4px 8px 4px", textAlign: "center" }}>
-                <p style={{ fontSize: "9.5px", color: "#475569", marginBottom: "2px", fontWeight: "700" }}>{stat.label}</p>
-                <p style={{ fontSize: "14px", fontWeight: "800", color: stat.valueColor, lineHeight: 1.1 }}>{stat.valeur}</p>
+              <div style={{ padding: "8px 6px 10px 6px", textAlign: "center" }}>
+                <p style={{
+                  fontSize: "9.5px",
+                  color: "#57534E",
+                  marginBottom: "3px",
+                  fontWeight: "800",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.4px",
+                }}>
+                  {stat.label}
+                </p>
+                <p style={{
+                  fontSize: "13px",
+                  fontWeight: "900",
+                  color: stat.valueColor,
+                  lineHeight: 1.1,
+                  letterSpacing: "-0.3px",
+                }}>
+                  {stat.valeur}
+                </p>
               </div>
             </div>
           );
         })}
       </div>
 
-      <div style={{ display: "flex", gap: "6px", marginBottom: "12px", overflowX: "auto" }}>
+      {/* FILTRES */}
+      <div style={{ display: "flex", gap: "6px", marginBottom: "14px", overflowX: "auto" }}>
         <FiltreBouton actif={filtre === "TOUT"} onClick={() => setFiltre("TOUT")} label={`Tout (${vendeurs.length})`} couleur="blue" />
         <FiltreBouton actif={filtre === "IMPAYES"} onClick={() => setFiltre("IMPAYES")} label="Impayés" couleur="red" />
         <FiltreBouton actif={filtre === "AJOUR"} onClick={() => setFiltre("AJOUR")} label="À jour" couleur="green" />
@@ -229,14 +276,25 @@ export default function FinancePage() {
 
       {chargement && (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "60px 0" }}>
-          <Loader2 size={28} color="#1D4ED8" />
-          <p style={{ marginTop: "10px", fontSize: "12px", color: "#475569", fontWeight: "600" }}>Chargement...</p>
+          <Loader2 size={28} color="#EA580C" strokeWidth={2.8} />
+          <p style={{ marginTop: "10px", fontSize: "12px", color: "#57534E", fontWeight: "800" }}>Chargement...</p>
         </div>
       )}
 
       {erreur && !chargement && (
-        <div style={{ backgroundColor: "#FEF2F2", border: "1px solid #FECACA", borderRadius: "10px", padding: "12px", display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", color: "#b91c1c", fontWeight: "600" }}>
-          <AlertCircle size={16} />
+        <div style={{
+          backgroundColor: "#FEE2E2",
+          border: "1.5px solid #DC2626",
+          borderRadius: "14px",
+          padding: "12px",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          fontSize: "12px",
+          color: "#B91C1C",
+          fontWeight: "800",
+        }}>
+          <AlertCircle size={16} strokeWidth={2.8} />
           {erreur}
         </div>
       )}
@@ -244,10 +302,28 @@ export default function FinancePage() {
       {!chargement && !erreur && (
         <>
           {vendeursFiltres.length === 0 ? (
-            <div style={{ backgroundColor: "white", borderRadius: "10px", border: "1px solid #E2E8F0", padding: "32px 20px", textAlign: "center" }}>
-              <Store size={36} color="#94a3b8" style={{ margin: "0 auto 8px auto", display: "block" }} />
-              <p style={{ fontSize: "13px", fontWeight: "700", color: "#0F172A" }}>Aucun vendeur</p>
-              <p style={{ fontSize: "11px", color: "#64748b", marginTop: "4px" }}>
+            <div style={{
+              backgroundColor: "white",
+              borderRadius: "20px",
+              border: "1.5px solid #0F172A",
+              padding: "40px 20px",
+              textAlign: "center",
+              boxShadow: "4px 4px 0 #EA580C",
+            }}>
+              <div style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "56px",
+                height: "56px",
+                borderRadius: "50%",
+                backgroundColor: "#F5EAD2",
+                marginBottom: "10px",
+              }}>
+                <Store size={26} color="#EA580C" strokeWidth={2} />
+              </div>
+              <p style={{ fontSize: "13px", fontWeight: "900", color: "#0F172A" }}>Aucun vendeur</p>
+              <p style={{ fontSize: "11px", color: "#57534E", marginTop: "4px", fontWeight: "700" }}>
                 {filtre === "TOUT" ? "Aucun vendeur enregistré." : "Aucun vendeur dans ce filtre."}
               </p>
             </div>
@@ -269,4 +345,4 @@ export default function FinancePage() {
       )}
     </div>
   );
-      }
+    }
