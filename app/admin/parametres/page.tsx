@@ -47,7 +47,6 @@ export default function ParametresPage() {
     setTimeout(() => setToast(null), 2500);
   };
 
-  // Charger les paramètres
   useEffect(() => {
     fetch("/api/admin/parametres")
       .then((res) => res.json())
@@ -93,42 +92,79 @@ export default function ParametresPage() {
 
   const champStyle = {
     width: "100%",
-    padding: "10px 12px",
-    borderRadius: "10px",
-    border: "1px solid #E2E8F0",
+    padding: "12px 14px",
+    borderRadius: "14px",
+    border: "1.5px solid #0F172A",
     fontSize: "13px",
     fontFamily: "inherit",
     backgroundColor: "white",
     color: "#0F172A",
-    fontWeight: "600" as const,
+    fontWeight: "700" as const,
     outline: "none",
+    boxSizing: "border-box" as const,
   };
 
   const labelStyle = {
-    display: "flex",
-    alignItems: "center",
+    display: "flex" as const,
+    alignItems: "center" as const,
     gap: "6px",
     marginBottom: "6px",
-    fontSize: "10.5px",
-    fontWeight: "800" as const,
-    color: "#475569",
+    fontSize: "11px",
+    fontWeight: "900" as const,
+    color: "#0F172A",
     textTransform: "uppercase" as const,
-    letterSpacing: "0.3px",
+    letterSpacing: "0.4px",
   };
 
   const carteStyle = {
     backgroundColor: "white",
-    borderRadius: "12px",
-    padding: "14px",
-    border: "1px solid #E2E8F0",
-    marginBottom: "12px",
+    borderRadius: "20px",
+    padding: "16px",
+    border: "1px solid #D4C5A0",
+    marginBottom: "14px",
+    boxShadow: "0 2px 8px rgba(120, 100, 60, 0.06)",
+  };
+
+  const titreSection = {
+    fontSize: "12px",
+    fontWeight: "900" as const,
+    color: "#0F172A",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.6px",
+    marginBottom: "14px",
+    display: "flex" as const,
+    alignItems: "center" as const,
+    gap: "8px",
+  };
+
+  const traitOrange = {
+    display: "inline-block",
+    width: "3px",
+    height: "13px",
+    backgroundColor: "#EA580C",
+    borderRadius: "2px",
   };
 
   if (chargement) {
     return (
-      <div style={{ minHeight: "100vh", backgroundColor: "#F1F5F9", padding: "60px 16px", textAlign: "center" }}>
-        <Loader2 size={28} color="#1D4ED8" style={{ animation: "spin 1s linear infinite" }} />
-        <p style={{ marginTop: "10px", fontSize: "12px", color: "#64748B", fontWeight: "600" }}>
+      <div style={{
+        minHeight: "100vh",
+        backgroundColor: "#F5EAD2",
+        padding: "60px 16px",
+        textAlign: "center",
+      }}>
+        <Loader2
+          size={28}
+          color="#EA580C"
+          strokeWidth={2.8}
+          style={{ animation: "spin 1s linear infinite" }}
+        />
+        <p style={{
+          marginTop: "10px",
+          fontSize: "12px",
+          color: "#57534E",
+          fontWeight: "800",
+        }}>
           Chargement...
         </p>
       </div>
@@ -136,8 +172,8 @@ export default function ParametresPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#F1F5F9", padding: "16px 12px 90px" }}>
-      {/* Toast */}
+    <div style={{ minHeight: "100vh", backgroundColor: "#F5EAD2", padding: "16px 12px 90px" }}>
+      {/* TOAST */}
       {toast && (
         <div
           style={{
@@ -146,45 +182,54 @@ export default function ParametresPage() {
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 50,
-            backgroundColor: toast.type === "ok" ? "#16a34a" : "#dc2626",
+            backgroundColor: toast.type === "ok" ? "#16A34A" : "#DC2626",
             color: "white",
             padding: "10px 16px",
-            borderRadius: "10px",
-            fontSize: "12.5px",
-            fontWeight: "700",
+            borderRadius: "20px",
+            fontSize: "12px",
+            fontWeight: "900",
             display: "flex",
             alignItems: "center",
             gap: "6px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.20)",
           }}
         >
-          {toast.type === "ok" ? <Check size={14} /> : <AlertCircle size={14} />}
+          {toast.type === "ok" ? <Check size={14} strokeWidth={3} /> : <AlertCircle size={14} strokeWidth={3} />}
           {toast.msg}
         </div>
       )}
 
-      {/* En-tête */}
-      <div style={{ marginBottom: "16px" }}>
-        <h1 style={{ fontSize: "20px", fontWeight: "800", color: "#0F172A" }}>
+      {/* HEADER */}
+      <div style={{ marginBottom: "18px" }}>
+        <h1 style={{
+          fontSize: "22px",
+          fontWeight: "900",
+          color: "#0F172A",
+          letterSpacing: "-0.4px",
+          marginBottom: "3px",
+        }}>
           Paramètres
         </h1>
-        <p style={{ fontSize: "11px", color: "#64748B", fontWeight: "600", marginTop: "3px" }}>
+        <p style={{
+          fontSize: "11.5px",
+          color: "#57534E",
+          fontWeight: "700",
+        }}>
           Configuration du complexe commercial
         </p>
       </div>
 
       {/* Section : Infos du complexe */}
       <div style={carteStyle}>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "12px" }}>
-          <Building2 size={14} color="#1D4ED8" strokeWidth={2.5} />
-          <p style={{ fontSize: "11px", fontWeight: "800", color: "#0F172A", textTransform: "uppercase", letterSpacing: "0.3px" }}>
-            Infos du complexe
-          </p>
-        </div>
+        <p style={titreSection}>
+          <span style={traitOrange} />
+          <Building2 size={14} strokeWidth={2.8} color="#EA580C" />
+          Infos du complexe
+        </p>
 
-        <div style={{ marginBottom: "10px" }}>
+        <div style={{ marginBottom: "12px" }}>
           <label style={labelStyle}>
-            <Building2 size={11} />
+            <Building2 size={11} strokeWidth={2.8} />
             Nom du complexe
           </label>
           <input
@@ -196,9 +241,9 @@ export default function ParametresPage() {
           />
         </div>
 
-        <div style={{ marginBottom: "10px" }}>
+        <div style={{ marginBottom: "12px" }}>
           <label style={labelStyle}>
-            <MapPin size={11} />
+            <MapPin size={11} strokeWidth={2.8} />
             Adresse
           </label>
           <input
@@ -212,7 +257,7 @@ export default function ParametresPage() {
 
         <div>
           <label style={labelStyle}>
-            <Phone size={11} />
+            <Phone size={11} strokeWidth={2.8} />
             Téléphone
           </label>
           <input
@@ -227,16 +272,15 @@ export default function ParametresPage() {
 
       {/* Section : Montants */}
       <div style={carteStyle}>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "12px" }}>
-          <Wallet size={14} color="#1D4ED8" strokeWidth={2.5} />
-          <p style={{ fontSize: "11px", fontWeight: "800", color: "#0F172A", textTransform: "uppercase", letterSpacing: "0.3px" }}>
-            Montants & Échéances
-          </p>
-        </div>
+        <p style={titreSection}>
+          <span style={traitOrange} />
+          <Wallet size={14} strokeWidth={2.8} color="#EA580C" />
+          Montants & Échéances
+        </p>
 
-        <div style={{ marginBottom: "10px" }}>
+        <div style={{ marginBottom: "12px" }}>
           <label style={labelStyle}>
-            <Wallet size={11} />
+            <Wallet size={11} strokeWidth={2.8} />
             Frais d&apos;inscription (FC)
           </label>
           <input
@@ -248,9 +292,9 @@ export default function ParametresPage() {
           />
         </div>
 
-        <div style={{ marginBottom: "10px" }}>
+        <div style={{ marginBottom: "12px" }}>
           <label style={labelStyle}>
-            <Wallet size={11} />
+            <Wallet size={11} strokeWidth={2.8} />
             Loyer mensuel (FC)
           </label>
           <input
@@ -264,8 +308,8 @@ export default function ParametresPage() {
 
         <div>
           <label style={labelStyle}>
-            <Calendar size={11} />
-            Jour d&apos;échéance du loyer (1-28)
+            <Calendar size={11} strokeWidth={2.8} />
+            Jour d&apos;échéance (1-28)
           </label>
           <input
             type="number"
@@ -280,17 +324,16 @@ export default function ParametresPage() {
 
       {/* Section : Paiement & Analytics */}
       <div style={carteStyle}>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "12px" }}>
-          <Smartphone size={14} color="#1D4ED8" strokeWidth={2.5} />
-          <p style={{ fontSize: "11px", fontWeight: "800", color: "#0F172A", textTransform: "uppercase", letterSpacing: "0.3px" }}>
-            Paiement & Outils
-          </p>
-        </div>
+        <p style={titreSection}>
+          <span style={traitOrange} />
+          <Smartphone size={14} strokeWidth={2.8} color="#EA580C" />
+          Paiement & Outils
+        </p>
 
-        <div style={{ marginBottom: "10px" }}>
+        <div style={{ marginBottom: "12px" }}>
           <label style={labelStyle}>
-            <Smartphone size={11} />
-            Numéro Mobile Money du complexe
+            <Smartphone size={11} strokeWidth={2.8} />
+            Numéro Mobile Money
           </label>
           <input
             type="tel"
@@ -303,7 +346,7 @@ export default function ParametresPage() {
 
         <div>
           <label style={labelStyle}>
-            <BarChart3 size={11} />
+            <BarChart3 size={11} strokeWidth={2.8} />
             Lien Google Analytics
           </label>
           <input
@@ -322,13 +365,13 @@ export default function ParametresPage() {
         disabled={enregistrement}
         style={{
           width: "100%",
-          backgroundColor: "#1D4ED8",
+          backgroundColor: "#0F172A",
           color: "white",
-          padding: "13px",
-          borderRadius: "12px",
+          padding: "16px",
+          borderRadius: "26px",
           border: "none",
-          fontWeight: "800",
-          fontSize: "13px",
+          fontWeight: "900",
+          fontSize: "14px",
           cursor: "pointer",
           display: "flex",
           alignItems: "center",
@@ -336,15 +379,18 @@ export default function ParametresPage() {
           gap: "8px",
           opacity: enregistrement ? 0.6 : 1,
           marginTop: "6px",
+          boxShadow: "0 4px 12px rgba(15, 23, 42, 0.25)",
+          letterSpacing: "-0.2px",
+          fontFamily: "inherit",
         }}
       >
         {enregistrement ? (
-          <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} />
+          <Loader2 size={16} strokeWidth={2.8} style={{ animation: "spin 1s linear infinite" }} />
         ) : (
-          <Save size={16} strokeWidth={2.5} />
+          <Save size={16} strokeWidth={2.8} />
         )}
         {enregistrement ? "Enregistrement..." : "Enregistrer les paramètres"}
       </button>
     </div>
   );
-            }
+    }
