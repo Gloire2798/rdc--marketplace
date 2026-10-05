@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Camera, Trash2, Check, Image as ImageIcon } from "lucide-react";
+import { Camera, Trash2, Check, Image as ImageIcon, Tag } from "lucide-react";
 
 interface Vendeur {
   id: string;
@@ -142,20 +142,56 @@ export default function FormulaireBoutique({ vendeur }: { vendeur: Vendeur }) {
 
   const champStyle = {
     width: "100%",
-    padding: "10px",
-    borderRadius: "8px",
-    border: "1px solid #E2E8F0",
+    padding: "12px 14px",
+    borderRadius: "14px",
+    border: "1.5px solid #0F172A",
     fontSize: "13px",
-    marginBottom: "14px",
+    marginBottom: "12px",
     fontFamily: "inherit",
+    backgroundColor: "white",
+    outline: "none",
+    color: "#0F172A",
+    fontWeight: "700" as const,
+    boxSizing: "border-box" as const,
   };
 
   const labelStyle = {
-    display: "block",
-    marginBottom: "5px",
-    fontWeight: "700" as const,
+    display: "block" as const,
+    marginBottom: "6px",
+    fontWeight: "900" as const,
+    fontSize: "11px",
+    color: "#0F172A",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.4px",
+  };
+
+  const titreSection = {
     fontSize: "12px",
-    color: "#334155",
+    fontWeight: "900" as const,
+    color: "#0F172A",
+    marginBottom: "10px",
+    display: "flex" as const,
+    alignItems: "center" as const,
+    gap: "8px",
+    textTransform: "uppercase" as const,
+    letterSpacing: "1px",
+  };
+
+  const traitOrange = {
+    display: "inline-block",
+    width: "3px",
+    height: "14px",
+    backgroundColor: "#EA580C",
+    borderRadius: "2px",
+  };
+
+  const carteStyle = {
+    backgroundColor: "white",
+    borderRadius: "20px",
+    padding: "16px",
+    marginBottom: "14px",
+    border: "1px solid #D4C5A0",
+    boxShadow: "0 2px 8px rgba(120, 100, 60, 0.06)",
   };
 
   const zoneUpload = (
@@ -173,23 +209,27 @@ export default function FormulaireBoutique({ vendeur }: { vendeur: Vendeur }) {
             style={{
               width: "100%",
               height: "160px",
-              objectFit: "cover",
-              borderRadius: "10px",
+              objectFit: "contain",
+              borderRadius: "14px",
               display: "block",
+              backgroundColor: "#F5EAD2",
+              border: "1.5px solid #0F172A",
+              padding: "4px",
+              boxSizing: "border-box",
             }}
           />
           {enCours && (
             <div style={{
               position: "absolute",
               inset: 0,
-              backgroundColor: "rgba(0,0,0,0.5)",
+              backgroundColor: "rgba(15, 23, 42, 0.65)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               color: "white",
-              fontSize: "12px",
-              fontWeight: "700",
-              borderRadius: "10px",
+              fontSize: "11.5px",
+              fontWeight: "900",
+              borderRadius: "14px",
             }}>
               Envoi en cours...
             </div>
@@ -202,20 +242,21 @@ export default function FormulaireBoutique({ vendeur }: { vendeur: Vendeur }) {
                 position: "absolute",
                 top: "8px",
                 right: "8px",
-                backgroundColor: "rgba(220, 38, 38, 0.9)",
+                backgroundColor: "#DC2626",
                 color: "white",
                 border: "none",
-                borderRadius: "8px",
-                padding: "6px 8px",
+                borderRadius: "20px",
+                padding: "6px 12px",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 gap: "4px",
-                fontSize: "11px",
-                fontWeight: "700",
+                fontSize: "10.5px",
+                fontWeight: "900",
+                fontFamily: "inherit",
               }}
             >
-              <Trash2 size={12} />
+              <Trash2 size={12} strokeWidth={3} />
               Retirer
             </button>
           )}
@@ -226,17 +267,22 @@ export default function FormulaireBoutique({ vendeur }: { vendeur: Vendeur }) {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          border: "2px dashed #CBD5E1",
-          borderRadius: "10px",
-          padding: "20px",
+          border: "2px dashed #D4C5A0",
+          borderRadius: "14px",
+          padding: "24px 20px",
           cursor: "pointer",
-          backgroundColor: "#F8FAFC",
+          backgroundColor: "#F5EAD2",
         }}>
-          <Camera size={24} color="#64748b" strokeWidth={2} />
-          <span style={{ fontWeight: "700", fontSize: "12px", marginTop: "6px", color: "#334155" }}>
+          <Camera size={26} color="#57534E" strokeWidth={2.2} />
+          <span style={{
+            fontWeight: "900",
+            fontSize: "12px",
+            marginTop: "8px",
+            color: "#0F172A",
+          }}>
             {titre}
           </span>
-          <span style={{ fontSize: "10px", color: "#94a3b8", marginTop: "2px" }}>
+          <span style={{ fontSize: "10px", color: "#57534E", marginTop: "3px", fontWeight: "700" }}>
             JPG ou PNG, max 5 MB
           </span>
           <input
@@ -255,76 +301,114 @@ export default function FormulaireBoutique({ vendeur }: { vendeur: Vendeur }) {
   return (
     <form onSubmit={soumettre}>
       {erreur && (
-        <div style={{ backgroundColor: "#FEE2E2", color: "#991B1B", padding: "10px", borderRadius: "8px", marginBottom: "14px", fontSize: "12px", fontWeight: "600" }}>
+        <div style={{
+          backgroundColor: "#FEE2E2",
+          color: "#991B1B",
+          padding: "12px",
+          borderRadius: "14px",
+          marginBottom: "14px",
+          fontSize: "11.5px",
+          fontWeight: "800",
+          border: "1.5px solid #DC2626",
+        }}>
           {erreur}
         </div>
       )}
 
       {succes && (
-        <div style={{ backgroundColor: "#DCFCE7", color: "#166534", padding: "10px", borderRadius: "8px", marginBottom: "14px", fontSize: "12px", fontWeight: "700", display: "flex", alignItems: "center", gap: "6px" }}>
+        <div style={{
+          backgroundColor: "#DCFCE7",
+          color: "#166534",
+          padding: "12px",
+          borderRadius: "14px",
+          marginBottom: "14px",
+          fontSize: "11.5px",
+          fontWeight: "800",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          border: "1.5px solid #16A34A",
+        }}>
           <Check size={14} strokeWidth={3} />
           {succes}
         </div>
       )}
 
-      <h2 style={{ fontSize: "14px", fontWeight: "800", color: "#0F172A", marginBottom: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
-        <ImageIcon size={16} strokeWidth={2.5} />
-        Photos de la boutique
-      </h2>
+      {/* PHOTOS */}
+      <div style={carteStyle}>
+        <h2 style={titreSection}>
+          <span style={traitOrange} />
+          <ImageIcon size={14} strokeWidth={2.8} color="#EA580C" />
+          Photos de la boutique
+        </h2>
 
-      <p style={{ fontSize: "11px", color: "#64748b", marginBottom: "10px", fontWeight: "500" }}>
-        La photo de couverture est la plus importante. Elle apparaîtra en premier.
-      </p>
+        <p style={{
+          fontSize: "11px",
+          color: "#57534E",
+          marginBottom: "12px",
+          fontWeight: "700",
+          lineHeight: 1.5,
+        }}>
+          La photo de couverture est la plus importante. Elle apparaîtra en premier.
+        </p>
 
-      {zoneUpload(1, apercu1, uploadEnCours.p1, "Photo de couverture")}
-      {zoneUpload(2, apercu2, uploadEnCours.p2, "Photo 2 (optionnelle)")}
-      {zoneUpload(3, apercu3, uploadEnCours.p3, "Photo 3 (optionnelle)")}
+        {zoneUpload(1, apercu1, uploadEnCours.p1, "Photo de couverture")}
+        {zoneUpload(2, apercu2, uploadEnCours.p2, "Photo 2 (optionnelle)")}
+        {zoneUpload(3, apercu3, uploadEnCours.p3, "Photo 3 (optionnelle)")}
+      </div>
 
-      <h2 style={{ fontSize: "14px", fontWeight: "800", color: "#0F172A", marginTop: "20px", marginBottom: "10px" }}>
-        Informations
-      </h2>
+      {/* INFOS */}
+      <div style={carteStyle}>
+        <h2 style={titreSection}>
+          <span style={traitOrange} />
+          <Tag size={14} strokeWidth={2.8} color="#EA580C" />
+          Informations
+        </h2>
 
-      <label style={labelStyle}>Nom de la boutique *</label>
-      <input
-        type="text"
-        style={champStyle}
-        value={form.nomBoutique}
-        onChange={(e) => changer("nomBoutique", e.target.value)}
-        required
-      />
+        <label style={labelStyle}>Nom de la boutique *</label>
+        <input
+          type="text"
+          style={champStyle}
+          value={form.nomBoutique}
+          onChange={(e) => changer("nomBoutique", e.target.value)}
+          required
+        />
 
-      <label style={labelStyle}>Description</label>
-      <textarea
-        style={{ ...champStyle, minHeight: "70px" }}
-        value={form.description}
-        onChange={(e) => changer("description", e.target.value)}
-        placeholder="Décrivez votre boutique en quelques mots"
-      />
+        <label style={labelStyle}>Description</label>
+        <textarea
+          style={{ ...champStyle, minHeight: "80px", resize: "vertical" }}
+          value={form.description}
+          onChange={(e) => changer("description", e.target.value)}
+          placeholder="Décrivez votre boutique en quelques mots"
+        />
 
-      <label style={labelStyle}>Adresse physique</label>
-      <input
-        type="text"
-        style={champStyle}
-        value={form.adresse}
-        onChange={(e) => changer("adresse", e.target.value)}
-        placeholder="Ex: Avenue du Commerce, Gombe"
-      />
+        <label style={labelStyle}>Adresse physique</label>
+        <input
+          type="text"
+          style={champStyle}
+          value={form.adresse}
+          onChange={(e) => changer("adresse", e.target.value)}
+          placeholder="Ex: Avenue du Commerce, Gombe"
+        />
+      </div>
 
       <button
         type="submit"
         disabled={chargement || tousUploades}
         style={{
           width: "100%",
-          backgroundColor: "#1D4ED8",
+          backgroundColor: "#0F172A",
           color: "white",
-          padding: "12px",
-          borderRadius: "10px",
+          padding: "16px",
+          borderRadius: "26px",
           border: "none",
-          fontWeight: "800",
-          fontSize: "13px",
+          fontWeight: "900",
+          fontSize: "14px",
           cursor: "pointer",
-          marginTop: "8px",
           opacity: (chargement || tousUploades) ? 0.6 : 1,
+          boxShadow: "0 4px 12px rgba(15, 23, 42, 0.25)",
+          letterSpacing: "-0.2px",
+          fontFamily: "inherit",
         }}
       >
         {chargement ? "Enregistrement..." : tousUploades ? "Envoi des photos..." : "Enregistrer"}
