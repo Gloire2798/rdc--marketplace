@@ -69,7 +69,8 @@ export default async function DashboardVendeur() {
       .forEach((c) => {
         c.items.forEach((item) => {
           const montant = item.prixUnitaire * item.quantite;
-          if (item.produit.devise === "USD") {
+          // ✅ CORRIGÉ : produit peut être null
+          if (item.produit?.devise === "USD") {
             montantMoisUSD += montant;
           } else {
             montantMoisFC += montant;
@@ -92,6 +93,9 @@ export default async function DashboardVendeur() {
   commandesValidees.forEach((c) => {
     c.items.forEach((item) => {
       const p = item.produit;
+      // ✅ CORRIGÉ : on skip si le produit a été supprimé
+      if (!p) return;
+
       const existant = ventesParProduit.get(p.id);
 
       if (existant) {
@@ -405,4 +409,4 @@ export default async function DashboardVendeur() {
       <NavigationBas />
     </>
   );
-                         }
+                }
