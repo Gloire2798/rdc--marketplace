@@ -10,13 +10,10 @@ type Entree = {
 const cache: Map<string, Entree> = new Map();
 
 const LIMITES: Record<string, { limite: number; fenetre: number }> = {
-  // Routes sensibles
   "/api/vendeur/connexion": { limite: 5, fenetre: 15 * 60 },
   "/api/client/inscription": { limite: 3, fenetre: 24 * 60 * 60 },
   "/api/vendeur/inscription": { limite: 3, fenetre: 24 * 60 * 60 },
   "/api/auth/mot-de-passe-oublie": { limite: 3, fenetre: 60 * 60 },
-
-  // API générale
   "default": { limite: 50, fenetre: 60 },
 };
 
@@ -39,8 +36,9 @@ export function verifierRateLimitMemoire(
   const maintenant = Date.now();
   const cleComplete = `${cle}:${route}`;
 
-  // Nettoyer le cache de temps en temps
-  if (cache.size > 10000) {
+  // ✅ Nettoyage : on supprime les entrées expirées à chaque appel
+  // si le cache devient trop gros (> 1000 entrées)
+  if (cache.size > 1000) {
     cache.forEach((v, k) => {
       if (v.resetAt < maintenant) cache.delete(k);
     });
@@ -48,7 +46,16 @@ export function verifierRateLimitMemoire(
 
   const entree = cache.get(cleComplete);
 
-  if (!entree || entree.resetAt < maintenant) {
+  // ✅ Vérification CRUCIALE : si l'entrée existe mais est expirée,
+  // on la supprime AVANT de continuer
+  if (entree && entree.resetAt < maintenant) {
+    cache.delete(cleComplete);
+  }
+
+  const entreeActuelle = cache.get(cleComplete);
+
+  // Pas d'entrée (ou expirée) → créer
+  if (!entreeActuelle) {
     cache.set(cleComplete, {
       count: 1,
       resetAt: maintenant + fenetre * 1000,
@@ -56,12 +63,14 @@ export function verifierRateLimitMemoire(
     return { autorise: true };
   }
 
-  if (entree.count < limite) {
-    entree.count += 1;
+  // Sous la limite → incrémenter
+  if (entreeActuelle.count < limite) {
+    entreeActuelle.count += 1;
     return { autorise: true };
   }
 
-  const secondes = Math.ceil((entree.resetAt - maintenant) / 1000);
+  // Bloqué
+  const secondes = Math.ceil((entreeActuelle.resetAt - maintenant) / 1000);
   return { autorise: false, retryAfter: secondes };
 }
 
@@ -71,5 +80,5 @@ export function getIP(request: Request): string | null {
   return request.headers.get("x-real-ip") || null;
 }
 
-// ✅ Alias pour compatibilité avec l'API connexion
+// Alias pour compatibilité
 export const verifierRateLimit = verifierRateLimitMemoire;
