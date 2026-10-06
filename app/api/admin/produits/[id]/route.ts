@@ -29,6 +29,13 @@ export async function DELETE(
       );
     }
 
+    // ✅ Supprimer les variantes d'abord
+    await prisma.variante.deleteMany({
+      where: { produitId: id },
+    });
+
+    // ✅ Supprimer le produit
+    // Grâce à onDelete: SetNull, les CommandeItem gardent leurs infos
     await prisma.produit.delete({
       where: { id },
     });
