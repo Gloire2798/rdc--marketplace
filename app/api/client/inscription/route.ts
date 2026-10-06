@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { normaliserTelephone, validerTelephone } from "@/lib/telephone";
+import { verifierRateLimitMemoire, getIP } from "@/lib/rateLimit";
 
 export async function POST(request: Request) {
   try {
@@ -15,7 +16,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // ✅ Validation du format du téléphone
+    // ✅ Validation
     const validationTel = validerTelephone(telephone);
     if (!validationTel.valide) {
       return NextResponse.json(
@@ -24,8 +25,34 @@ export async function POST(request: Request) {
       );
     }
 
-    // ✅ Normalisation du téléphone (stockage uniforme)
     const telephoneNormalise = normaliserTelephone(telephone);
+    const ip = getIP(request) || "unknown";
+
+    // ✅ Rate limiting PAR TÉLÉPHONE (3/24h)
+    const limiteTel = verifierRateLimitMemoire(
+      "/api/client/inscription",
+      telephoneNormalise
+    );
+    if (!limiteTel.autorise) {
+      const heures = Math.ceil((limiteTel.retryAfter || 0) / 3600);
+      return NextResponse.json(
+        { erreur: `Trop de tentatives. Réessayez dans ${heures} heure(s).` },
+        { status: 429 }
+      );
+    }
+
+    // ✅ Rate limiting PAR IP (20/24h)
+    const limiteIp = verifierRateLimitMemoire(
+      "/api/client/inscription-ip",
+      ip
+    );
+    if (!limiteIp.autorise) {
+      const heures = Math.ceil((limiteIp.retryAfter || 0) / 3600);
+      return NextResponse.json(
+        { erreur: `Trop de tentatives depuis ce réseau. Réessayez dans ${heures} heure(s).` },
+        { status: 429 }
+      );
+    }
 
     if (motDePasse.length < 6) {
       return NextResponse.json(
@@ -34,11 +61,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Vérifier que le téléphone n'est pas déjà utilisé
+    // Vérifier téléphone existant
     const existantTel = await prisma.user.findUnique({
       where: { telephone: telephoneNormalise },
     });
-
     if (existantTel) {
       return NextResponse.json(
         { erreur: "Ce numéro de téléphone a déjà un compte" },
@@ -46,14 +72,12 @@ export async function POST(request: Request) {
       );
     }
 
-    // Vérifier que l'email n'est pas déjà utilisé (si fourni)
+    // Vérifier email
     const emailNettoye = email ? email.trim().toLowerCase() : null;
-
     if (emailNettoye) {
       const existantEmail = await prisma.user.findUnique({
         where: { email: emailNettoye },
       });
-
       if (existantEmail) {
         return NextResponse.json(
           { erreur: "Cet email a déjà un compte" },
