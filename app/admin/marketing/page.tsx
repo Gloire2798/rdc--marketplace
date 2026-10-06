@@ -14,7 +14,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-const SITE_URL = "https://rdc-marketplace.vercel.app";
+const SITE_URL = "https://gk-sensei.vercel.app";
 const ANALYTICS_URL =
   "https://analytics.google.com/analytics/web/#/a410458151p557070698/reports/intelligenthome";
 
