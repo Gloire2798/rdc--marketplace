@@ -39,7 +39,8 @@ export default async function DashboardAdmin() {
     .forEach((c) => {
       c.items.forEach((item) => {
         const montant = item.prixUnitaire * item.quantite;
-        if (item.produit.devise === "USD") {
+        // ✅ CORRIGÉ : produit peut être null
+        if (item.produit?.devise === "USD") {
           chiffreAffairesUSD += montant;
         } else {
           chiffreAffairesFC += montant;
@@ -78,7 +79,8 @@ export default async function DashboardAdmin() {
       .forEach((c) => {
         c.items.forEach((item) => {
           const montant = item.prixUnitaire * item.quantite;
-          if (item.produit.devise === "USD") {
+          // ✅ CORRIGÉ : produit peut être null
+          if (item.produit?.devise === "USD") {
             montantMoisUSD += montant;
           } else {
             montantMoisFC += montant;
@@ -340,4 +342,4 @@ export default async function DashboardAdmin() {
       <NavigationBas />
     </>
   );
-}
+      }
