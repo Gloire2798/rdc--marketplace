@@ -43,17 +43,20 @@ export default async function MesCommandes() {
     const itemsFormates = c.items.map((i) => {
       const montant = i.prixUnitaire * i.quantite;
 
-      if (i.produit.devise === "USD") {
+      // ✅ CORRIGÉ : produit peut être null
+      if (i.produit?.devise === "USD") {
         totalUSD += montant;
       } else {
         totalFC += montant;
       }
 
       return {
-        nom: i.produit.nom,
+        // ✅ CORRIGÉ : nomProduit en fallback
+        nom: i.produit?.nom || i.nomProduit || "Produit supprimé",
         quantite: i.quantite,
         prixUnitaire: i.prixUnitaire,
-        devise: i.produit.devise,
+        // ✅ CORRIGÉ : devise en fallback
+        devise: i.produit?.devise || "FC",
       };
     });
 
@@ -266,4 +269,4 @@ export default async function MesCommandes() {
       )}
     </div>
   );
-            }
+}
