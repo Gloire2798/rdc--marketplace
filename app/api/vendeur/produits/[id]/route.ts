@@ -140,7 +140,6 @@ export async function PATCH(
       ? (variantes as VarianteInput[]).reduce((sum, v) => sum + v.stock, 0)
       : parseInt(stock || "0");
 
-    // Mettre à jour le produit
     const produitModifie = await prisma.produit.update({
       where: { id },
       data: {
@@ -156,7 +155,6 @@ export async function PATCH(
       },
     });
 
-    // Supprimer les anciennes variantes et recréer
     if (aVariantes) {
       await prisma.variante.deleteMany({
         where: { produitId: id },
@@ -172,7 +170,6 @@ export async function PATCH(
         })),
       });
     } else {
-      // Si plus de variantes → supprimer toutes les anciennes
       await prisma.variante.deleteMany({
         where: { produitId: id },
       });
@@ -186,6 +183,7 @@ export async function PATCH(
 }
 
 // DELETE : supprimer un produit
+// ✅ MODIFIÉ : ne bloque plus si le produit est dans des commandes
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -215,12 +213,14 @@ export async function DELETE(
       return NextResponse.json({ erreur: "Produit introuvable" }, { status: 404 });
     }
 
-    // Supprimer les variantes d'abord
+    // ✅ Supprimer les variantes d'abord
     await prisma.variante.deleteMany({
       where: { produitId: id },
     });
 
-    // Puis le produit
+    // ✅ Supprimer le produit
+    // Grâce à onDelete: SetNull, les CommandeItem gardent leurs infos
+    // (nomProduit + prixUnitaire sont conservés)
     await prisma.produit.delete({
       where: { id },
     });
@@ -230,4 +230,4 @@ export async function DELETE(
     console.error("Erreur DELETE produit:", error);
     return NextResponse.json({ erreur: "Erreur serveur" }, { status: 500 });
   }
-        }
+  }
