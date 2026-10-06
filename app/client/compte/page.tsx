@@ -244,7 +244,8 @@ export default async function CompteClient() {
 
             c.items.forEach((item) => {
               const montant = item.prixUnitaire * item.quantite;
-              if (item.produit.devise === "USD") {
+              // ✅ CORRIGÉ : produit peut être null
+              if (item.produit?.devise === "USD") {
                 totalUSD += montant;
               } else {
                 totalFC += montant;
@@ -352,10 +353,12 @@ export default async function CompteClient() {
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
                       }}>
-                        {item.produit.nom} × {item.quantite}
+                        {/* ✅ CORRIGÉ : produit peut être null */}
+                        {item.produit?.nom || item.nomProduit || "Produit supprimé"} × {item.quantite}
                       </span>
                       <span style={{ color: "#57534E", fontWeight: "800", flexShrink: 0 }}>
-                        {formaterPrix(item.prixUnitaire * item.quantite, item.produit.devise)}
+                        {/* ✅ CORRIGÉ : produit peut être null */}
+                        {formaterPrix(item.prixUnitaire * item.quantite, item.produit?.devise || "FC")}
                       </span>
                     </div>
                   ))}
@@ -420,4 +423,4 @@ export default async function CompteClient() {
       )}
     </div>
   );
-        }
+              }
