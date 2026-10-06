@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { envoyerEmail, templateCode } from "@/lib/email";
 import { normaliserTelephone } from "@/lib/telephone";
+import { verifierRateLimitMemoire, getIP } from "@/lib/rateLimit";
 
 export async function POST(request: Request) {
   try {
@@ -15,8 +16,35 @@ export async function POST(request: Request) {
       );
     }
 
-    // ✅ Normalisation : peu importe le format saisi
+    // ✅ Normalisation
     const telephoneNormalise = normaliserTelephone(telephone);
+    const ip = getIP(request) || "unknown";
+
+    // ✅ Rate limiting PAR TÉLÉPHONE (3/heure)
+    const limiteTel = verifierRateLimitMemoire(
+      "/api/auth/mot-de-passe-oublie",
+      telephoneNormalise
+    );
+    if (!limiteTel.autorise) {
+      const minutes = Math.ceil((limiteTel.retryAfter || 0) / 60);
+      return NextResponse.json(
+        { erreur: `Trop de tentatives. Réessayez dans ${minutes} minute(s).` },
+        { status: 429 }
+      );
+    }
+
+    // ✅ Rate limiting PAR IP (10/heure)
+    const limiteIp = verifierRateLimitMemoire(
+      "/api/auth/mot-de-passe-oublie-ip",
+      ip
+    );
+    if (!limiteIp.autorise) {
+      const minutes = Math.ceil((limiteIp.retryAfter || 0) / 60);
+      return NextResponse.json(
+        { erreur: `Trop de tentatives depuis ce réseau. Réessayez dans ${minutes} minute(s).` },
+        { status: 429 }
+      );
+    }
 
     const user = await prisma.user.findUnique({
       where: { telephone: telephoneNormalise },
@@ -71,7 +99,6 @@ export async function POST(request: Request) {
           message: `Un code a été envoyé à ${masquerEmail(user.email)}`,
         });
       } else {
-        // Si l'envoi échoue → afficher à l'écran
         return NextResponse.json({
           succes: true,
           methode: "ecran",
