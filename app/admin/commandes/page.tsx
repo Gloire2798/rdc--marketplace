@@ -32,7 +32,8 @@ export default async function AdminCommandes() {
   const terminees = commandes.filter((c) => c.statut === "RETIRE");
 
   const renderCard = (c: typeof commandes[0], couleur: string) => {
-    const devise = c.items[0]?.produit.devise || "FC";
+    // ✅ CORRIGÉ : produit peut être null
+    const devise = c.items[0]?.produit?.devise || "FC";
     return (
       <div key={c.id} style={{
         backgroundColor: "white",
@@ -167,7 +168,8 @@ export default async function AdminCommandes() {
                 minWidth: 0,
                 flex: 1,
               }}>
-                {i.produit.nom} × {i.quantite}
+                {/* ✅ CORRIGÉ : produit peut être null, on utilise nomProduit en fallback */}
+                {i.produit?.nom || i.nomProduit || "Produit supprimé"} × {i.quantite}
               </span>
               <span style={{ color: "#57534E", fontWeight: "800", flexShrink: 0 }}>
                 {formaterPrix(i.prixUnitaire * i.quantite, devise)}
@@ -358,4 +360,4 @@ export default async function AdminCommandes() {
       )}
     </div>
   );
-              }
+        }
