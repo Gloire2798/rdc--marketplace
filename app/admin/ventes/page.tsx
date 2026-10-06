@@ -53,7 +53,8 @@ export default async function VentesAdmin() {
 
     let montantFC = 0;
     c.items.forEach((item) => {
-      if (item.produit.devise !== "USD") {
+      // ✅ CORRIGÉ : produit peut être null
+      if (item.produit?.devise !== "USD") {
         montantFC += item.prixUnitaire * item.quantite;
       }
     });
@@ -86,7 +87,8 @@ export default async function VentesAdmin() {
   commandes.forEach((c) => {
     c.items.forEach((item) => {
       const montant = item.prixUnitaire * item.quantite;
-      if (item.produit.devise === "USD") {
+      // ✅ CORRIGÉ : produit peut être null
+      if (item.produit?.devise === "USD") {
         caTotalUSD += montant;
       } else {
         caTotalFC += montant;
@@ -262,7 +264,8 @@ export default async function VentesAdmin() {
               .forEach((c) => {
                 c.items.forEach((item) => {
                   const montant = item.prixUnitaire * item.quantite;
-                  if (item.produit.devise === "USD") {
+                  // ✅ CORRIGÉ : produit peut être null
+                  if (item.produit?.devise === "USD") {
                     caBoutiqueUSD += montant;
                   } else {
                     caBoutiqueFC += montant;
@@ -330,4 +333,4 @@ export default async function VentesAdmin() {
       </div>
     </div>
   );
-    }
+                }
