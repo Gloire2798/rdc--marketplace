@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { createSession } from "@/lib/auth";
 import { normaliserTelephone } from "@/lib/telephone";
+import { verifierRateLimitMemoire } from "@/lib/rateLimit";
 
 export async function POST(request: Request) {
   try {
@@ -16,8 +17,24 @@ export async function POST(request: Request) {
       );
     }
 
-    // ✅ Normalisation : peu importe le format saisi
+    // Normalisation
     const telephoneNormalise = normaliserTelephone(telephone);
+
+    // ✅ Rate limiting par téléphone (5 tentatives / 15 min)
+    const limite = verifierRateLimitMemoire(
+      "/api/vendeur/connexion",
+      telephoneNormalise
+    );
+
+    if (!limite.autorise) {
+      const minutes = Math.ceil((limite.retryAfter || 0) / 60);
+      return NextResponse.json(
+        {
+          erreur: `Trop de tentatives. Réessayez dans ${minutes} minute(s).`,
+        },
+        { status: 429 }
+      );
+    }
 
     const user = await prisma.user.findUnique({
       where: { telephone: telephoneNormalise },
