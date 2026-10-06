@@ -113,6 +113,16 @@ Toutes tes boutiques préférées, dans ta poche.
   },
 ];
 
+const idees = [
+  "Partager le lien en statut WhatsApp",
+  "Mettre le lien en bio Facebook / Instagram / TikTok",
+  "Demander aux vendeurs de partager leur boutique",
+  "Offrir un petit cadeau aux 10 premiers clients",
+  "Poster les nouveautés des boutiques chaque semaine",
+  "Contacter des influenceurs de Kinshasa",
+  "Créer une vidéo TikTok par semaine avec le lien",
+];
+
 export default function MarketingPage() {
   const [copie, setCopie] = useState<string | null>(null);
 
@@ -513,7 +523,7 @@ export default function MarketingPage() {
         </div>
       </div>
 
-      {/* Conseils */}
+      {/* Carnet d'idées */}
       <div
         style={{
           backgroundColor: "white",
@@ -529,37 +539,66 @@ export default function MarketingPage() {
           color: "#0F172A",
           textTransform: "uppercase",
           letterSpacing: "0.6px",
-          marginBottom: "12px",
+          marginBottom: "4px",
           display: "flex",
           alignItems: "center",
           gap: "8px",
         }}>
           <span style={traitOrange} />
           <Lightbulb size={13} strokeWidth={2.8} color="#EA580C" />
-          Conseils pour être connu
+          Carnet d&apos;idées
+        </p>
+        <p style={{
+          fontSize: "10.5px",
+          color: "#57534E",
+          fontWeight: "700",
+          marginBottom: "14px",
+          marginLeft: "11px",
+        }}>
+          À piocher selon ton temps
         </p>
 
         <ul
           style={{
-            fontSize: "11.5px",
-            color: "#0F172A",
-            fontWeight: "700",
-            lineHeight: 1.7,
-            paddingLeft: "18px",
+            listStyle: "none",
+            paddingLeft: 0,
             display: "flex",
             flexDirection: "column",
-            gap: "5px",
+            gap: "8px",
           }}
         >
-          <li>Partage le lien dans tes statuts WhatsApp</li>
-          <li>Ajoute le lien dans ta bio Facebook / Instagram / TikTok</li>
-          <li>Demande à tes vendeurs de partager leur boutique</li>
-          <li>Offre un petit cadeau aux 10 premiers clients</li>
-          <li>Poste les nouveautés de tes boutiques chaque semaine</li>
-          <li>Contacte des influenceurs de Kinshasa pour un partenariat</li>
-          <li>Crée une vidéo TikTok chaque semaine avec le lien</li>
+          {idees.map((idee, idx) => (
+            <li
+              key={idx}
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "8px",
+                fontSize: "11.5px",
+                color: "#0F172A",
+                fontWeight: "700",
+                lineHeight: 1.5,
+              }}
+            >
+              <span style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "18px",
+                height: "18px",
+                borderRadius: "6px",
+                backgroundColor: "#F5EAD2",
+                border: "1.5px solid #EA580C",
+                flexShrink: 0,
+                marginTop: "1px",
+              }}>
+                <Check size={11} strokeWidth={3} color="#EA580C" />
+              </span>
+              <span>{idee}</span>
+            </li>
+          ))}
         </ul>
       </div>
     </div>
   );
-              }
+            }
