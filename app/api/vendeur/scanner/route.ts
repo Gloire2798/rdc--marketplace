@@ -105,7 +105,8 @@ export async function POST(request: Request) {
 
     commande.items.forEach((i) => {
       const montant = i.prixUnitaire * i.quantite;
-      if (i.produit.devise === "USD") {
+      // ✅ CORRIGÉ : produit peut être null
+      if (i.produit?.devise === "USD") {
         totalUSD += montant;
       } else {
         totalFC += montant;
@@ -135,10 +136,11 @@ export async function POST(request: Request) {
         createdAt: commande.createdAt.toISOString(),
         nomBoutique: vendeur.nomBoutique,
         items: commande.items.map((i) => ({
-          nom: i.produit.nom,
+          // ✅ CORRIGÉ : produit peut être null
+          nom: i.produit?.nom || i.nomProduit || "Produit supprimé",
           quantite: i.quantite,
           prixUnitaire: i.prixUnitaire,
-          devise: i.produit.devise,
+          devise: i.produit?.devise || "FC",
         })),
       },
     });
@@ -205,4 +207,4 @@ export async function PUT(request: Request) {
     console.error("Erreur validation retrait:", error);
     return NextResponse.json({ erreur: "Erreur serveur" }, { status: 500 });
   }
-}
+      }
