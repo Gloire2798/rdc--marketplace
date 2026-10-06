@@ -101,6 +101,15 @@ export async function POST(request: Request) {
       }
     }
 
+    // ✅ Récupérer les noms des produits AVANT de créer les items
+    const produitsInfos = await prisma.produit.findMany({
+      where: {
+        id: { in: (articles as ArticleInput[]).map((a) => a.produitId) },
+      },
+      select: { id: true, nom: true },
+    });
+    const nomsProduits = new Map(produitsInfos.map((p) => [p.id, p.nom]));
+
     const totalCombine = (totalFC || 0) + (totalUSD || 0);
 
     // Créer la commande
@@ -120,6 +129,7 @@ export async function POST(request: Request) {
         items: {
           create: (articles as ArticleInput[]).map((a) => ({
             produitId: a.produitId,
+            nomProduit: nomsProduits.get(a.produitId) || null, // ✅ AJOUT
             quantite: a.quantite,
             prixUnitaire: a.prixPromo !== null ? a.prixPromo : a.prix,
             varianteInfo: a.varianteInfo ? JSON.stringify(a.varianteInfo) : null,
@@ -195,4 +205,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-          }
+    }
