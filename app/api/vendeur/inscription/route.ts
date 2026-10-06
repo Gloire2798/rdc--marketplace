@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { creerNotificationAdmin } from "@/lib/notifications";
 import bcrypt from "bcryptjs";
 import { normaliserTelephone, validerTelephone } from "@/lib/telephone";
+import { verifierRateLimitMemoire, getIP } from "@/lib/rateLimit";
 
 export async function POST(request: Request) {
   try {
@@ -37,8 +38,35 @@ export async function POST(request: Request) {
       );
     }
 
-    // ✅ Normalisation du téléphone
+    // ✅ Normalisation
     const telephoneNormalise = normaliserTelephone(telephone);
+    const ip = getIP(request) || "unknown";
+
+    // ✅ Rate limiting PAR TÉLÉPHONE (3/24h)
+    const limiteTel = verifierRateLimitMemoire(
+      "/api/vendeur/inscription",
+      telephoneNormalise
+    );
+    if (!limiteTel.autorise) {
+      const heures = Math.ceil((limiteTel.retryAfter || 0) / 3600);
+      return NextResponse.json(
+        { erreur: `Trop de tentatives. Réessayez dans ${heures} heure(s).` },
+        { status: 429 }
+      );
+    }
+
+    // ✅ Rate limiting PAR IP (10/24h)
+    const limiteIp = verifierRateLimitMemoire(
+      "/api/vendeur/inscription-ip",
+      ip
+    );
+    if (!limiteIp.autorise) {
+      const heures = Math.ceil((limiteIp.retryAfter || 0) / 3600);
+      return NextResponse.json(
+        { erreur: `Trop de tentatives depuis ce réseau. Réessayez dans ${heures} heure(s).` },
+        { status: 429 }
+      );
+    }
 
     if (motDePasse.length < 6) {
       return NextResponse.json(
@@ -54,7 +82,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // ✅ Normalisation des numéros Mobile Money
+    // ✅ Normalisation Mobile Money
     const mpesaNormalise = numMpesa ? normaliserTelephone(numMpesa) : null;
     const orangeNormalise = numOrange ? normaliserTelephone(numOrange) : null;
     const airtelNormalise = numAirtel ? normaliserTelephone(numAirtel) : null;
@@ -62,11 +90,10 @@ export async function POST(request: Request) {
       numMobileMoney || numMpesa || numOrange || numAirtel
     );
 
-    // Vérifier le téléphone
+    // Vérifier téléphone
     const existantTel = await prisma.user.findUnique({
       where: { telephone: telephoneNormalise },
     });
-
     if (existantTel) {
       return NextResponse.json(
         { erreur: "Ce numéro de téléphone a déjà un compte" },
@@ -74,13 +101,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // Vérifier l'email
+    // Vérifier email
     const emailNettoye = email.trim().toLowerCase();
-
     const existantEmail = await prisma.user.findUnique({
       where: { email: emailNettoye },
     });
-
     if (existantEmail) {
       return NextResponse.json(
         { erreur: "Cet email a déjà un compte" },
@@ -113,7 +138,6 @@ export async function POST(request: Request) {
       },
     });
 
-    // Notification aux admins
     await creerNotificationAdmin(
       "NOUVEAU_VENDEUR",
       "🏪 Nouvelle boutique à valider",
@@ -134,4 +158,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-         }
+              }
