@@ -4,6 +4,17 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
+  ArrowLeft,
+  Info,
+  User,
+  Phone,
+  Store,
+  Truck,
+  Package,
+  Check,
+  Wallet,
+} from "lucide-react";
+import {
   getPanier,
   viderPanier,
   formaterPrix,
@@ -164,155 +175,227 @@ function ContenuMulti() {
       setErreur("Impossible de contacter le serveur");
       setEnvoi(false);
     }
-  };
-
-  if (chargement || groupes.length === 0) {
-    return (
-      <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-        <p>Chargement...</p>
-      </div>
-    );
-  }
-
-  const champStyle = {
-    width: "100%",
-    padding: "10px",
-    borderRadius: "10px",
-    border: "1px solid #E5E0D5",
-    fontSize: "13px",
-    marginBottom: "10px",
-    fontFamily: "inherit",
-    backgroundColor: "#FEFCF8",
-  };
-
-  const labelStyle = {
-    display: "block",
-    marginBottom: "5px",
-    fontWeight: "700" as const,
-    fontSize: "11.5px",
-    color: "#334155",
-  };
-
-  const logoBox = {
-    width: "38px",
-    height: "38px",
-    borderRadius: "8px",
-    backgroundColor: "white",
-    border: "1px solid #E5E0D5",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-    padding: "3px",
-    boxSizing: "border-box" as const,
-    overflow: "hidden",
-  };
-
-  const logoImg = {
-    width: "100%",
-    height: "100%",
-    objectFit: "contain" as const,
-  };
-
-  const numeroBoxStyle = {
-    flex: 1,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "white",
-    border: "1px solid #E5E0D5",
-    borderRadius: "8px",
-    padding: "8px 10px",
-    minWidth: 0,
-  };
-
-  const copierBtnStyle = (actif: boolean) => ({
-    padding: "5px 9px",
-    fontSize: "10.5px",
-    backgroundColor: actif ? "#16a34a" : "#F1ECE0",
-    color: actif ? "white" : "#374151",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: "700" as const,
-    flexShrink: 0,
-    marginLeft: "6px",
-  });
-
-  const aucunNumeroSpecifique =
-    !vendeur?.numMpesa && !vendeur?.numOrange && !vendeur?.numAirtel;
-
+  };if (chargement || groupes.length === 0) {
   return (
-    <div style={{ padding: "16px 14px 20px 14px", maxWidth: "600px", margin: "0 auto", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-      <Link href="/acheteur/panier" style={{ color: "#1D4ED8", fontSize: "11px", fontWeight: "700" }}>
-        ← Retour au panier
-      </Link>
+    <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
+      <p style={{ color: "#57534E", fontWeight: "700" }}>Chargement...</p>
+    </div>
+  );
+}
 
-      <div style={{
-        display: "flex",
-        gap: "6px",
-        marginTop: "14px",
-        marginBottom: "10px",
-        justifyContent: "center",
-      }}>
-        {groupes.map((_, i) => (
-          <div
-            key={i}
-            style={{
-              flex: 1,
-              height: "5px",
-              borderRadius: "3px",
-              backgroundColor: i <= indexActuel ? "#1D4ED8" : "#E5E0D5",
-            }}
-          />
-        ))}
-      </div>
+const champStyle = {
+  width: "100%",
+  padding: "12px 14px",
+  borderRadius: "14px",
+  border: "1.5px solid #0F172A",
+  fontSize: "13.5px",
+  fontFamily: "inherit",
+  backgroundColor: "white",
+  outline: "none",
+  color: "#0F172A",
+  fontWeight: "700" as const,
+  boxSizing: "border-box" as const,
+  marginBottom: "10px",
+};
 
-      <p style={{
-        textAlign: "center",
+const labelStyle = {
+  display: "block" as const,
+  marginBottom: "6px",
+  fontWeight: "900" as const,
+  fontSize: "11px",
+  color: "#0F172A",
+  textTransform: "uppercase" as const,
+  letterSpacing: "0.4px",
+};
+
+const titreSection = {
+  fontSize: "12px",
+  fontWeight: "900" as const,
+  color: "#0F172A",
+  marginBottom: "10px",
+  marginTop: "14px",
+  textTransform: "uppercase" as const,
+  letterSpacing: "1px",
+  display: "flex" as const,
+  alignItems: "center" as const,
+  gap: "8px",
+};
+
+const traitOrange = {
+  display: "inline-block",
+  width: "3px",
+  height: "14px",
+  backgroundColor: "#EA580C",
+  borderRadius: "2px",
+};
+
+const logoBox = {
+  width: "38px",
+  height: "38px",
+  borderRadius: "10px",
+  backgroundColor: "white",
+  border: "1.5px solid #0F172A",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexShrink: 0,
+  padding: "3px",
+  boxSizing: "border-box" as const,
+  overflow: "hidden",
+};
+
+const logoImg = {
+  width: "100%",
+  height: "100%",
+  objectFit: "contain" as const,
+};
+
+const numeroBoxStyle = {
+  flex: 1,
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  backgroundColor: "white",
+  border: "1.5px solid #0F172A",
+  borderRadius: "12px",
+  padding: "8px 10px",
+  minWidth: 0,
+};
+
+const copierBtnStyle = (actif: boolean) => ({
+  padding: "5px 10px",
+  fontSize: "11px",
+  backgroundColor: actif ? "#16A34A" : "#0F172A",
+  color: "white",
+  border: "none",
+  borderRadius: "8px",
+  cursor: "pointer",
+  fontWeight: "800" as const,
+  flexShrink: 0,
+  marginLeft: "6px",
+  fontFamily: "inherit",
+});
+
+const aucunNumeroSpecifique =
+  !vendeur?.numMpesa && !vendeur?.numOrange && !vendeur?.numAirtel;
+
+return (
+  <div style={{ padding: "16px 12px 40px 12px", maxWidth: "600px", margin: "0 auto", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
+    <Link
+      href="/acheteur/panier"
+      style={{
+        color: "#0F172A",
         fontSize: "11.5px",
         fontWeight: "800",
-        color: "#1D4ED8",
-        marginBottom: "12px",
-      }}>
-        Commande {indexActuel + 1} sur {groupes.length}
-      </p>
+        textDecoration: "none",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "4px",
+      }}
+    >
+      <ArrowLeft size={12} strokeWidth={2.8} />
+      Retour au panier
+    </Link>
 
-      <h1 style={{ fontSize: "19px", fontWeight: "900", color: "#0F172A", marginBottom: "4px" }}>
-        🏪 {groupeActuel.nomBoutique}
+    {/* BARRE PROGRESSION */}
+    <div style={{
+      display: "flex",
+      gap: "6px",
+      marginTop: "14px",
+      marginBottom: "10px",
+      justifyContent: "center",
+    }}>
+      {groupes.map((_, i) => (
+        <div
+          key={i}
+          style={{
+            flex: 1,
+            height: "5px",
+            borderRadius: "3px",
+            backgroundColor: i <= indexActuel ? "#EA580C" : "#D4C5A0",
+          }}
+        />
+      ))}
+    </div>
+
+    <p style={{
+      textAlign: "center",
+      fontSize: "11.5px",
+      fontWeight: "900",
+      color: "#0F172A",
+      marginBottom: "14px",
+      textTransform: "uppercase",
+      letterSpacing: "0.5px",
+    }}>
+      Commande {indexActuel + 1} sur {groupes.length}
+    </p>
+
+    {/* HEADER BOUTIQUE */}
+    <div style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      marginBottom: "4px",
+    }}>
+      <Store size={18} strokeWidth={2.8} color="#EA580C" />
+      <h1 style={{ fontSize: "20px", fontWeight: "900", color: "#0F172A", letterSpacing: "-0.4px" }}>
+        {groupeActuel.nomBoutique}
       </h1>
-      <p style={{ color: "#64748b", marginBottom: "18px", fontSize: "11.5px", fontWeight: "600" }}>
-        {groupeActuel.articles.length} article{groupeActuel.articles.length > 1 ? "s" : ""} chez cette boutique
-      </p>
+    </div>
+    <p style={{ color: "#57534E", marginBottom: "18px", fontSize: "11.5px", fontWeight: "700" }}>
+      {groupeActuel.articles.length} article{groupeActuel.articles.length > 1 ? "s" : ""} chez cette boutique
+    </p>
 
-      {groupes.length > 1 && indexActuel === 0 && (
-        <div style={{
-          backgroundColor: "#FEF3C7",
-          color: "#78350F",
-          padding: "10px 12px",
-          borderRadius: "10px",
-          marginBottom: "14px",
-          border: "1px solid #FDE68A",
+    {/* INFO MULTI-BOUTIQUES */}
+    {groupes.length > 1 && indexActuel === 0 && (
+      <div style={{
+        backgroundColor: "white",
+        color: "#0F172A",
+        padding: "12px 14px",
+        borderRadius: "16px",
+        marginBottom: "14px",
+        border: "1.5px solid #0F172A",
+        boxShadow: "4px 4px 0 #EA580C",
+      }}>
+        <p style={{
+          fontWeight: "900",
+          fontSize: "11.5px",
+          marginBottom: "4px",
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          textTransform: "uppercase",
+          letterSpacing: "0.5px",
         }}>
-          <p style={{ fontWeight: "800", fontSize: "11.5px", marginBottom: "3px" }}>
-            ℹ️ Votre panier contient {groupes.length} boutiques
-          </p>
-          <p style={{ fontSize: "10.5px", fontWeight: "500", lineHeight: 1.4 }}>
-            Nous allons passer vos commandes une par une. Vos infos seront conservées d&apos;une boutique à l&apos;autre.
-          </p>
-        </div>
-      )}
+          <Info size={13} strokeWidth={2.8} color="#EA580C" />
+          {groupes.length} boutiques
+        </p>
+        <p style={{ fontSize: "11px", fontWeight: "700", color: "#57534E", lineHeight: 1.5 }}>
+          Nous allons passer vos commandes une par une. Vos infos seront conservées d&apos;une boutique à l&apos;autre.
+        </p>
+      </div>
+    )}
 
-      {erreur && (
-        <div style={{ backgroundColor: "#FEE2E2", color: "#991B1B", padding: "10px", borderRadius: "10px", marginBottom: "14px", fontSize: "11.5px", fontWeight: "600" }}>
-          {erreur}
-        </div>
-      )}
+    {erreur && (
+      <div style={{
+        backgroundColor: "#FEE2E2",
+        color: "#991B1B",
+        padding: "12px",
+        borderRadius: "14px",
+        marginBottom: "14px",
+        fontSize: "11.5px",
+        fontWeight: "800",
+        border: "1.5px solid #DC2626",
+      }}>
+        {erreur}
+      </div>
+    )}
 
-      <form onSubmit={soumettre}>
-        {indexActuel === 0 && (
+    <form onSubmit={soumettre}>        {indexActuel === 0 && (
           <>
-            <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px" }}>
+            <h2 style={titreSection}>
+              <span style={traitOrange} />
+              <User size={13} strokeWidth={2.8} color="#EA580C" />
               Vos informations
             </h2>
 
@@ -335,42 +418,58 @@ function ContenuMulti() {
               required
             />
 
-            <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px", marginTop: "14px" }}>
+            <h2 style={titreSection}>
+              <span style={traitOrange} />
+              <Truck size={13} strokeWidth={2.8} color="#EA580C" />
               Mode de réception
             </h2>
 
-            <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+            <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
               <button
                 type="button"
                 onClick={() => setInfos({ ...infos, mode: "RETRAIT" })}
                 style={{
                   flex: 1,
-                  padding: "10px",
-                  borderRadius: "10px",
-                  border: infos.mode === "RETRAIT" ? "2px solid #1D4ED8" : "1px solid #E5E0D5",
-                  backgroundColor: infos.mode === "RETRAIT" ? "#EFF6FF" : "white",
-                  fontWeight: "700",
+                  padding: "12px",
+                  borderRadius: "14px",
+                  border: infos.mode === "RETRAIT" ? "2px solid #0F172A" : "1.5px solid #D4C5A0",
+                  backgroundColor: infos.mode === "RETRAIT" ? "#0F172A" : "white",
+                  color: infos.mode === "RETRAIT" ? "white" : "#0F172A",
+                  fontWeight: "900",
                   fontSize: "12px",
                   cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  fontFamily: "inherit",
                 }}
               >
-                🏪 Retrait
+                <Store size={13} strokeWidth={2.8} />
+                Retrait
               </button>
               <button
                 type="button"
                 onClick={() => setInfos({ ...infos, mode: "LIVRAISON" })}
                 style={{
                   flex: 1,
-                  padding: "10px",
-                  borderRadius: "10px",
-                  border: infos.mode === "LIVRAISON" ? "2px solid #1D4ED8" : "1px solid #E5E0D5",
-                  backgroundColor: infos.mode === "LIVRAISON" ? "#EFF6FF" : "white",
-                  fontWeight: "700",
+                  padding: "12px",
+                  borderRadius: "14px",
+                  border: infos.mode === "LIVRAISON" ? "2px solid #0F172A" : "1.5px solid #D4C5A0",
+                  backgroundColor: infos.mode === "LIVRAISON" ? "#0F172A" : "white",
+                  color: infos.mode === "LIVRAISON" ? "white" : "#0F172A",
+                  fontWeight: "900",
                   fontSize: "12px",
                   cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  fontFamily: "inherit",
                 }}
               >
-                🚚 Livraison
+                <Truck size={13} strokeWidth={2.8} />
+                Livraison
               </button>
             </div>
 
@@ -392,128 +491,162 @@ function ContenuMulti() {
 
         {indexActuel > 0 && (
           <div style={{
-            backgroundColor: "#EFF6FF",
-            border: "1px solid #BFDBFE",
-            borderRadius: "10px",
-            padding: "10px 12px",
+            backgroundColor: "white",
+            border: "1.5px solid #0F172A",
+            borderRadius: "14px",
+            padding: "12px",
             marginBottom: "14px",
+            boxShadow: "3px 3px 0 #EA580C",
           }}>
-            <p style={{ fontSize: "10.5px", fontWeight: "800", color: "#1E40AF", marginBottom: "4px" }}>
-              👤 {infos.nom} · 📞 {infos.telephone}
+            <p style={{
+              fontSize: "11.5px",
+              fontWeight: "900",
+              color: "#0F172A",
+              marginBottom: "4px",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+            }}>
+              <User size={13} strokeWidth={2.8} color="#EA580C" />
+              {infos.nom}
+              <span style={{ color: "#D4C5A0" }}>·</span>
+              <Phone size={13} strokeWidth={2.8} color="#EA580C" />
+              {infos.telephone}
             </p>
-            <p style={{ fontSize: "10px", color: "#475569", fontWeight: "500" }}>
+            <p style={{ fontSize: "10.5px", color: "#57534E", fontWeight: "700", lineHeight: 1.5 }}>
               Vos infos sont conservées. Il ne reste que la référence de paiement à saisir.
             </p>
           </div>
-        )}        <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px", marginTop: "14px" }}>
+        )}
+
+        <h2 style={titreSection}>
+          <span style={traitOrange} />
+          <Wallet size={13} strokeWidth={2.8} color="#EA580C" />
           Paiement de l&apos;acompte
         </h2>
 
         <div style={{
-          backgroundColor: "#EFF6FF",
-          border: "1px solid #BFDBFE",
-          borderRadius: "12px",
-          padding: "12px",
+          backgroundColor: "white",
+          border: "1.5px solid #0F172A",
+          borderRadius: "20px",
+          padding: "14px",
           marginBottom: "14px",
+          boxShadow: "4px 4px 0 #EA580C",
         }}>
-          <p style={{ fontSize: "10.5px", fontWeight: "800", color: "#1E40AF", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+          <p style={{
+            fontSize: "10.5px",
+            fontWeight: "900",
+            color: "#57534E",
+            marginBottom: "6px",
+            textTransform: "uppercase",
+            letterSpacing: "0.5px",
+          }}>
             Acompte à payer (10%)
           </p>
 
           {groupeActuel.acompteUSD > 0 && (
-            <p style={{ fontSize: "15px", fontWeight: "900", color: "#1E40AF", marginBottom: "2px" }}>
+            <p style={{ fontSize: "20px", fontWeight: "900", color: "#EA580C", marginBottom: "2px", letterSpacing: "-0.3px" }}>
               {formaterPrix(groupeActuel.acompteUSD, "USD")}
             </p>
           )}
           {groupeActuel.acompteFC > 0 && (
-            <p style={{ fontSize: "15px", fontWeight: "900", color: "#1E40AF", marginBottom: "8px" }}>
+            <p style={{ fontSize: "20px", fontWeight: "900", color: "#EA580C", marginBottom: "8px", letterSpacing: "-0.3px" }}>
               {formaterPrix(groupeActuel.acompteFC, "FC")}
             </p>
           )}
 
-          <p style={{ fontSize: "10.5px", fontWeight: "800", color: "#1E40AF", marginBottom: "6px", marginTop: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-            Reste à payer à la remise
-          </p>
-
-          {groupeActuel.totalUSD - groupeActuel.acompteUSD > 0 && (
-            <p style={{ fontSize: "13px", fontWeight: "800", color: "#1E3A5F", marginBottom: "2px" }}>
-              {formaterPrix(groupeActuel.totalUSD - groupeActuel.acompteUSD, "USD")}
+          <div style={{ borderTop: "1px dashed #D4C5A0", paddingTop: "10px", marginTop: "8px" }}>
+            <p style={{
+              fontSize: "10.5px",
+              fontWeight: "900",
+              color: "#57534E",
+              marginBottom: "6px",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+            }}>
+              Reste à payer à la remise
             </p>
-          )}
-          {groupeActuel.totalFC - groupeActuel.acompteFC > 0 && (
-            <p style={{ fontSize: "13px", fontWeight: "800", color: "#1E3A5F" }}>
-              {formaterPrix(groupeActuel.totalFC - groupeActuel.acompteFC, "FC")}
-            </p>
-          )}
 
-          <p style={{ fontSize: "10px", color: "#475569", marginTop: "10px", lineHeight: 1.4, fontWeight: "500" }}>
-            Envoyez l&apos;acompte à <strong>{vendeur?.nomBoutique}</strong> via l&apos;un des numéros ci-dessous.
+            {groupeActuel.totalUSD - groupeActuel.acompteUSD > 0 && (
+              <p style={{ fontSize: "14px", fontWeight: "900", color: "#0F172A", marginBottom: "2px" }}>
+                {formaterPrix(groupeActuel.totalUSD - groupeActuel.acompteUSD, "USD")}
+              </p>
+            )}
+            {groupeActuel.totalFC - groupeActuel.acompteFC > 0 && (
+              <p style={{ fontSize: "14px", fontWeight: "900", color: "#0F172A" }}>
+                {formaterPrix(groupeActuel.totalFC - groupeActuel.acompteFC, "FC")}
+              </p>
+            )}
+          </div>
+
+          <p style={{ fontSize: "11px", color: "#57534E", marginTop: "12px", lineHeight: 1.5, fontWeight: "600" }}>
+            Envoyez l&apos;acompte à <strong style={{ color: "#0F172A" }}>{vendeur?.nomBoutique}</strong> via l&apos;un des numéros ci-dessous.
           </p>
 
           {vendeur?.numMpesa && (
-            <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center", marginTop: "10px" }}>
+            <div style={{ display: "flex", gap: "6px", marginBottom: "8px", alignItems: "center", marginTop: "12px" }}>
               <div style={logoBox}>
                 <img src="https://i.ibb.co/NndcrT1d/m-pesa.jpg" alt="M-Pesa" style={logoImg} />
               </div>
               <div style={numeroBoxStyle}>
-                <span style={{ fontSize: "12.5px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <span style={{ fontSize: "13px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis", color: "#0F172A" }}>
                   {vendeur.numMpesa}
                 </span>
                 <button type="button" onClick={() => copier(vendeur.numMpesa!, "mpesa")} style={copierBtnStyle(copie === "mpesa")}>
-                  {copie === "mpesa" ? "✅" : "📋"}
+                  {copie === "mpesa" ? "Copié" : "Copier"}
                 </button>
               </div>
             </div>
           )}
 
           {vendeur?.numOrange && (
-            <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center" }}>
+            <div style={{ display: "flex", gap: "6px", marginBottom: "8px", alignItems: "center" }}>
               <div style={logoBox}>
                 <img src="https://i.ibb.co/pvr5LPxN/orange.jpg" alt="Orange" style={logoImg} />
               </div>
               <div style={numeroBoxStyle}>
-                <span style={{ fontSize: "12.5px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <span style={{ fontSize: "13px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis", color: "#0F172A" }}>
                   {vendeur.numOrange}
                 </span>
                 <button type="button" onClick={() => copier(vendeur.numOrange!, "orange")} style={copierBtnStyle(copie === "orange")}>
-                  {copie === "orange" ? "✅" : "📋"}
+                  {copie === "orange" ? "Copié" : "Copier"}
                 </button>
               </div>
             </div>
           )}
 
           {vendeur?.numAirtel && (
-            <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center" }}>
+            <div style={{ display: "flex", gap: "6px", marginBottom: "8px", alignItems: "center" }}>
               <div style={logoBox}>
-                <img src="https://i.ibb.co/spmBgLvg/airtel.jpg" alt="Airtel" style={logoImg} />
+                <img src="https://i.ibb.co/8LFVGJ1/airtel.jpg" alt="Airtel" style={logoImg} />
               </div>
               <div style={numeroBoxStyle}>
-                <span style={{ fontSize: "12.5px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <span style={{ fontSize: "13px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis", color: "#0F172A" }}>
                   {vendeur.numAirtel}
                 </span>
                 <button type="button" onClick={() => copier(vendeur.numAirtel!, "airtel")} style={copierBtnStyle(copie === "airtel")}>
-                  {copie === "airtel" ? "✅" : "📋"}
+                  {copie === "airtel" ? "Copié" : "Copier"}
                 </button>
               </div>
             </div>
           )}
 
           {aucunNumeroSpecifique && vendeur?.numMobileMoney && (
-            <div style={{ display: "flex", gap: "6px", marginBottom: "6px", alignItems: "center", marginTop: "10px" }}>
+            <div style={{ display: "flex", gap: "6px", marginBottom: "8px", alignItems: "center", marginTop: "12px" }}>
               <div style={logoBox}>
-                <span style={{ fontSize: "18px" }}>📱</span>
+                <span style={{ fontSize: "12px", fontWeight: "900", color: "#0F172A" }}>MM</span>
               </div>
               <div style={numeroBoxStyle}>
                 <div style={{ minWidth: 0, flex: 1 }}>
-                  <p style={{ fontSize: "9px", color: "#64748b", fontWeight: "700", textTransform: "uppercase" }}>
+                  <p style={{ fontSize: "9px", color: "#57534E", fontWeight: "800", textTransform: "uppercase" }}>
                     Mobile Money
                   </p>
-                  <span style={{ fontSize: "12.5px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis", display: "block" }}>
+                  <span style={{ fontSize: "13px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis", display: "block", color: "#0F172A" }}>
                     {vendeur.numMobileMoney}
                   </span>
                 </div>
                 <button type="button" onClick={() => copier(vendeur.numMobileMoney!, "mobile")} style={copierBtnStyle(copie === "mobile")}>
-                  {copie === "mobile" ? "✅" : "📋"}
+                  {copie === "mobile" ? "Copié" : "Copier"}
                 </button>
               </div>
             </div>
@@ -530,16 +663,19 @@ function ContenuMulti() {
           required
         />
 
-        <h2 style={{ fontSize: "13px", fontWeight: "800", color: "#0F172A", marginBottom: "10px", marginTop: "14px" }}>
+        <h2 style={titreSection}>
+          <span style={traitOrange} />
+          <Package size={13} strokeWidth={2.8} color="#EA580C" />
           Articles de cette boutique
         </h2>
 
         <div style={{
           backgroundColor: "white",
-          borderRadius: "12px",
-          padding: "12px",
-          border: "1px solid #E8DFC8",
-          marginBottom: "14px",
+          borderRadius: "20px",
+          padding: "14px",
+          border: "1.5px solid #0F172A",
+          marginBottom: "16px",
+          boxShadow: "4px 4px 0 #EA580C",
         }}>
           {groupeActuel.articles.map((a) => {
             const prixFinal = a.prixPromo !== null ? a.prixPromo : a.prix;
@@ -548,32 +684,34 @@ function ContenuMulti() {
 
             return (
               <div key={cleLigne} style={{
-                marginBottom: "8px",
-                paddingBottom: "8px",
-                borderBottom: "1px dashed #F1ECE0",
+                marginBottom: "10px",
+                paddingBottom: "10px",
+                borderBottom: "1px dashed #D4C5A0",
               }}>
                 <div style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  fontSize: "11.5px",
+                  fontSize: "12px",
+                  gap: "8px",
                 }}>
-                  <span style={{ color: "#334155", fontWeight: "700" }}>
+                  <span style={{ color: "#0F172A", fontWeight: "800", minWidth: 0, flex: 1 }}>
                     {a.nom} × {a.quantite}
                   </span>
-                  <span style={{ fontWeight: "700", color: "#0F172A" }}>
+                  <span style={{ fontWeight: "900", color: "#0F172A", flexShrink: 0 }}>
                     {formaterPrix(prixFinal * a.quantite, a.devise)}
                   </span>
                 </div>
                 {labelVariante && (
                   <p style={{
                     fontSize: "10px",
-                    color: "#1D4ED8",
-                    fontWeight: "700",
-                    backgroundColor: "#EFF6FF",
+                    color: "#0F172A",
+                    fontWeight: "800",
+                    backgroundColor: "#F5EAD2",
+                    border: "1px solid #D4C5A0",
                     display: "inline-block",
                     padding: "2px 7px",
-                    borderRadius: "5px",
-                    marginTop: "3px",
+                    borderRadius: "8px",
+                    marginTop: "4px",
                   }}>
                     {labelVariante}
                   </p>
@@ -585,17 +723,20 @@ function ContenuMulti() {
           <div style={{
             display: "flex",
             justifyContent: "space-between",
-            paddingTop: "6px",
+            alignItems: "center",
+            paddingTop: "8px",
           }}>
-            <span style={{ fontWeight: "900", fontSize: "13px", color: "#0F172A" }}>TOTAL</span>
+            <span style={{ fontWeight: "900", fontSize: "13px", color: "#0F172A", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+              Total
+            </span>
             <div style={{ textAlign: "right" }}>
               {groupeActuel.totalUSD > 0 && (
-                <p style={{ fontSize: "14px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.2 }}>
+                <p style={{ fontSize: "17px", fontWeight: "900", color: "#EA580C", lineHeight: 1.2, letterSpacing: "-0.3px" }}>
                   {formaterPrix(groupeActuel.totalUSD, "USD")}
                 </p>
               )}
               {groupeActuel.totalFC > 0 && (
-                <p style={{ fontSize: "14px", fontWeight: "900", color: "#1D4ED8", lineHeight: 1.2 }}>
+                <p style={{ fontSize: "17px", fontWeight: "900", color: "#EA580C", lineHeight: 1.2, letterSpacing: "-0.3px" }}>
                   {formaterPrix(groupeActuel.totalFC, "FC")}
                 </p>
               )}
@@ -608,22 +749,36 @@ function ContenuMulti() {
           disabled={envoi}
           style={{
             width: "100%",
-            backgroundColor: estDernier ? "#16a34a" : "#1D4ED8",
+            backgroundColor: estDernier ? "#16A34A" : "#0F172A",
             color: "white",
-            padding: "13px",
-            borderRadius: "12px",
+            padding: "16px",
+            borderRadius: "26px",
             border: "none",
-            fontWeight: "800",
-            fontSize: "13px",
+            fontWeight: "900",
+            fontSize: "14px",
             cursor: "pointer",
             opacity: envoi ? 0.6 : 1,
+            boxShadow: "0 4px 12px rgba(15, 23, 42, 0.25)",
+            letterSpacing: "-0.2px",
+            fontFamily: "inherit",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "6px",
           }}
         >
-          {envoi
-            ? "Envoi..."
-            : estDernier
-            ? "✅ Valider la dernière commande"
-            : "➡️ Valider et passer à la boutique suivante"}
+          {envoi ? (
+            "Envoi..."
+          ) : estDernier ? (
+            <>
+              <Check size={16} strokeWidth={3} />
+              Valider la dernière commande
+            </>
+          ) : (
+            <>
+              Valider et passer à la suivante
+            </>
+          )}
         </button>
       </form>
     </div>
@@ -634,12 +789,12 @@ export default function PageMulti() {
   return (
     <Suspense
       fallback={
-        <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#FAF5E8", minHeight: "100vh" }}>
-          <p>Chargement...</p>
+        <div style={{ padding: "60px 16px", textAlign: "center", backgroundColor: "#F5EAD2", minHeight: "100vh" }}>
+          <p style={{ color: "#57534E", fontWeight: "700" }}>Chargement...</p>
         </div>
       }
     >
       <ContenuMulti />
     </Suspense>
   );
-      }
+              }
