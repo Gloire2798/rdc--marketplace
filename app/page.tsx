@@ -2,7 +2,8 @@ import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import Stories from "./components/Stories";
 import CarteBoutique from "./components/CarteBoutique";
-import { MapPin, Clock } from "lucide-react";
+import { MapPin, Clock, Building2, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 // ============================================================
 // RÉCUPÉRATION (avec cache 30 sec)
@@ -189,7 +190,56 @@ export default async function Home() {
             ))}
           </div>
         )}
+
+        {/* ✅ LIEN À PROPOS */}
+        <Link
+          href="/a-propos"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            backgroundColor: "white",
+            borderRadius: "16px",
+            padding: "14px",
+            border: "1px solid #D4C5A0",
+            textDecoration: "none",
+            color: "inherit",
+            marginTop: "20px",
+            boxShadow: "0 2px 6px rgba(120, 100, 60, 0.06)",
+          }}
+        >
+          <div style={{
+            width: "42px",
+            height: "42px",
+            borderRadius: "14px",
+            backgroundColor: "#0F172A",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}>
+            <Building2 size={20} color="#EA580C" strokeWidth={2.5} />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{
+              fontSize: "13px",
+              fontWeight: "900",
+              color: "#0F172A",
+              marginBottom: "3px",
+            }}>
+              En savoir plus sur GK Sensei
+            </p>
+            <p style={{
+              fontSize: "10.5px",
+              color: "#57534E",
+              fontWeight: "700",
+            }}>
+              Notre mission, comment ça marche
+            </p>
+          </div>
+          <ChevronRight size={18} color="#57534E" strokeWidth={2.8} />
+        </Link>
       </div>
     </div>
   );
-    }
+      }
