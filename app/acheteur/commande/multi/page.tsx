@@ -13,6 +13,7 @@ import {
   Package,
   Check,
   Wallet,
+  Smartphone,
 } from "lucide-react";
 import {
   getPanier,
@@ -618,7 +619,7 @@ return (
           {vendeur?.numAirtel && (
             <div style={{ display: "flex", gap: "6px", marginBottom: "8px", alignItems: "center" }}>
               <div style={logoBox}>
-                <img src="https://i.ibb.co/8LFVGJ1/airtel.jpg" alt="Airtel" style={logoImg} />
+                <img src="https://i.ibb.co/spmBgLvg/airtel.jpg" alt="Airtel" style={logoImg} />
               </div>
               <div style={numeroBoxStyle}>
                 <span style={{ fontSize: "13px", fontWeight: "800", overflow: "hidden", textOverflow: "ellipsis", color: "#0F172A" }}>
@@ -634,7 +635,7 @@ return (
           {aucunNumeroSpecifique && vendeur?.numMobileMoney && (
             <div style={{ display: "flex", gap: "6px", marginBottom: "8px", alignItems: "center", marginTop: "12px" }}>
               <div style={logoBox}>
-                <span style={{ fontSize: "12px", fontWeight: "900", color: "#0F172A" }}>MM</span>
+                <Smartphone size={16} color="#0F172A" strokeWidth={2.5} />
               </div>
               <div style={numeroBoxStyle}>
                 <div style={{ minWidth: 0, flex: 1 }}>
@@ -797,4 +798,4 @@ export default function PageMulti() {
       <ContenuMulti />
     </Suspense>
   );
-              }
+      }
