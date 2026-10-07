@@ -27,6 +27,7 @@ export default async function MesCommandes() {
     },
     include: {
       acheteur: true,
+      paiement: true,
       items: {
         include: {
           produit: true,
@@ -67,7 +68,7 @@ export default async function MesCommandes() {
       createdAt: c.createdAt.toISOString(),
       nomClient: c.nomClient || c.acheteur?.nom || "Client",
       telephoneClient: c.telephoneClient || c.acheteur?.telephone || "—",
-      reference: c.reference,
+      reference: c.paiement?.refTransaction || null,
       items: itemsFormates,
     };
   };
@@ -267,4 +268,4 @@ export default async function MesCommandes() {
       )}
     </div>
   );
-          }
+            }
