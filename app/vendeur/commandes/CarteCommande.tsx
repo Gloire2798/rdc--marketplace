@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { User, Phone, MapPin, Truck, Store, CheckCircle, XCircle, Package, Clock } from "lucide-react";
+import { User, Phone, MapPin, Truck, Store, CheckCircle, XCircle, Package, Clock, Wallet, Copy } from "lucide-react";
 
 interface Item {
   nom: string;
@@ -21,18 +21,27 @@ interface Commande {
   createdAt: string;
   nomClient: string | null;
   telephoneClient: string;
+  reference: string | null;
   items: Item[];
 }
 
 export default function CarteCommande({ commande }: { commande: Commande }) {
   const router = useRouter();
   const [chargement, setChargement] = useState(false);
+  const [copie, setCopie] = useState(false);
 
   const formaterPrix = (prix: number, devise: string) => {
     if (devise === "USD") {
       return `${prix.toFixed(2)} $`;
     }
     return `${prix.toLocaleString("fr-FR")} FC`;
+  };
+
+  const copierReference = () => {
+    if (!commande.reference) return;
+    navigator.clipboard.writeText(commande.reference);
+    setCopie(true);
+    setTimeout(() => setCopie(false), 2000);
   };
 
   const changerStatut = async (nouveauStatut: string) => {
@@ -67,7 +76,6 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
       backgroundColor: "white",
       borderRadius: "14px",
       padding: "10px 11px",
-      borderLeft: `3px solid ${couleurBordure()}`,
       border: "1px solid #D4C5A0",
       borderLeftWidth: "3px",
       borderLeftColor: couleurBordure(),
@@ -161,6 +169,80 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
           <MapPin size={10} strokeWidth={2.8} />
           {commande.adresse}
         </p>
+      )}
+
+      {/* RÉFÉRENCE DE PAIEMENT — visible uniquement EN_ATTENTE */}
+      {commande.statut === "EN_ATTENTE" && commande.reference && (
+        <div style={{
+          backgroundColor: "white",
+          border: "1.5px solid #0F172A",
+          borderRadius: "12px",
+          padding: "8px 10px",
+          marginBottom: "8px",
+          boxShadow: "2px 2px 0 #EA580C",
+        }}>
+          <p style={{
+            fontSize: "9px",
+            fontWeight: "900",
+            color: "#57534E",
+            textTransform: "uppercase",
+            letterSpacing: "0.4px",
+            marginBottom: "5px",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+          }}>
+            <Wallet size={10} strokeWidth={2.8} color="#EA580C" />
+            Référence de paiement
+          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span style={{
+              flex: 1,
+              fontSize: "12px",
+              fontWeight: "900",
+              color: "#0F172A",
+              letterSpacing: "0.4px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              fontFamily: "monospace",
+              minWidth: 0,
+            }}>
+              {commande.reference}
+            </span>
+            <button
+              type="button"
+              onClick={copierReference}
+              style={{
+                padding: "5px 9px",
+                fontSize: "10px",
+                backgroundColor: copie ? "#16A34A" : "#0F172A",
+                color: "white",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontWeight: "800",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                flexShrink: 0,
+                fontFamily: "inherit",
+              }}
+            >
+              <Copy size={10} strokeWidth={3} />
+              {copie ? "Copié" : "Copier"}
+            </button>
+          </div>
+          <p style={{
+            fontSize: "9.5px",
+            color: "#57534E",
+            fontWeight: "700",
+            marginTop: "5px",
+            lineHeight: 1.4,
+          }}>
+            Vérifiez la réception de l&apos;acompte avant de valider ou refuser.
+          </p>
+        </div>
       )}
 
       {/* Articles compacts */}
@@ -343,4 +425,4 @@ export default function CarteCommande({ commande }: { commande: Commande }) {
       </div>
     </div>
   );
-          }
+        }
