@@ -2,22 +2,19 @@ import Link from "next/link";
 import {
   ArrowLeft,
   Building2,
-  Users,
   ShoppingBag,
   Wallet,
   MapPin,
-  Phone,
-  Mail,
   Store,
-  Heart,
   Target,
   Sparkles,
+  Truck,
 } from "lucide-react";
 
 export const metadata = {
   title: "À propos",
   description:
-    "GK Sensei — Le complexe commercial en ligne de Kinshasa. Découvrez notre mission et notre vision.",
+    "GK Sensei — Le complexe commercial en ligne de Kinshasa. Découvrez notre mission et notre fonctionnement.",
 };
 
 export default function APropos() {
@@ -218,8 +215,7 @@ export default function APropos() {
           }}>
             <li>Commande en <strong>2 clics</strong></li>
             <li>Acompte <strong>10%</strong> par Mobile Money (M-Pesa, Orange, Airtel)</li>
-            <li>Reste à payer <strong>au retrait</strong> en boutique</li>
-            <li>Retrait <strong>simple et rapide</strong></li>
+            <li>Reste à payer <strong>au retrait en boutique</strong> ou <strong>à la livraison</strong></li>
           </ul>
         </div>
       </div>
@@ -232,53 +228,64 @@ export default function APropos() {
           Paiement
         </h2>
 
-        <p style={{
-          fontSize: "11.5px",
-          color: "#0F172A",
-          fontWeight: "700",
-          lineHeight: 1.65,
+        <div style={{
+          display: "flex",
+          alignItems: "flex-start",
+          gap: "8px",
           marginBottom: "10px",
         }}>
-          À la commande, tu paies <strong>10% d&apos;acompte</strong> par Mobile Money pour confirmer ta commande.
-        </p>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "26px",
+            height: "26px",
+            borderRadius: "50%",
+            backgroundColor: "#F5EAD2",
+            border: "1.5px solid #EA580C",
+            flexShrink: 0,
+          }}>
+            <Wallet size={13} strokeWidth={2.8} color="#EA580C" />
+          </div>
+          <p style={{
+            fontSize: "11.5px",
+            color: "#0F172A",
+            fontWeight: "700",
+            lineHeight: 1.6,
+            marginTop: "3px",
+          }}>
+            <strong>Acompte 10%</strong> à la commande, par Mobile Money (M-Pesa, Orange Money ou Airtel Money).
+          </p>
+        </div>
 
-        <p style={{
-          fontSize: "11.5px",
-          color: "#0F172A",
-          fontWeight: "700",
-          lineHeight: 1.65,
+        <div style={{
+          display: "flex",
+          alignItems: "flex-start",
+          gap: "8px",
         }}>
-          Le <strong>reste (90%)</strong> se paie <strong>au retrait en boutique</strong>, en espèces ou par Mobile Money.
-        </p>
-      </div>
-
-      {/* VISION */}
-      <div style={carteStyle}>
-        <h2 style={titreSection}>
-          <span style={traitOrange} />
-          <Heart size={14} strokeWidth={2.8} color="#EA580C" />
-          Notre vision
-        </h2>
-
-        <p style={{
-          fontSize: "12px",
-          color: "#0F172A",
-          fontWeight: "700",
-          lineHeight: 1.65,
-        }}>
-          Devenir une <strong>référence e-commerce en Afrique</strong>, avec un complexe commercial multi-étages virtuel.
-        </p>
-
-        <p style={{
-          fontSize: "11.5px",
-          color: "#57534E",
-          fontWeight: "700",
-          lineHeight: 1.65,
-          marginTop: "10px",
-          fontStyle: "italic",
-        }}>
-          Kinshasa → Lubumbashi → Goma → puis l&apos;Afrique.
-        </p>
+          <div style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "26px",
+            height: "26px",
+            borderRadius: "50%",
+            backgroundColor: "#F5EAD2",
+            border: "1.5px solid #EA580C",
+            flexShrink: 0,
+          }}>
+            <Truck size={13} strokeWidth={2.8} color="#EA580C" />
+          </div>
+          <p style={{
+            fontSize: "11.5px",
+            color: "#0F172A",
+            fontWeight: "700",
+            lineHeight: 1.6,
+            marginTop: "3px",
+          }}>
+            <strong>Reste 90%</strong> au retrait en boutique ou à la livraison, en espèces ou par Mobile Money.
+          </p>
+        </div>
       </div>
 
       {/* LOCALISATION */}
@@ -366,4 +373,4 @@ export default function APropos() {
       </div>
     </div>
   );
-      }
+            }
