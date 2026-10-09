@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ajouterAuPanier, getPanier } from "@/lib/panier";
-import { ShoppingCart, Check } from "lucide-react";
+import { ShoppingCart, Check, AlertCircle } from "lucide-react";
 
 interface Article {
   produitId: string;
@@ -24,8 +24,9 @@ export default function BoutonPanier({
 }) {
   const [ajoute, setAjoute] = useState(false);
   const [erreur, setErreur] = useState("");
+  const [, setTick] = useState(0);
 
-  const quantiteDansPanier = () => {
+  const quantiteDansPanier = (): number => {
     const panier = getPanier();
     const existant = panier.find(
       (a) => a.produitId === article.produitId && !a.varianteId
@@ -33,13 +34,17 @@ export default function BoutonPanier({
     return existant ? existant.quantite : 0;
   };
 
-  const ajouter = () => {
-    if (stock === 0) return;
+  const dejaDans = quantiteDansPanier();
+  const enRupture = stock === 0;
+  const maxAtteint = !enRupture && dejaDans >= stock;
 
-    const dejaDans = quantiteDansPanier();
+  const ajouter = () => {
+    if (enRupture) return;
 
     if (dejaDans + 1 > stock) {
-      setErreur(`Stock max atteint (${stock} disponible${stock > 1 ? "s" : ""})`);
+      setErreur(
+        `Stock max atteint (${stock} disponible${stock > 1 ? "s" : ""})`
+      );
       setTimeout(() => setErreur(""), 2500);
       return;
     }
@@ -47,28 +52,39 @@ export default function BoutonPanier({
     try {
       ajouterAuPanier(article);
       setAjoute(true);
+      setTick((t) => t + 1);
       setTimeout(() => setAjoute(false), 2000);
     } catch {}
   };
 
-  const enRupture = stock === 0;
-  const dejaDansPanier = quantiteDansPanier();
-  const maxAtteint = dejaDansPanier >= stock;
-
   return (
     <div>
+      {/* STATUT STOCK */}
+      <p style={{
+        fontSize: "11.5px",
+        color: enRupture || maxAtteint ? "#DC2626" : "#16A34A",
+        fontWeight: "800",
+        marginBottom: "14px",
+        textAlign: "center",
+      }}>
+        {enRupture
+          ? "Rupture de stock"
+          : maxAtteint
+          ? `Stock max atteint (${stock} dans le panier)`
+          : `En stock (${stock} disponible${stock > 1 ? "s" : ""})`}
+      </p>
+
       <button
         onClick={ajouter}
         disabled={enRupture || maxAtteint}
         style={{
           width: "100%",
-          backgroundColor: enRupture
-            ? "#94A3B8"
-            : maxAtteint
-            ? "#94A3B8"
-            : ajoute
-            ? "#16A34A"
-            : "#0F172A",
+          backgroundColor:
+            enRupture || maxAtteint
+              ? "#94A3B8"
+              : ajoute
+              ? "#16A34A"
+              : "#0F172A",
           color: "white",
           padding: "16px 20px",
           borderRadius: "26px",
@@ -104,15 +120,20 @@ export default function BoutonPanier({
 
       {erreur && (
         <p style={{
-          marginTop: "8px",
-          fontSize: "11.5px",
-          fontWeight: "800",
           color: "#DC2626",
+          fontSize: "11px",
+          marginTop: "10px",
           textAlign: "center",
+          fontWeight: "700",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "4px",
         }}>
+          <AlertCircle size={13} />
           {erreur}
         </p>
       )}
     </div>
   );
-}
+          }
