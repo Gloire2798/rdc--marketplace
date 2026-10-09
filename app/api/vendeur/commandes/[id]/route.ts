@@ -8,8 +8,8 @@ const TRANSITIONS_AUTORISEES: Record<string, string[]> = {
   EN_ATTENTE: ["PAYE", "ANNULE"],
   PAYE: ["PRET", "ANNULE"],
   PRET: ["RETIRE", "ANNULE"],
-  RETIRE: [], // Statut final
-  ANNULE: [], // Statut final
+  RETIRE: [],
+  ANNULE: [],
 };
 
 export async function PATCH(
@@ -44,9 +44,8 @@ export async function PATCH(
       return NextResponse.json({ erreur: "Statut invalide" }, { status: 400 });
     }
 
-    // ✅ TRANSACTION : vérification + mise à jour atomiques
+    // ✅ TRANSACTION
     const commandeModifiee = await prisma.$transaction(async (tx) => {
-      // 1. Récupérer la commande (dans la transaction)
       const commande = await tx.commande.findUnique({
         where: { id },
       });
@@ -55,7 +54,6 @@ export async function PATCH(
         throw new Error("COMMANDE_INTROUVABLE");
       }
 
-      // 2. Vérifier la transition autorisée
       const transitionsPossibles =
         TRANSITIONS_AUTORISEES[commande.statut] || [];
 
@@ -63,7 +61,7 @@ export async function PATCH(
         throw new Error("TRANSITION_INVALIDE");
       }
 
-      // 3. Si on annule une commande → REMETTRE LE STOCK
+      // Si annulation → remettre le stock
       if (nouveauStatut === "ANNULE") {
         const items = await tx.commandeItem.findMany({
           where: { commandeId: id },
@@ -72,19 +70,18 @@ export async function PATCH(
         for (const item of items) {
           if (!item.produitId) continue;
 
-          // Vérifier si l'item avait une variante
           const varianteInfo = item.varianteInfo
             ? JSON.parse(item.varianteInfo)
             : null;
 
-          if (varianteInfo?.varianteId) {
-            // Remettre le stock de la variante
+          const varianteId = varianteInfo?._vid;
+
+          if (varianteId) {
             await tx.variante.update({
-              where: { id: varianteInfo.varianteId },
+              where: { id: varianteId },
               data: { stock: { increment: item.quantite } },
             });
 
-            // Recalculer le stock total du produit
             const variantesProduit = await tx.variante.findMany({
               where: { produitId: item.produitId },
             });
@@ -97,7 +94,6 @@ export async function PATCH(
               data: { stock: nouveauStock },
             });
           } else {
-            // Remettre le stock du produit directement
             await tx.produit.update({
               where: { id: item.produitId },
               data: { stock: { increment: item.quantite } },
@@ -106,7 +102,6 @@ export async function PATCH(
         }
       }
 
-      // 4. Mettre à jour le statut
       const updated = await tx.commande.update({
         where: { id },
         data: { statut: nouveauStatut },
@@ -115,7 +110,7 @@ export async function PATCH(
       return updated;
     });
 
-    // ✅ HORS TRANSACTION : notifications (non bloquantes)
+    // ✅ Notifications (hors transaction)
     if (commandeModifiee.acheteurId) {
       const numCommande = commandeModifiee.id.slice(0, 8);
 
@@ -150,7 +145,6 @@ export async function PATCH(
 
     return NextResponse.json({ succes: true, commande: commandeModifiee });
   } catch (error) {
-    // Gestion des erreurs métier
     if (error instanceof Error) {
       if (error.message === "COMMANDE_INTROUVABLE") {
         return NextResponse.json(
