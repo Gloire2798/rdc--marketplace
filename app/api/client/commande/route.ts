@@ -52,7 +52,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Récupérer ou créer l'acheteur (hors transaction — opération idempotente)
+    // Récupérer ou créer l'acheteur
     let acheteurId: string | null = null;
 
     if (session && session.role === "ACHETEUR") {
@@ -89,7 +89,7 @@ export async function POST(request: Request) {
 
     // ✅ TRANSACTION : tout ou rien
     const commande = await prisma.$transaction(async (tx) => {
-      // 1. Vérifier les stocks DANS la transaction (protection contre race conditions)
+      // 1. Vérifier les stocks DANS la transaction
       for (const a of articles as ArticleInput[]) {
         if (a.varianteId) {
           const variante = await tx.variante.findUnique({
@@ -129,8 +129,10 @@ export async function POST(request: Request) {
               quantite: a.quantite,
               prixUnitaire: a.prixPromo !== null ? a.prixPromo : a.prix,
               varianteInfo: a.varianteInfo
-                ? JSON.stringify(a.varianteInfo)
-                : null,
+                ? JSON.stringify({ ...a.varianteInfo, _vid: a.varianteId || null })
+                : a.varianteId
+                  ? JSON.stringify({ _vid: a.varianteId })
+                  : null,
             })),
           },
           paiement: {
@@ -155,7 +157,6 @@ export async function POST(request: Request) {
             data: { stock: { decrement: a.quantite } },
           });
 
-          // Recalculer le stock total du produit
           const variantesProduit = await tx.variante.findMany({
             where: { produitId: a.produitId },
           });
@@ -178,7 +179,7 @@ export async function POST(request: Request) {
       return nouvelleCommande;
     });
 
-    // ✅ HORS TRANSACTION : notifications (si ça échoue, la commande reste valide)
+    // ✅ HORS TRANSACTION : notifications
     const numCommande = commande.id.slice(0, 8);
 
     try {
@@ -197,7 +198,6 @@ export async function POST(request: Request) {
         "/admin/commandes"
       );
     } catch (notifError) {
-      // On log mais on ne bloque pas la réponse
       console.error("Erreur notifications (non bloquant):", notifError);
     }
 
@@ -207,7 +207,6 @@ export async function POST(request: Request) {
       message: "Commande enregistrée !",
     });
   } catch (error) {
-    // Gestion spéciale du stock insuffisant
     if (error instanceof Error && error.message === "STOCK_INSUFFISANT") {
       return NextResponse.json(
         { erreur: "Stock insuffisant pour un article. Veuillez réessayer." },
@@ -221,4 +220,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-            }
+}
