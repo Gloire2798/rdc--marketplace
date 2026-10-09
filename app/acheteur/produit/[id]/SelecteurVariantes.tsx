@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ajouterAuPanier } from "@/lib/panier";
+import { ajouterAuPanier, getPanier } from "@/lib/panier";
 import { ShoppingCart, Check, AlertCircle } from "lucide-react";
 
 interface Article {
@@ -45,6 +45,7 @@ export default function SelecteurVariantes({
   const [selection, setSelection] = useState<Record<string, string>>({});
   const [ajoute, setAjoute] = useState(false);
   const [erreur, setErreur] = useState("");
+  const [, setTick] = useState(0); // force refresh pour recalculer le panier
 
   const listeAttributs = useMemo(() => {
     if (!aVariantes) return [];
@@ -99,6 +100,23 @@ export default function SelecteurVariantes({
   const enRupture = toutSelectionne && stockActuel === 0;
   const nonSelectionne = aVariantes && !toutSelectionne;
 
+  // ✅ Quantité déjà dans le panier pour cette variante (ou le produit simple)
+  const quantiteDansPanier = (): number => {
+    const panier = getPanier();
+    const varianteId = varianteChoisie?.id || null;
+
+    const existant = panier.find((a) => {
+      if (a.produitId !== article.produitId) return false;
+      if (varianteId) return a.varianteId === varianteId;
+      return !a.varianteId;
+    });
+
+    return existant ? existant.quantite : 0;
+  };
+
+  const dejaDans = quantiteDansPanier();
+  const maxAtteint = toutSelectionne && dejaDans >= stockActuel;
+
   const ajouter = () => {
     setErreur("");
 
@@ -112,6 +130,11 @@ export default function SelecteurVariantes({
       return;
     }
 
+    if (dejaDans + 1 > stockActuel) {
+      setErreur(`Stock max atteint (${stockActuel} disponible${stockActuel > 1 ? "s" : ""})`);
+      return;
+    }
+
     try {
       const articleAvecVariante = {
         ...article,
@@ -121,6 +144,7 @@ export default function SelecteurVariantes({
 
       ajouterAuPanier(articleAvecVariante as any);
       setAjoute(true);
+      setTick((t) => t + 1); // refresh pour recalculer
       setTimeout(() => setAjoute(false), 2000);
     } catch {
       setErreur("Erreur lors de l'ajout");
@@ -161,6 +185,7 @@ export default function SelecteurVariantes({
                       onClick={() => {
                         if (!dispo) return;
                         setSelection((prev) => ({ ...prev, [attr.nom]: valeur }));
+                        setTick((t) => t + 1);
                       }}
                       disabled={!dispo}
                       style={{
@@ -193,7 +218,11 @@ export default function SelecteurVariantes({
       {/* STATUT STOCK */}
       <p style={{
         fontSize: "11.5px",
-        color: nonSelectionne ? "#64748B" : enRupture ? "#DC2626" : "#16A34A",
+        color: nonSelectionne
+          ? "#64748B"
+          : enRupture || maxAtteint
+          ? "#DC2626"
+          : "#16A34A",
         fontWeight: "800",
         marginBottom: "14px",
         textAlign: "center",
@@ -202,17 +231,19 @@ export default function SelecteurVariantes({
           ? "Choisissez les options ci-dessus"
           : enRupture
           ? "Rupture de stock pour cette combinaison"
+          : maxAtteint
+          ? `Stock max atteint (${stockActuel} dans le panier)`
           : `En stock (${stockActuel} disponible${stockActuel > 1 ? "s" : ""})`}
       </p>
 
       {/* BOUTON AJOUTER */}
       <button
         onClick={ajouter}
-        disabled={enRupture || nonSelectionne}
+        disabled={enRupture || nonSelectionne || maxAtteint}
         style={{
           width: "100%",
           backgroundColor:
-            enRupture || nonSelectionne
+            enRupture || nonSelectionne || maxAtteint
               ? "#94A3B8"
               : ajoute
               ? "#16A34A"
@@ -223,7 +254,10 @@ export default function SelecteurVariantes({
           border: "none",
           fontWeight: "900",
           fontSize: "15px",
-          cursor: enRupture || nonSelectionne ? "not-allowed" : "pointer",
+          cursor:
+            enRupture || nonSelectionne || maxAtteint
+              ? "not-allowed"
+              : "pointer",
           transition: "background-color 0.25s",
           display: "flex",
           alignItems: "center",
@@ -237,6 +271,8 @@ export default function SelecteurVariantes({
           "Choisissez les options"
         ) : enRupture ? (
           "Rupture de stock"
+        ) : maxAtteint ? (
+          `Max ${stockActuel} atteint`
         ) : ajoute ? (
           <>
             <Check size={18} strokeWidth={3} />
@@ -269,4 +305,4 @@ export default function SelecteurVariantes({
       )}
     </div>
   );
-              }
+  }
