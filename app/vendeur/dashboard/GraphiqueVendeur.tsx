@@ -25,8 +25,8 @@ interface GraphiqueVendeurProps {
 export default function GraphiqueVendeur({ data }: GraphiqueVendeurProps) {
   const [periode, setPeriode] = useState<"semaine" | "mois">("mois");
 
-  const dataFiltree = data.filter((d) => d.fc > 0 || d.usd > 0);
-  const dataAffichee = periode === "semaine" ? data.slice(-1) : dataFiltree;
+  // ✅ Affiche toujours les 6 derniers mois (même vides)
+  const dataAffichee = data;
 
   const formaterMontantFC = (valeur: number) => {
     if (valeur >= 1000000) return `${(valeur / 1000000).toFixed(1)}M`;
@@ -40,11 +40,13 @@ export default function GraphiqueVendeur({ data }: GraphiqueVendeurProps) {
   };
 
   const formaterValeurFC = (valeur: number) => {
+    if (valeur === 0) return "";
     if (valeur >= 1000) return `${(valeur / 1000).toFixed(0)}k`;
     return valeur.toString();
   };
 
   const formaterValeurUSD = (valeur: number) => {
+    if (valeur === 0) return "";
     return valeur.toFixed(0);
   };
 
@@ -118,7 +120,7 @@ export default function GraphiqueVendeur({ data }: GraphiqueVendeurProps) {
         </div>
       </div>
 
-      {dataAffichee.length === 0 ? (
+      {dataAffichee.every((d) => d.fc === 0 && d.usd === 0) ? (
         <div style={{ textAlign: "center", padding: "34px 20px" }}>
           <div style={{
             display: "inline-flex",
@@ -146,7 +148,7 @@ export default function GraphiqueVendeur({ data }: GraphiqueVendeurProps) {
             textTransform: "uppercase",
             letterSpacing: "0.3px",
           }}>
-            {dataAffichee.length} mois avec des ventes
+            {periode === "semaine" ? "Cette semaine" : "6 derniers mois"}
           </p>
 
           <div style={{ width: "100%", height: "240px" }}>
