@@ -1,4 +1,5 @@
 import { prisma } from "./prisma";
+import { envoyerPush } from "./push";
 
 // ============================================================
 // CRÉER UNE NOTIFICATION POUR UN UTILISATEUR
@@ -12,7 +13,7 @@ export async function creerNotification(
   lien?: string
 ) {
   try {
-    return await prisma.notification.create({
+    const notif = await prisma.notification.create({
       data: {
         userId,
         type,
@@ -21,6 +22,11 @@ export async function creerNotification(
         lien: lien || null,
       },
     });
+
+    // ✅ Push en arrière-plan (non bloquant)
+    envoyerPush(userId, { titre, message, lien, tag: type }).catch(() => {});
+
+    return notif;
   } catch (error) {
     console.error("Erreur création notification:", error);
     return null;
@@ -45,7 +51,7 @@ export async function creerNotificationAdmin(
 
     if (admins.length === 0) return [];
 
-    return await prisma.notification.createMany({
+    const resultat = await prisma.notification.createMany({
       data: admins.map((a) => ({
         userId: a.id,
         type,
@@ -54,6 +60,13 @@ export async function creerNotificationAdmin(
         lien: lien || null,
       })),
     });
+
+    // ✅ Push à chaque admin
+    admins.forEach((a) => {
+      envoyerPush(a.id, { titre, message, lien, tag: type }).catch(() => {});
+    });
+
+    return resultat;
   } catch (error) {
     console.error("Erreur notification admin:", error);
     return null;
@@ -79,7 +92,7 @@ export async function creerNotificationAbonnes(
 
     if (abonnes.length === 0) return [];
 
-    return await prisma.notification.createMany({
+    const resultat = await prisma.notification.createMany({
       data: abonnes.map((a) => ({
         userId: a.userId,
         type,
@@ -88,6 +101,15 @@ export async function creerNotificationAbonnes(
         lien: lien || null,
       })),
     });
+
+    // ✅ Push à chaque abonné
+    abonnes.forEach((a) => {
+      envoyerPush(a.userId, { titre, message, lien, tag: type }).catch(
+        () => {}
+      );
+    });
+
+    return resultat;
   } catch (error) {
     console.error("Erreur notification abonnés:", error);
     return null;
@@ -139,4 +161,4 @@ export async function compterNonLues(userId: string) {
     console.error("Erreur comptage non lues:", error);
     return 0;
   }
-        }
+  }
