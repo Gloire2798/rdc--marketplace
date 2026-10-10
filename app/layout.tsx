@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import Header from "./Header";
 import NavigationPublique from "./components/NavigationPublique";
+import EnregistrerSW from "./components/EnregistrerSW";
 
 const police = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -55,6 +56,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body>
+        <EnregistrerSW />
         <Header />
         <main style={{ minHeight: "80vh", paddingBottom: "80px" }}>{children}</main>
         <NavigationPublique />
