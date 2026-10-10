@@ -22,8 +22,8 @@ self.addEventListener("push", (event) => {
   const titre = data.titre || "GK Sensei";
   const options = {
     body: data.message || "Nouvelle notification",
-    icon: "/icon-192.png",
-    badge: "/icon-192.png",
+    icon: "https://i.ibb.co/1fQjT00Q/Gloire.png",
+    badge: "https://i.ibb.co/1fQjT00Q/Gloire.png",
     vibrate: [200, 100, 200],
     data: {
       url: data.lien || "/",
