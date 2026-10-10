@@ -9,7 +9,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
 import { TrendingUp } from "lucide-react";
 
@@ -26,7 +25,6 @@ interface GraphiqueVendeurProps {
 export default function GraphiqueVendeur({ data }: GraphiqueVendeurProps) {
   const [periode, setPeriode] = useState<"semaine" | "mois">("mois");
 
-  // Filtre : si "semaine" → dernier mois ; sinon → tous les mois avec des ventes
   const dataFiltree = data.filter((d) => d.fc > 0 || d.usd > 0);
   const dataAffichee = periode === "semaine" ? data.slice(-1) : dataFiltree;
 
@@ -41,6 +39,15 @@ export default function GraphiqueVendeur({ data }: GraphiqueVendeurProps) {
     return valeur.toFixed(0);
   };
 
+  const formaterValeurFC = (valeur: number) => {
+    if (valeur >= 1000) return `${(valeur / 1000).toFixed(0)}k`;
+    return valeur.toString();
+  };
+
+  const formaterValeurUSD = (valeur: number) => {
+    return valeur.toFixed(0);
+  };
+
   return (
     <div style={{
       backgroundColor: "white",
@@ -50,7 +57,6 @@ export default function GraphiqueVendeur({ data }: GraphiqueVendeurProps) {
       boxShadow: "0 2px 8px rgba(120, 100, 60, 0.08)",
       border: "1px solid #D4C5A0",
     }}>
-      {/* En-tête */}
       <div style={{
         display: "flex",
         justifyContent: "space-between",
@@ -88,7 +94,6 @@ export default function GraphiqueVendeur({ data }: GraphiqueVendeurProps) {
               backgroundColor: periode === "semaine" ? "#0F172A" : "transparent",
               color: periode === "semaine" ? "white" : "#57534E",
               cursor: "pointer",
-              transition: "all 0.15s ease",
               fontFamily: "inherit",
             }}
           >
@@ -105,7 +110,6 @@ export default function GraphiqueVendeur({ data }: GraphiqueVendeurProps) {
               backgroundColor: periode === "mois" ? "#0F172A" : "transparent",
               color: periode === "mois" ? "white" : "#57534E",
               cursor: "pointer",
-              transition: "all 0.15s ease",
               fontFamily: "inherit",
             }}
           >
@@ -145,17 +149,18 @@ export default function GraphiqueVendeur({ data }: GraphiqueVendeurProps) {
             {dataAffichee.length} mois avec des ventes
           </p>
 
-          <div style={{ width: "100%", height: "220px" }}>
+          <div style={{ width: "100%", height: "240px" }}>
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={dataAffichee} margin={{ top: 10, right: 14, left: -20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="4 4" stroke="#D4C5A0" vertical={false} />
+              <LineChart data={dataAffichee} margin={{ top: 20, right: 14, left: -20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E8DCC0" vertical={true} />
+
                 <XAxis
                   dataKey="mois"
                   tick={{ fontSize: 10, fill: "#57534E", fontWeight: 700 }}
                   axisLine={{ stroke: "#D4C5A0" }}
                   tickLine={false}
                 />
-                {/* Axe FC (à gauche) */}
+
                 <YAxis
                   yAxisId="left"
                   tick={{ fontSize: 10, fill: "#1D4ED8", fontWeight: 700 }}
@@ -163,7 +168,7 @@ export default function GraphiqueVendeur({ data }: GraphiqueVendeurProps) {
                   tickLine={false}
                   tickFormatter={formaterMontantFC}
                 />
-                {/* Axe USD (à droite) */}
+
                 <YAxis
                   yAxisId="right"
                   orientation="right"
@@ -172,6 +177,7 @@ export default function GraphiqueVendeur({ data }: GraphiqueVendeurProps) {
                   tickLine={false}
                   tickFormatter={formaterMontantUSD}
                 />
+
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "#0F172A",
@@ -190,31 +196,48 @@ export default function GraphiqueVendeur({ data }: GraphiqueVendeurProps) {
                     return [`${value.toFixed(2)} $`, "Ventes USD"];
                   }}
                 />
+
                 <Line
                   yAxisId="left"
-                  type="monotone"
+                  type="linear"
                   dataKey="fc"
                   name="Ventes FC"
                   stroke="#1D4ED8"
                   strokeWidth={2.5}
                   dot={{ fill: "#1D4ED8", r: 4, strokeWidth: 2, stroke: "white" }}
                   activeDot={{ r: 6, fill: "#1D4ED8", stroke: "white", strokeWidth: 3 }}
+                  label={{
+                    position: "top",
+                    offset: 10,
+                    fill: "#1D4ED8",
+                    fontSize: 10,
+                    fontWeight: 800,
+                    formatter: (v: any) => formaterValeurFC(Number(v)),
+                  }}
                 />
+
                 <Line
                   yAxisId="right"
-                  type="monotone"
+                  type="linear"
                   dataKey="usd"
                   name="Ventes USD"
                   stroke="#16A34A"
                   strokeWidth={2.5}
                   dot={{ fill: "#16A34A", r: 4, strokeWidth: 2, stroke: "white" }}
                   activeDot={{ r: 6, fill: "#16A34A", stroke: "white", strokeWidth: 3 }}
+                  label={{
+                    position: "bottom",
+                    offset: 10,
+                    fill: "#16A34A",
+                    fontSize: 10,
+                    fontWeight: 800,
+                    formatter: (v: any) => formaterValeurUSD(Number(v)),
+                  }}
                 />
               </LineChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Légende manuelle */}
           <div style={{
             display: "flex",
             justifyContent: "center",
