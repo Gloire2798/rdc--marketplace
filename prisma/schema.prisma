@@ -9,18 +9,19 @@ datasource db {
 
 // UTILISATEURS
 model User {
-  id             String         @id @default(cuid())
-  telephone      String         @unique
-  nom            String?
-  email          String?        @unique
-  motDePasse     String?
-  role           String         @default("ACHETEUR")
-  createdAt      DateTime       @default(now())
-  vendeur        Vendeur?
-  commandes      Commande[]
-  notifications  Notification[]
-  abonnements    Abonnement[]
-  tokensReset    TokenReset[]
+  id                String              @id @default(cuid())
+  telephone         String              @unique
+  nom               String?
+  email             String?             @unique
+  motDePasse        String?
+  role              String              @default("ACHETEUR")
+  createdAt         DateTime            @default(now())
+  vendeur           Vendeur?
+  commandes         Commande[]
+  notifications     Notification[]
+  abonnements       Abonnement[]
+  tokensReset       TokenReset[]
+  pushSubscriptions PushSubscription[]
 }
 
 // VENDEURS / BOUTIQUES
@@ -277,4 +278,18 @@ model Tentative {
   @@index([ip, route])
   @@index([identifiant, route])
   @@index([expireAt])
+}
+
+// PUSH NOTIFICATIONS
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
