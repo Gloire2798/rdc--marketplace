@@ -6,6 +6,7 @@ import LogoBoutique from "@/app/components/LogoBoutique";
 import NavigationBas from "./NavigationBas";
 import GraphiqueVendeur from "./GraphiqueVendeur";
 import TopProduits from "./TopProduits";
+import ActiverPush from "@/app/components/ActiverPush";
 import { Plus, Store, Camera, Package, ShoppingCart, CheckCircle, Clock, Globe } from "lucide-react";
 
 export default async function DashboardVendeur() {
@@ -51,7 +52,6 @@ export default async function DashboardVendeur() {
 
   const maintenant = new Date();
   const nomsMois = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
-  // ✅ FC + USD séparés (plus de mélange × 2800)
   const venteParMois: { mois: string; fc: number; usd: number }[] = [];
 
   for (let i = 5; i >= 0; i--) {
@@ -69,7 +69,6 @@ export default async function DashboardVendeur() {
       .forEach((c) => {
         c.items.forEach((item) => {
           const montant = item.prixUnitaire * item.quantite;
-          // ✅ CORRIGÉ : produit peut être null
           if (item.produit?.devise === "USD") {
             montantMoisUSD += montant;
           } else {
@@ -93,7 +92,6 @@ export default async function DashboardVendeur() {
   commandesValidees.forEach((c) => {
     c.items.forEach((item) => {
       const p = item.produit;
-      // ✅ CORRIGÉ : on skip si le produit a été supprimé
       if (!p) return;
 
       const existant = ventesParProduit.get(p.id);
@@ -147,6 +145,11 @@ export default async function DashboardVendeur() {
               {vendeur.nomBoutique}
             </p>
           </div>
+        </div>
+
+        {/* ✅ BOUTON ACTIVER PUSH */}
+        <div style={{ marginBottom: "14px" }}>
+          <ActiverPush />
         </div>
 
         {!vendeur.actif && (
@@ -409,4 +412,4 @@ export default async function DashboardVendeur() {
       <NavigationBas />
     </>
   );
-                }
+  }
