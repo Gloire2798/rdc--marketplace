@@ -1,3 +1,5 @@
+const { withSentryConfig } = require("@sentry/nextjs");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -9,7 +11,6 @@ const nextConfig = {
     ],
   },
 
-  // ✅ En-têtes de sécurité HTTP
   async headers() {
     return [
       {
@@ -41,4 +42,7 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withSentryConfig(nextConfig, {
+  silent: true,
+  disableLogger: true,
+});
