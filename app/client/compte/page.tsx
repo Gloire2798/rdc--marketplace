@@ -3,7 +3,9 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import CarteQR from "@/app/acheteur/commande/confirmation/CarteQR";
-import { Phone, Heart, ShoppingBag, Store, ChevronRight, Clock, CheckCircle, Package, XCircle } from "lucide-react";
+import ActiverPush from "@/app/components/ActiverPush";
+import BoutonLitige from "./BoutonLitige";
+import { Phone, Heart, ShoppingBag, Store, ChevronRight, Clock, CheckCircle, Package, XCircle, AlertTriangle } from "lucide-react";
 
 export default async function CompteClient() {
   const session = await getSession();
@@ -26,6 +28,7 @@ export default async function CompteClient() {
           produit: true,
         },
       },
+      litiges: true,
     },
     orderBy: { createdAt: "desc" },
   });
@@ -111,7 +114,12 @@ export default async function CompteClient() {
         </p>
       </div>
 
-      {/* Carte "Mes boutiques suivies" */}
+      {/* Bouton push */}
+      <div style={{ marginBottom: "12px" }}>
+        <ActiverPush />
+      </div>
+
+      {/* Mes boutiques suivies */}
       <Link
         href="/client/abonnements"
         style={{
@@ -244,7 +252,6 @@ export default async function CompteClient() {
 
             c.items.forEach((item) => {
               const montant = item.prixUnitaire * item.quantite;
-              // ✅ CORRIGÉ : produit peut être null
               if (item.produit?.devise === "USD") {
                 totalUSD += montant;
               } else {
@@ -255,6 +262,10 @@ export default async function CompteClient() {
             const conf = configStatut[c.statut] || configStatut.EN_ATTENTE;
             const IconeStatut = conf.Icon;
             const qrVisible = c.statut === "EN_ATTENTE" || c.statut === "PAYE" || c.statut === "PRET";
+
+            const aLitige = c.litiges && c.litiges.length > 0;
+            const litige = aLitige ? c.litiges[0] : null;
+            const peutSignaler = c.statut === "RETIRE" && !aLitige;
 
             return (
               <div
@@ -353,11 +364,9 @@ export default async function CompteClient() {
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
                       }}>
-                        {/* ✅ CORRIGÉ : produit peut être null */}
                         {item.produit?.nom || item.nomProduit || "Produit supprimé"} × {item.quantite}
                       </span>
                       <span style={{ color: "#57534E", fontWeight: "800", flexShrink: 0 }}>
-                        {/* ✅ CORRIGÉ : produit peut être null */}
                         {formaterPrix(item.prixUnitaire * item.quantite, item.produit?.devise || "FC")}
                       </span>
                     </div>
@@ -416,6 +425,61 @@ export default async function CompteClient() {
                     />
                   </div>
                 )}
+
+                {/* ✅ Litige existant (résolu/rejeté) */}
+                {aLitige && litige && (
+                  <div style={{
+                    marginTop: "10px",
+                    padding: "10px 12px",
+                    borderRadius: "12px",
+                    backgroundColor:
+                      litige.statut === "RESOLU" ? "#DCFCE7" :
+                      litige.statut === "REJETE" ? "#FEE2E2" :
+                      "#FEF3C7",
+                    border: `1.5px solid ${
+                      litige.statut === "RESOLU" ? "#16A34A" :
+                      litige.statut === "REJETE" ? "#DC2626" :
+                      "#B45309"
+                    }`,
+                  }}>
+                    <p style={{
+                      fontSize: "10.5px",
+                      fontWeight: "900",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                      marginBottom: "3px",
+                      color:
+                        litige.statut === "RESOLU" ? "#15803D" :
+                        litige.statut === "REJETE" ? "#991B1B" :
+                        "#B45309",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.3px",
+                    }}>
+                      <AlertTriangle size={11} strokeWidth={2.8} />
+                      Litige {
+                        litige.statut === "RESOLU" ? "résolu" :
+                        litige.statut === "REJETE" ? "rejeté" :
+                        "en cours"
+                      }
+                    </p>
+                    {litige.decisionAdmin && (
+                      <p style={{
+                        fontSize: "10.5px",
+                        fontWeight: "700",
+                        color: "#0F172A",
+                        lineHeight: 1.4,
+                      }}>
+                        {litige.decisionAdmin}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* ✅ Bouton signaler (uniquement si RETIRE et pas déjà de litige) */}
+                {peutSignaler && (
+                  <BoutonLitige commandeId={c.id} />
+                )}
               </div>
             );
           })}
@@ -423,4 +487,4 @@ export default async function CompteClient() {
       )}
     </div>
   );
-              }
+          }
