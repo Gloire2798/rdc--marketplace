@@ -1,10 +1,11 @@
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 import NavigationBas from "./NavigationBas";
 import LienVendeur from "./LienVendeur";
 import GraphiqueVentes from "./GraphiqueVentes";
-import { Store, Clock, CheckCircle, Wallet, Calendar } from "lucide-react";
+import { Store, Clock, CheckCircle, Wallet, Calendar, Scale } from "lucide-react";
 
 export default async function DashboardAdmin() {
   const session = await getSession();
@@ -27,10 +28,13 @@ export default async function DashboardAdmin() {
     },
   });
 
+  const litigesOuverts = await prisma.litige.count({
+    where: { statut: "OUVERT" },
+  });
+
   const enAttente = vendeurs.filter((v) => !v.actif);
   const actifs = vendeurs.filter((v) => v.actif);
 
-  // ✅ CA séparé FC et USD
   let chiffreAffairesFC = 0;
   let chiffreAffairesUSD = 0;
 
@@ -39,7 +43,6 @@ export default async function DashboardAdmin() {
     .forEach((c) => {
       c.items.forEach((item) => {
         const montant = item.prixUnitaire * item.quantite;
-        // ✅ CORRIGÉ : produit peut être null
         if (item.produit?.devise === "USD") {
           chiffreAffairesUSD += montant;
         } else {
@@ -59,7 +62,6 @@ export default async function DashboardAdmin() {
   };
 
   const maintenant = new Date();
-  // ✅ venteParMois avec FC + USD séparés (pour le graphique multi-lignes)
   const venteParMois: { mois: string; fc: number; usd: number }[] = [];
   const nomsMois = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
 
@@ -79,7 +81,6 @@ export default async function DashboardAdmin() {
       .forEach((c) => {
         c.items.forEach((item) => {
           const montant = item.prixUnitaire * item.quantite;
-          // ✅ CORRIGÉ : produit peut être null
           if (item.produit?.devise === "USD") {
             montantMoisUSD += montant;
           } else {
@@ -283,6 +284,57 @@ export default async function DashboardAdmin() {
           })}
         </div>
 
+        {/* ✅ ALERTE LITIGES */}
+        {litigesOuverts > 0 && (
+          <Link
+            href="/admin/litiges"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              backgroundColor: "white",
+              padding: "12px 14px",
+              borderRadius: "16px",
+              border: "1.5px solid #0F172A",
+              boxShadow: "4px 4px 0 #EA580C",
+              marginBottom: "16px",
+              textDecoration: "none",
+              color: "inherit",
+            }}
+          >
+            <div style={{
+              width: "36px",
+              height: "36px",
+              borderRadius: "10px",
+              backgroundColor: "#FEE2E2",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}>
+              <Scale size={18} color="#DC2626" strokeWidth={2.8} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: "12px", fontWeight: "900", color: "#0F172A", marginBottom: "2px" }}>
+                {litigesOuverts} litige{litigesOuverts > 1 ? "s" : ""} à traiter
+              </p>
+              <p style={{ fontSize: "10.5px", color: "#57534E", fontWeight: "700" }}>
+                Cliquez pour voir et trancher
+              </p>
+            </div>
+            <span style={{
+              fontSize: "9.5px",
+              fontWeight: "900",
+              backgroundColor: "#DC2626",
+              color: "white",
+              padding: "3px 8px",
+              borderRadius: "8px",
+            }}>
+              Urgent
+            </span>
+          </Link>
+        )}
+
         <GraphiqueVentes data={venteParMois} />
 
         {/* BOUTIQUES EN ATTENTE */}
@@ -342,4 +394,4 @@ export default async function DashboardAdmin() {
       <NavigationBas />
     </>
   );
-      }
+        }
