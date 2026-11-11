@@ -63,7 +63,7 @@ export default function Header() {
         <MenuBurgerAdmin />
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
           <img
-            src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
+            src="/Gloire.png"
             alt="GK"
             style={{ height: "36px", width: "auto", mixBlendMode: "multiply" }}
           />
@@ -99,7 +99,7 @@ export default function Header() {
         <MenuBurgerVendeur />
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
           <img
-            src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
+            src="/Gloire.png"
             alt="GK"
             style={{ height: "36px", width: "auto", mixBlendMode: "multiply" }}
           />
@@ -134,7 +134,7 @@ export default function Header() {
       }}>
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
           <img
-            src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
+            src="/Gloire.png"
             alt="GK"
             style={{ height: "36px", width: "auto", mixBlendMode: "multiply" }}
           />
@@ -197,7 +197,7 @@ export default function Header() {
           textDecoration: "none",
         }}>
           <img
-            src="https://i.ibb.co/xKnVPmGg/logo-Gk.jpg"
+            src="/Gloire.png"
             alt="GK Sensei"
             style={{
               height: "48px",
@@ -246,4 +246,4 @@ export default function Header() {
       </div>
     </header>
   );
-            }
+                    }
